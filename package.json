@@ -12,7 +12,7 @@
   "main": "./dist/src/main.js",
   "exports": "./dist/src/main.js",
   "engines": {
-    "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
+    "node": ">=16.0.0"
   },
   "files": [
     "dist"

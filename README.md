@@ -9,7 +9,7 @@
 
 
 ## Requirements
-- [Node.js](https://nodejs.org/en/) v12.20.0 || v14.13.1 || >=v16.0.0
+- [Node.js](https://nodejs.org/en/) >=v16.0.0
 
 ## Getting Started
 
