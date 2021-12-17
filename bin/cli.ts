@@ -9,12 +9,10 @@ runPipelineChecks()
       kleur.green().bold("[SUCCESS] @nodesecure/ci passed all the checks.")
     );
   })
-  .catch((uncaughtException) => {
+  .catch(() => {
     console.log(
-      kleur.green().bold("[ERROR] @nodesecure/ci unexpectedly exited.")
+      kleur.red().bold("[ERROR] @nodesecure/ci unexpected error caught.")
     );
-    console.error(uncaughtException);
-    process.exit(1);
   })
   .finally(() => {
     console.log(kleur.yellow().bold("[END] @nodesecure/ci ended."));

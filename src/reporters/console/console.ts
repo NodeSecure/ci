@@ -7,6 +7,8 @@ import { Reporter, ReporterTarget } from "../index.js";
 export const consoleReporter: Reporter = {
   type: ReporterTarget.CONSOLE,
   async report({ data }) {
+    console.log(kleur.bold().yellow("[START]: @nodesecure/ci checks started"));
+
     await Promise.all([
       reportGlobalWarnings(data.warnings),
       reportDependencyWarnings(data.dependencies.warnings),
@@ -23,10 +25,7 @@ async function reportGlobalWarnings(warnings: Array<unknown>): Promise<void> {
 
 function reportDependencyWarnings(warnings: DependencyWarning[]): void {
   if (warnings.length > 0) {
-    console.log(
-      // kleur.red().bold(`Dependencies warnings found in ${dependencyName}`)
-      kleur.red().bold("Dependencies warnings found")
-    );
+    console.log(kleur.red().bold("[WARNINGS] Warnings found"));
   }
 }
 

@@ -1,6 +1,7 @@
 import * as vuln from "@nodesecure/vuln";
 import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
+import kleur from "kleur";
 
 import {
   DEFAULT_RUNTIME_CONFIGURATION,
@@ -12,10 +13,12 @@ import { exitWithErrorCode } from "./pipeline/utils.js";
 
 async function runChecks(payload: Scanner.Payload, rc: RuntimeConfiguration) {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
-  const reporter = initializeReporter(rc.reporter);
-  reporter.report(interpretedPayload);
+  const { report } = initializeReporter(rc.reporter);
+  await report(interpretedPayload);
 
   if (interpretedPayload.status === PipelineStatus.FAILURE) {
+    // TODO: Move this Console print elsewhere
+    console.log(kleur.red().bold("[FAILURE] @nodesecure/ci checks failed."));
     exitWithErrorCode();
   }
 }
