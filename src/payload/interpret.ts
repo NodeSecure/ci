@@ -5,11 +5,7 @@ import set from "lodash.set";
 import { RuntimeConfiguration } from "../nodesecurerc.js";
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 import { DependencyWarning, GlobalWarning } from "../types/index.js";
-
-export enum PipelineStatus {
-  SUCCESS = "success",
-  FAILURE = "failure"
-}
+import { getPipelineStatus, PipelineStatus } from "../pipeline.js";
 
 type CheckableFunction<T> = {
   status: boolean;
@@ -109,10 +105,6 @@ function checkDependenciesVulns(
       value: vulnsClassifiedBySeverity
     }
   };
-}
-
-function getPipelineStatus(status: boolean): PipelineStatus {
-  return status ? PipelineStatus.SUCCESS : PipelineStatus.FAILURE;
 }
 
 type PipelineCheckFunctions = Array<

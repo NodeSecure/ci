@@ -3,7 +3,8 @@ import { Scanner } from "@nodesecure/scanner";
 import { expect } from "chai";
 
 import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
-import { PipelineStatus, runPayloadInterpreter } from "./interpret.js";
+import { pipelineStatus } from "../pipeline.js";
+import { runPayloadInterpreter } from "./interpret.js";
 
 describe("@nodesecure/ci scanner payload checker", () => {
   describe("When providing an empty payload", () => {
@@ -21,7 +22,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
         scannerPayload,
         DEFAULT_RUNTIME_CONFIGURATION
       );
-      expect(status).equals(PipelineStatus.SUCCESS);
+      expect(status).equals(pipelineStatus.SUCCESS);
     });
   });
 
@@ -41,7 +42,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
         scannerPayload,
         DEFAULT_RUNTIME_CONFIGURATION
       );
-      expect(status).equals(PipelineStatus.FAILURE);
+      expect(status).equals(pipelineStatus.FAILURE);
     });
   });
 
@@ -125,7 +126,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
           scannerPayload,
           DEFAULT_RUNTIME_CONFIGURATION
         );
-        expect(status).equals(PipelineStatus.FAILURE);
+        expect(status).equals(pipelineStatus.FAILURE);
       });
     });
   });
@@ -162,7 +163,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
           scannerPayload,
           DEFAULT_RUNTIME_CONFIGURATION
         );
-        expect(status).equals(PipelineStatus.FAILURE);
+        expect(status).equals(pipelineStatus.FAILURE);
       });
     });
 
@@ -200,7 +201,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
           }
         });
 
-        expect(status).equals(PipelineStatus.SUCCESS);
+        expect(status).equals(pipelineStatus.SUCCESS);
         expect(data).to.deep.equal({
           warnings: [],
           dependencies: {
@@ -244,7 +245,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
           }
         });
 
-        expect(status).equals(PipelineStatus.FAILURE);
+        expect(status).equals(pipelineStatus.FAILURE);
       });
 
       it("should make the check fail with vulns data", () => {
@@ -281,7 +282,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
           }
         });
 
-        expect(status).equals(PipelineStatus.FAILURE);
+        expect(status).equals(pipelineStatus.FAILURE);
         expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
           origin: "npm",
           package: "express",

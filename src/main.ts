@@ -7,16 +7,16 @@ import {
   DEFAULT_RUNTIME_CONFIGURATION,
   RuntimeConfiguration
 } from "./nodesecurerc.js";
-import { PipelineStatus, runPayloadInterpreter } from "./payload/interpret.js";
+import { runPayloadInterpreter } from "./payload/interpret.js";
 import { initializeReporter } from "./reporters/reporter.js";
-import { exitWithErrorCode } from "./pipeline/utils.js";
+import { exitWithErrorCode, pipelineStatus } from "./pipeline.js";
 
 async function runChecks(payload: Scanner.Payload, rc: RuntimeConfiguration) {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
   const { report } = initializeReporter(rc.reporter);
   await report(interpretedPayload);
 
-  if (interpretedPayload.status === PipelineStatus.FAILURE) {
+  if (interpretedPayload.status === pipelineStatus.FAILURE) {
     // TODO: Move this Console print elsewhere
     console.log(kleur.red().bold("[FAILURE] @nodesecure/ci checks failed."));
     exitWithErrorCode();
