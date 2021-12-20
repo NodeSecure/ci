@@ -5,29 +5,52 @@ import { performance } from "perf_hooks";
 import { pipelineStatus } from "../../pipeline.js";
 import { DependencyWarning } from "../../types/index.js";
 import { Reporter, ReporterTarget } from "../index.js";
-import { consolePrinter, millisecondsToSeconds } from "./printer.js";
+import { consolePrinter } from "./printer.js";
+import { formatMilliseconds } from "./format.js";
 
 function reportGlobalWarnings(warnings: Array<unknown>): void {
   if (warnings.length > 0) {
-    consolePrinter
-      .error("[GLOBAL_WARNING]: Global warnings found")
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.error("[GLOBAL WARNING]:").bold().message,
+        consolePrinter.font.error(`${warnings.length} global warnings found`)
+          .message
+      ])
       .print();
   }
 }
 
 function reportDependencyWarnings(warnings: DependencyWarning[]): void {
   if (warnings.length > 0) {
-    consolePrinter
-      .error(`[DEPENDENCY_WARNINGS]: ${warnings.length} dependency warnings found`)
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.error("[DEPENDENCY WARNINGS]:").bold().message,
+        consolePrinter.font.error(
+          `${warnings.length} dependency warnings found`
+        ).message
+      ])
       .print();
 
     for (const warning of warnings) {
       for (const details of warning.warnings) {
-        consolePrinter
-        .error(
-          `[${warning.package}]: ${details.kind} ${details.file ? `in ${details.file}` : ""}`
-        )
-        .print();
+        const warningPath = consolePrinter.font.standard(
+          `${details.file ? `${warning.package}/${details.file}` : ""}`
+        ).message;
+
+        const warningLocation = consolePrinter.font.info(
+          `${
+            details.file
+              ? `${details.location.flatMap((location) => location.join(":"))}`
+              : ""
+          }`
+        ).message;
+
+        consolePrinter.util
+          .concatOutputs([
+            consolePrinter.font.error(`${details.kind}`).bold().message,
+            `${warningPath}:${warningLocation}`
+          ])
+          .print();
       }
     }
   }
@@ -37,19 +60,25 @@ function reportDependencyVulns(
   vulnerabilities: Strategy.StandardVulnerability[]
 ) {
   if (vulnerabilities.length > 0) {
-    consolePrinter
-    .error(
-      `[DEPENDENCY–VULNERABILITIES]: ${vulnerabilities.length} dependency vulnerabilities found`
-    ).print();
+    consolePrinter.font
+      .error(
+        `[DEPENDENCY VULNERABILITIES]: ${vulnerabilities.length} dependency vulnerabilities found`
+      )
+      .bold()
+      .print();
   }
 
   for (const vuln of vulnerabilities) {
     const typeSafeSeverity = vuln.severity as Strategy.Severity;
-    const vulnErrorMessage = `[${typeSafeSeverity.toUpperCase()}]: => ${
-      vuln.package
-    } ${vuln.vulnerableRanges.join(", ")}`;
-    consolePrinter
-      .error(vulnErrorMessage)
+    const vulnSeverity = `${typeSafeSeverity.toUpperCase()} vulnerability`;
+    const vulnRanges = vuln.vulnerableRanges.join(", ");
+
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.error(`[${vuln.package}]`).message,
+        consolePrinter.font.error(vulnSeverity).bold().message,
+        consolePrinter.font.info(vulnRanges).bold().message
+      ])
       .print();
   }
 }
@@ -57,8 +86,12 @@ function reportDependencyVulns(
 export const consoleReporter: Reporter = {
   type: ReporterTarget.CONSOLE,
   async report({ data, status }) {
-    consolePrinter
-      .standard("[NCI] @nodesecure/ci checks started")
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.highlight("@nodesecure/ci").bold().underline()
+          .message,
+        consolePrinter.font.standard("Pipeline check started").message
+      ])
       .print();
 
     const startedAt = performance.now();
@@ -69,20 +102,30 @@ export const consoleReporter: Reporter = {
     ]);
 
     const endedAt = performance.now() - startedAt;
-    consolePrinter.concatMessages(
-      consolePrinter.standard("[NCI] @nodesecure/ci checks ended").message,
-      consolePrinter.info(`=> Took ${millisecondsToSeconds(endedAt)}`).message
-    ).print();
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.highlight("@nodesecure/ci").bold().underline()
+          .message,
+        consolePrinter.font.standard("Pipeline check ended").message,
+        consolePrinter.font
+          .info(`=> Took ${formatMilliseconds(endedAt)}`)
+          .underline().message
+      ])
+      .print();
 
     if (status === pipelineStatus.SUCCESS) {
-      consolePrinter
-        .success("[SUCCESS] @nodesecure/ci passed all checks")
+      consolePrinter.font
+        .success("[SUCCESS] Pipeline successful")
+        .bold()
         .print();
     } else {
-      consolePrinter
-        .failure("[FAILURE] @nodesecure/ci failed to pass")
+      consolePrinter.font
+        .failure("[FAILURE] Pipeline failed")
+        .bold()
         .print();
     }
+
+    consolePrinter.font.standard("").print();
   }
 };
 
@@ -92,18 +135,30 @@ export function reportScannerLoggerEvents(logger: Logger) {
 
   logger.once("start", () => {
     startedAt = performance.now();
-    consolePrinter
-      .standard("[SCANNER] Analysis started")
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
+          .message,
+        consolePrinter.font.standard("Analysis started").bold().message
+      ])
       .print();
   });
 
   logger.on("end", (event) => {
     if (event === LAST_SCANNER_EVENT) {
       const endedAt = performance.now() - startedAt;
-      consolePrinter.concatMessages(
-        consolePrinter.standard("[SCANNER] Analysis ended").message,
-        consolePrinter.info(`=> Took ${millisecondsToSeconds(endedAt)}`).message
-      ).print();
+      consolePrinter.util
+        .concatOutputs([
+          consolePrinter.font
+            .highlight("@nodesecure/scanner")
+            .bold()
+            .underline().message,
+          consolePrinter.font.standard("Analysis ended").bold().message,
+          consolePrinter.font
+            .info(`=> Took ${formatMilliseconds(endedAt)}`)
+            .underline().message
+        ])
+        .print();
     }
   });
 }

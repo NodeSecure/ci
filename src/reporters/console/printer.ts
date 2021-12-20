@@ -1,28 +1,73 @@
 import kleur from "kleur";
 
-function createConsoleMessage(message: string) {
-    return {
-        message,
-        // TODO : Use a better way to manage CLI UI
-        print: () => console.log(`${message} \n`)
-    };
-}
-
-export const consolePrinter = {
-    standard: (message: string) => createConsoleMessage(kleur.bold().blue(message)),
-    info: (message: string) => createConsoleMessage(kleur.bold().yellow(message)),
-    error: (message: string) => createConsoleMessage(kleur.bold().red(message)),
-    success: (message: string) => createConsoleMessage(kleur.bgGreen().bold().white(message)),
-    failure: (message: string) => createConsoleMessage(kleur.bgRed().bold().white(message)),
-    concatMessages: (...messages: string[]) => createConsoleMessage(messages.join(" "))
+type ConsoleMessage = {
+  message: string;
+  underline: () => ConsoleMessage;
+  italic: () => ConsoleMessage;
+  bold: () => ConsoleMessage;
+  print: () => void;
 };
 
+type ConsoleOutput<I, O = string> = (message: I) => O;
 
-export function millisecondsToSeconds(ms: number, asString = true): number | string {
-    const seconds = (ms / 1000).toFixed(2);
-    if (asString) {
-        return `${seconds}s`;
+type ConsolePrinter = {
+  font: {
+    standard: ConsoleOutput<string, ConsoleMessage>;
+    highlight: ConsoleOutput<string, ConsoleMessage>;
+    info: ConsoleOutput<string, ConsoleMessage>;
+    error: ConsoleOutput<string, ConsoleMessage>;
+    success: ConsoleOutput<string, ConsoleMessage>;
+    failure: ConsoleOutput<string, ConsoleMessage>;
+  };
+  decoration: {
+    bold: ConsoleOutput<string>;
+    underline: ConsoleOutput<string>;
+    italic: ConsoleOutput<string>;
+  };
+  util: {
+    concatOutputs: ConsoleOutput<string[], ConsoleMessage>;
+  };
+};
+
+function createConsoleMessage(msg: string): ConsoleMessage {
+  return {
+    message: msg,
+    bold() {
+      this.message = consolePrinter.decoration.bold(this.message);
+
+      return this;
+    },
+    italic() {
+      this.message = consolePrinter.decoration.italic(this.message);
+
+      return this;
+    },
+    underline() {
+      this.message = consolePrinter.decoration.underline(this.message);
+
+      return this;
+    },
+    print() {
+      console.log(`\n ${this.message}`);
     }
-
-    return seconds;
+  };
 }
+
+export const consolePrinter: ConsolePrinter = {
+  font: {
+    standard: (message: string) => createConsoleMessage(kleur.dim(message)),
+    highlight: (message: string) => createConsoleMessage(kleur.magenta(message)),
+    info: (message: string) => createConsoleMessage(kleur.yellow(message)),
+    error: (message: string) => createConsoleMessage(kleur.red(message)),
+    success: (message: string) => createConsoleMessage(kleur.bgGreen().white(message)),
+    failure: (message: string) => createConsoleMessage(kleur.bgRed().white(message))
+  },
+  decoration: {
+    underline: (message: string) => kleur.underline(message),
+    italic: (message: string) => kleur.italic(message),
+    bold: (message: string) => kleur.bold(message)
+  },
+  util: {
+    concatOutputs: (messages: string[], delimiter = " ") => createConsoleMessage(messages.join(delimiter))
+  }
+};
