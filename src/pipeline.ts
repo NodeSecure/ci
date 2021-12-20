@@ -11,6 +11,6 @@ export function getPipelineStatus(status: boolean): PipelineStatus {
   return status ? pipelineStatus.SUCCESS : pipelineStatus.FAILURE;
 }
 
-export function exitWithErrorCode() {
+export function makePipelineFail() {
   process.exit(1);
 }

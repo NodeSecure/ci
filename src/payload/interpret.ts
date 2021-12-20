@@ -79,9 +79,8 @@ function findAllVulnsWithEqualOrHigherSeverity(
   severity: Strategy.Severity | "all"
 ): Strategy.StandardVulnerability[] {
   return vulnerabilities.filter(
-    (vuln) =>
-      convertSeverityAsNumber(vuln.severity) >=
-      convertSeverityAsNumber(severity)
+    (vuln) => convertSeverityAsNumber(vuln.severity) >=
+    convertSeverityAsNumber(severity)
   );
 }
 

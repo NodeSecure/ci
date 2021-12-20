@@ -6,7 +6,7 @@ import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
 import { pipelineStatus } from "../pipeline.js";
 import { runPayloadInterpreter } from "./interpret.js";
 
-describe("@nodesecure/ci scanner payload checker", () => {
+describe("@nodesecure/sci scanner payload checker", () => {
   describe("When providing an empty payload", () => {
     it("should make the check pass", () => {
       const scannerPayload: Scanner.Payload = {

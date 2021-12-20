@@ -1,7 +1,6 @@
 import * as vuln from "@nodesecure/vuln";
 import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
-import kleur from "kleur";
 
 import {
   DEFAULT_RUNTIME_CONFIGURATION,
@@ -9,7 +8,9 @@ import {
 } from "./nodesecurerc.js";
 import { runPayloadInterpreter } from "./payload/interpret.js";
 import { initializeReporter } from "./reporters/reporter.js";
-import { exitWithErrorCode, pipelineStatus } from "./pipeline.js";
+import { ReporterTarget } from "./reporters/index.js";
+import { makePipelineFail, pipelineStatus } from "./pipeline.js";
+import { reportScannerLoggerEvents } from "./reporters/console/console.js";
 
 async function runChecks(payload: Scanner.Payload, rc: RuntimeConfiguration) {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
@@ -17,9 +18,7 @@ async function runChecks(payload: Scanner.Payload, rc: RuntimeConfiguration) {
   await report(interpretedPayload);
 
   if (interpretedPayload.status === pipelineStatus.FAILURE) {
-    // TODO: Move this Console print elsewhere
-    console.log(kleur.red().bold("[FAILURE] @nodesecure/ci checks failed."));
-    exitWithErrorCode();
+    makePipelineFail();
   }
 }
 
@@ -33,8 +32,15 @@ export async function runPipelineChecks(): Promise<void> {
   const { strategy } = await vuln.setStrategy(
     vuln.strategies[runtimeConfig.strategy]
   );
+  const logger = new scanner.Logger();
+
+  if (runtimeConfig.reporter === ReporterTarget.CONSOLE) {
+    reportScannerLoggerEvents(logger);
+  }
+
   const payload = await scanner.cwd(runtimeConfig.rootDir, {
     vulnerabilityStrategy: strategy
-  });
+  }, logger);
+
   await runChecks(payload, runtimeConfig);
 }
