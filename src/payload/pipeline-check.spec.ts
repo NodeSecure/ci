@@ -6,9 +6,9 @@ import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
 import { pipelineStatus } from "../pipeline.js";
 import { runPayloadInterpreter } from "./interpret.js";
 
-describe("@nodesecure/ci scanner payload checker", () => {
+describe("@nodesecure/ci pipeline checker", () => {
   describe("When providing an empty payload", () => {
-    it("should make the check pass", () => {
+    it("should make the pipeline succeed", () => {
       const scannerPayload: Scanner.Payload = {
         id: "1",
         rootDependencyName: "pkg",
@@ -27,7 +27,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
   });
 
   describe("When providing a payload with global warnings", () => {
-    it("should make the check fail", () => {
+    it("should make the pipeline fail", () => {
       const scannerPayload: Scanner.Payload = {
         id: "1",
         rootDependencyName: "pkg",
@@ -48,7 +48,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
 
   describe("When providing a payload with dependencies warnings", () => {
     describe("When providing default runtime configuration", () => {
-      it("should make the check fail", () => {
+      it("should make the pipeline fail", () => {
         const scannerPayload: Scanner.Payload = {
           id: "1",
           rootDependencyName: "pkg",
@@ -133,7 +133,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
 
   describe("When providing a payload with dependencies vulnerabilities", () => {
     describe("When providing default runtime configuration", () => {
-      it("should make the check fail", () => {
+      it("should make the pipeline fail", () => {
         const scannerPayload: Scanner.Payload = {
           id: "1",
           rootDependencyName: "pkg",
@@ -168,7 +168,7 @@ describe("@nodesecure/ci scanner payload checker", () => {
     });
 
     describe("When providing customized runtime configuration affecting vulnerabilities", () => {
-      it("should make the check pass with no returned data", () => {
+      it("should make the pipeline succeed with no returned data", () => {
         const scannerPayload: Scanner.Payload = {
           id: "1",
           rootDependencyName: "pkg",
@@ -211,86 +211,88 @@ describe("@nodesecure/ci scanner payload checker", () => {
         });
       });
 
-      it("should make the check fail", () => {
-        const scannerPayload: Scanner.Payload = {
-          id: "1",
-          rootDependencyName: "pkg",
-          warnings: [],
-          dependencies: {
-            express: {
-              // @ts-expect-error - we are not interested in metadata
-              metadata: {},
-              versions: {},
-              vulnerabilities: [
-                {
-                  origin: "npm",
-                  package: "express",
-                  title: "Vuln...",
-                  cves: [],
-                  severity: "medium",
-                  vulnerableRanges: [],
-                  vulnerableVersions: []
-                }
-              ]
-            }
-          },
-          version: "1.0.0",
-          vulnerabilityStrategy: "npm"
-        };
+      describe("When providing vulnerabilities with higher severities than the configured threshold", () => {
+        it("should make the pipeline fail for any given vulnerability", () => {
+          const scannerPayload: Scanner.Payload = {
+            id: "1",
+            rootDependencyName: "pkg",
+            warnings: [],
+            dependencies: {
+              express: {
+                // @ts-expect-error - we are not interested in metadata
+                metadata: {},
+                versions: {},
+                vulnerabilities: [
+                  {
+                    origin: "npm",
+                    package: "express",
+                    title: "Vuln...",
+                    cves: [],
+                    severity: "medium",
+                    vulnerableRanges: [],
+                    vulnerableVersions: []
+                  }
+                ]
+              }
+            },
+            version: "1.0.0",
+            vulnerabilityStrategy: "npm"
+          };
 
-        const { status } = runPayloadInterpreter(scannerPayload, {
-          ...DEFAULT_RUNTIME_CONFIGURATION,
-          vulnerabilities: {
-            severity: "all"
-          }
+          const { status } = runPayloadInterpreter(scannerPayload, {
+            ...DEFAULT_RUNTIME_CONFIGURATION,
+            vulnerabilities: {
+              severity: "all"
+            }
+          });
+
+          expect(status).equals(pipelineStatus.FAILURE);
         });
 
-        expect(status).equals(pipelineStatus.FAILURE);
-      });
+        it("should make the pipeline fail with severities higher than configured threshold", () => {
+          const scannerPayload: Scanner.Payload = {
+            id: "1",
+            rootDependencyName: "pkg",
+            warnings: [],
+            dependencies: {
+              express: {
+                // @ts-expect-error - we are not interested in metadata
+                metadata: {},
+                versions: {},
+                vulnerabilities: [
+                  {
+                    origin: "npm",
+                    package: "express",
+                    title: "Vuln...",
+                    cves: [],
+                    severity: "critical",
+                    vulnerableRanges: [],
+                    vulnerableVersions: []
+                  }
+                ]
+              }
+            },
+            version: "1.0.0",
+            vulnerabilityStrategy: "npm"
+          };
 
-      it("should make the check fail with vulns data", () => {
-        const scannerPayload: Scanner.Payload = {
-          id: "1",
-          rootDependencyName: "pkg",
-          warnings: [],
-          dependencies: {
-            express: {
-              // @ts-expect-error - we are not interested in metadata
-              metadata: {},
-              versions: {},
-              vulnerabilities: [
-                {
-                  origin: "npm",
-                  package: "express",
-                  title: "Vuln...",
-                  cves: [],
-                  severity: "critical",
-                  vulnerableRanges: [],
-                  vulnerableVersions: []
-                }
-              ]
+          const { status, data } = runPayloadInterpreter(scannerPayload, {
+            ...DEFAULT_RUNTIME_CONFIGURATION,
+            vulnerabilities: {
+              severity: "high"
             }
-          },
-          version: "1.0.0",
-          vulnerabilityStrategy: "npm"
-        };
+          });
 
-        const { status, data } = runPayloadInterpreter(scannerPayload, {
-          ...DEFAULT_RUNTIME_CONFIGURATION,
-          vulnerabilities: {
-            severity: "high"
-          }
-        });
-
-        expect(status).equals(pipelineStatus.FAILURE);
-        expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
-          origin: "npm",
-          package: "express",
-          title: "Vuln...",
-          cves: [],
-          severity: "critical",
-          vulnerableRanges: [],
-          vulnerableVersions: []
+          expect(status).equals(pipelineStatus.FAILURE);
+          expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
+            origin: "npm",
+            package: "express",
+            title: "Vuln...",
+            cves: [],
+            severity: "critical",
+            vulnerableRanges: [],
+            vulnerableVersions: []
+          });
         });
       });
     });
