@@ -11,20 +11,12 @@
         "project": "./tsconfig.json"
     },
     "plugins": [
-        "@typescript-eslint",
-        "prettier"
+        "@typescript-eslint"
     ],
     "rules": {
         "indent": "off",
-        "prettier/prettier": [
-            "error",
-            {
-              "trailingComma": "none",
-              "printWidth": 80
-            }
-          ],
-        "implicit-arrow-linebreak": "off",
         "brace-style": "off",
+        "no-empty": ["error", { "allowEmptyCatch": true }],
         "@typescript-eslint/no-unused-vars": [
             "error",
             { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
