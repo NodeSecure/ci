@@ -58,7 +58,7 @@ export const consoleReporter: Reporter = {
   type: ReporterTarget.CONSOLE,
   async report({ data, status }) {
     consolePrinter
-      .standard("[NCI] @nodesecure/sci checks started")
+      .standard("[NCI] @nodesecure/ci checks started")
       .print();
 
     const startedAt = performance.now();
@@ -70,17 +70,17 @@ export const consoleReporter: Reporter = {
 
     const endedAt = performance.now() - startedAt;
     consolePrinter.concatMessages(
-      consolePrinter.standard("[NCI] @nodesecure/sci checks ended").message,
+      consolePrinter.standard("[NCI] @nodesecure/ci checks ended").message,
       consolePrinter.info(`=> Took ${millisecondsToSeconds(endedAt)}`).message
     ).print();
 
     if (status === pipelineStatus.SUCCESS) {
       consolePrinter
-        .success("[SUCCESS] @nodesecure/sci passed all checks")
+        .success("[SUCCESS] @nodesecure/ci passed all checks")
         .print();
     } else {
       consolePrinter
-        .failure("[FAILURE] @nodesecure/sci failed to pass")
+        .failure("[FAILURE] @nodesecure/ci failed to pass")
         .print();
     }
   }
