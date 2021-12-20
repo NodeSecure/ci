@@ -28,19 +28,21 @@ export async function runPipelineChecks(): Promise<void> {
    * In the future, this configuration will come from a .nodesecurerc parsed
    * at runtime.
    */
-  const runtimeConfig = DEFAULT_RUNTIME_CONFIGURATION;
-  const { strategy } = await vuln.setStrategy(
-    vuln.strategies[runtimeConfig.strategy]
-  );
-  const logger = new scanner.Logger();
+  try {
+    const runtimeConfig = DEFAULT_RUNTIME_CONFIGURATION;
+    const { strategy } = await vuln.setStrategy(
+      vuln.strategies[runtimeConfig.strategy]
+    );
+    const logger = new scanner.Logger();
 
-  if (runtimeConfig.reporter === ReporterTarget.CONSOLE) {
-    reportScannerLoggerEvents(logger);
-  }
+    if (runtimeConfig.reporter === ReporterTarget.CONSOLE) {
+      reportScannerLoggerEvents(logger);
+    }
 
-  const payload = await scanner.cwd(runtimeConfig.rootDir, {
-    vulnerabilityStrategy: strategy
-  }, logger);
+    const payload = await scanner.cwd(runtimeConfig.rootDir, {
+      vulnerabilityStrategy: strategy
+    }, logger);
 
-  await runChecks(payload, runtimeConfig);
+    await runChecks(payload, runtimeConfig);
+  } catch {}
 }
