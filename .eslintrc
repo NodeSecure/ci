@@ -3,7 +3,8 @@
         "node": true
     },
     "extends": [
-        "@nodesecure/eslint-config"
+        "@nodesecure/eslint-config",
+        "prettier"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -11,7 +12,8 @@
         "project": "./tsconfig.json"
     },
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "prettier"
     ],
     "rules": {
         "indent": "off",
@@ -20,6 +22,9 @@
         "@typescript-eslint/no-unused-vars": [
             "error",
             { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }
-        ]
+        ],
+        "prettier/prettier": ["error", {}, {
+            "usePrettierrc": true
+        }]
     }
 }
