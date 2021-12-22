@@ -64,6 +64,7 @@
     "@types/lodash.set": "^4.3.6",
     "@types/mocha": "^9.0.0",
     "@types/node": "^16.11.12",
+    "@types/pluralize": "^0.0.29",
     "@types/sade": "^1.7.4",
     "chai": "^4.3.4",
     "eslint": "^8.4.1",
@@ -81,6 +82,8 @@
     "@slimio/async-cli-spinner": "^0.5.2",
     "kleur": "^4.1.4",
     "lodash.set": "^4.3.2",
+    "pluralize": "^8.0.0",
+    "pretty-ms": "^7.0.1",
     "sade": "^1.7.4"
   }
 }

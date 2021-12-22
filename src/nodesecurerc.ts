@@ -1,4 +1,4 @@
-import { ReporterTarget } from "./reporters/index.js";
+import { reporterTarget, ReporterTarget } from "./reporters/index.js";
 
 export enum VulnStrategy {
   NPM = "NPM_AUDIT",
@@ -25,7 +25,7 @@ export type RuntimeConfiguration = {
 export const DEFAULT_RUNTIME_CONFIGURATION = {
   rootDir: process.cwd(),
   strategy: VulnStrategy.NPM,
-  reporter: ReporterTarget.CONSOLE,
+  reporter: reporterTarget.CONSOLE,
   vulnerabilities: {
     severity: VulnSeverity.ALL
   }

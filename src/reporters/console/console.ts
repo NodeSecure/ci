@@ -1,14 +1,13 @@
 import { performance } from "perf_hooks";
 
 import { Strategy } from "@nodesecure/vuln";
-import type { Logger } from "@nodesecure/scanner";
-import Spinner from "@slimio/async-cli-spinner";
+import ms from "pretty-ms";
+import pluralize from "pluralize";
 
 import * as pipeline from "../../pipeline.js";
 import { DependencyWarning } from "../../types/index.js";
-import { Reporter, ReporterTarget } from "../index.js";
+import { Reporter, reporterTarget } from "../index.js";
 import { consolePrinter } from "./printer.js";
-import { formatMilliseconds, pluralize } from "./format.js";
 import { WorkableVulnerability } from "../../payload/extract.js";
 
 function reportGlobalWarnings(warnings: Array<unknown>): void {
@@ -104,9 +103,8 @@ function reportDependencyVulns(vulnerabilities: WorkableVulnerability[]) {
       .print();
   }
 }
-
 export const consoleReporter: Reporter = {
-  type: ReporterTarget.CONSOLE,
+  type: reporterTarget.CONSOLE,
   async report({ data, status }) {
     consolePrinter.util
       .concatOutputs([
@@ -117,6 +115,7 @@ export const consoleReporter: Reporter = {
       .print();
 
     const startedAt = performance.now();
+
     await Promise.all([
       reportGlobalWarnings(data.warnings),
       reportDependencyWarnings(data.dependencies.warnings),
@@ -130,7 +129,7 @@ export const consoleReporter: Reporter = {
           .message,
         consolePrinter.font.standard("Pipeline check ended").bold().message,
         consolePrinter.font
-          .info(`${formatMilliseconds(endedAt)}`)
+          .info(`${ms(endedAt)}`)
           .italic()
           .bold().message
       ])
@@ -148,39 +147,3 @@ export const consoleReporter: Reporter = {
     consolePrinter.font.standard("").print();
   }
 };
-
-export function reportScannerLoggerEvents(logger: Logger) {
-  let startedAt = 0;
-  const LAST_SCANNER_EVENT = "registry";
-
-  const spinner = new Spinner({
-    text: consolePrinter.util.concatOutputs([
-      consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
-        .message,
-      consolePrinter.font.standard("Analysis started").bold().message
-    ]).message
-  });
-
-  logger.once("start", () => {
-    startedAt = performance.now();
-    spinner.start();
-  });
-
-  logger.on("end", (event) => {
-    if (event === LAST_SCANNER_EVENT) {
-      const endedAt = performance.now() - startedAt;
-
-      const endMessage = consolePrinter.util.concatOutputs([
-        consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
-          .message,
-        consolePrinter.font.standard("Analysis ended").bold().message,
-        consolePrinter.font
-          .info(`${formatMilliseconds(endedAt)}`)
-          .italic()
-          .bold().message
-      ]).message;
-
-      spinner.succeed(endMessage);
-    }
-  });
-}

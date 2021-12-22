@@ -1,6 +1,6 @@
-import { Reporter, ReporterTarget } from "../index.js";
+import { Reporter, reporterTarget } from "../index.js";
 
 export const htmlReporter: Reporter = {
-  type: ReporterTarget.HTML,
+  type: reporterTarget.HTML,
   report: (_payload) => Promise.resolve(undefined)
 };

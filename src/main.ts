@@ -7,15 +7,12 @@ import {
   RuntimeConfiguration
 } from "./nodesecurerc.js";
 import { runPayloadInterpreter } from "./payload/interpret.js";
-import { initializeReporter } from "./reporters/reporter.js";
-import { ReporterTarget } from "./reporters/index.js";
-import { reportScannerLoggerEvents } from "./reporters/console/console.js";
+import { runReporter, reportScannerLoggerEvents } from "./reporters/index.js";
 import * as pipeline from "./pipeline.js";
 
 async function runChecks(payload: Scanner.Payload, rc: RuntimeConfiguration) {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
-  const { report } = initializeReporter(rc.reporter);
-  await report(interpretedPayload);
+  await runReporter(interpretedPayload, rc);
 
   if (interpretedPayload.status === pipeline.status.FAILURE) {
     pipeline.fail();
@@ -35,9 +32,7 @@ export async function runPipelineChecks(): Promise<void> {
     );
     const logger = new scanner.Logger();
 
-    if (runtimeConfig.reporter === ReporterTarget.CONSOLE) {
-      reportScannerLoggerEvents(logger);
-    }
+    reportScannerLoggerEvents(logger);
 
     const payload = await scanner.cwd(
       runtimeConfig.rootDir,
