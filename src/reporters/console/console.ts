@@ -8,6 +8,7 @@ import { Reporter, ReporterTarget } from "../index.js";
 import { consolePrinter } from "./printer.js";
 import { formatMilliseconds, pluralize } from "./format.js";
 import { WorkableVulnerability } from "../../payload/extract.js";
+import Spinner from "@slimio/async-cli-spinner";
 
 function reportGlobalWarnings(warnings: Array<unknown>): void {
   if (warnings.length > 0) {
@@ -26,11 +27,9 @@ function reportDependencyWarnings(warnings: DependencyWarning[]): void {
     consolePrinter.util
       .concatOutputs([
         consolePrinter.font.error("[DEPENDENCY WARNINGS]:").bold().message,
+        consolePrinter.font.error(`${warnings.length}`).bold().message,
         consolePrinter.font.error(
-          `${warnings.length} dependency ${pluralize(
-            "warning",
-            warnings.length
-          )} found`
+          `${pluralize("warning", warnings.length)} found`
         ).message
       ])
       .print();
@@ -84,11 +83,9 @@ function reportDependencyVulns(vulnerabilities: WorkableVulnerability[]) {
       .concatOutputs([
         consolePrinter.font.error("[DEPENDENCY VULNERABILITIES]:").bold()
           .message,
+        consolePrinter.font.error(`${vulnsLength}`).bold().message,
         consolePrinter.font.error(
-          `${vulnsLength} dependency ${pluralize(
-            "vulnerability",
-            vulnsLength
-          )} found`
+          `${pluralize("vulnerability", vulnsLength)} found`
         ).message
       ])
       .print();
@@ -114,7 +111,7 @@ export const consoleReporter: Reporter = {
       .concatOutputs([
         consolePrinter.font.highlight("@nodesecure/ci").bold().underline()
           .message,
-        consolePrinter.font.standard("Pipeline check started").message
+        consolePrinter.font.standard("Pipeline check started").bold().message
       ])
       .print();
 
@@ -130,10 +127,11 @@ export const consoleReporter: Reporter = {
       .concatOutputs([
         consolePrinter.font.highlight("@nodesecure/ci").bold().underline()
           .message,
-        consolePrinter.font.standard("Pipeline check ended").message,
+        consolePrinter.font.standard("Pipeline check ended").bold().message,
         consolePrinter.font
-          .info(`=> Took ${formatMilliseconds(endedAt)}`)
-          .underline().message
+          .info(`${formatMilliseconds(endedAt)}`)
+          .italic()
+          .bold().message
       ])
       .print();
 
@@ -154,32 +152,34 @@ export function reportScannerLoggerEvents(logger: Logger) {
   let startedAt = 0;
   const LAST_SCANNER_EVENT = "registry";
 
+  const spinner = new Spinner({
+    text: consolePrinter.util.concatOutputs([
+      consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
+        .message,
+      consolePrinter.font.standard("Analysis started").bold().message
+    ]).message
+  });
+
   logger.once("start", () => {
     startedAt = performance.now();
-    consolePrinter.util
-      .concatOutputs([
-        consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
-          .message,
-        consolePrinter.font.standard("Analysis started").bold().message
-      ])
-      .print();
+    spinner.start();
   });
 
   logger.on("end", (event) => {
     if (event === LAST_SCANNER_EVENT) {
       const endedAt = performance.now() - startedAt;
-      consolePrinter.util
-        .concatOutputs([
-          consolePrinter.font
-            .highlight("@nodesecure/scanner")
-            .bold()
-            .underline().message,
-          consolePrinter.font.standard("Analysis ended").bold().message,
-          consolePrinter.font
-            .info(`=> Took ${formatMilliseconds(endedAt)}`)
-            .underline().message
-        ])
-        .print();
+
+      const endMessage = consolePrinter.util.concatOutputs([
+        consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
+          .message,
+        consolePrinter.font.standard("Analysis ended").bold().message,
+        consolePrinter.font
+          .info(`${formatMilliseconds(endedAt)}`)
+          .italic()
+          .bold().message
+      ]).message;
+
+      spinner.succeed(endMessage);
     }
   });
 }

@@ -78,6 +78,7 @@
   "dependencies": {
     "@nodesecure/scanner": "^3.0.0",
     "@nodesecure/vuln": "^1.4.0",
+    "@slimio/async-cli-spinner": "^0.5.2",
     "kleur": "^4.1.4",
     "lodash.set": "^4.3.2",
     "sade": "^1.7.4"
