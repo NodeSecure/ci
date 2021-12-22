@@ -5,12 +5,6 @@
 )
 [![mit](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/NodeSecure/rc/blob/master/LICENSE)
 
-**[WIP]** NodeSecure SCI
-
-
-## Requirements
-- [Node.js](https://nodejs.org/en/) >=v16.0.0
-
 ## Getting Started
 
 This package is available in the Node Package Repository and can be easily installed with [npm](https://docs.npmjs.com/getting-started/what-is-npm) or [yarn](https://yarnpkg.com).
@@ -27,22 +21,15 @@ $ yarn add @nodesecure/ci
 $ npm run nsci
 ```
 
-## Contributors ✨
+Once the script is run, the @nodesecure/ci pipeline will look for dependencies warnings and vulnerabilities in the current working directory.
+If any warning or dependency is met, the pipeline will eventually fail depending on the provided .nodesecurerc file.
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+<p align="center">
+    <img src="https://user-images.githubusercontent.com/43391199/147015582-d343511a-1147-4176-b589-d4a48546e9ff.gif">
+</p>
 
-Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+## Requirements
+- [Node.js](https://nodejs.org/en/) >= v16
 
 ## License
 MIT
