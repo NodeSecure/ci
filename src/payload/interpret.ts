@@ -1,12 +1,13 @@
 import { Scanner } from "@nodesecure/scanner";
+import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
 import { RuntimeConfiguration } from "../nodesecurerc.js";
-import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
-import { DependencyWarning } from "../types/index.js";
 import * as pipeline from "../pipeline.js";
-import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
+import { DependencyWarning } from "../types";
+
+import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 
 type CheckableFunction<T> = {
   status: boolean;
@@ -158,7 +159,7 @@ function interpretPayloadChecks(
   const isCheckOk = !pipelineFunctionsResults.status.includes(FAILING_WARNING);
 
   return {
-    status: pipeline.getStatus(isCheckOk),
+    status: pipeline.getOutcome(isCheckOk),
     data: pipelineFunctionsResults.data
   };
 }

@@ -5,6 +5,7 @@ import { expect } from "chai";
 
 import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
 import * as pipeline from "../pipeline.js";
+
 import { runPayloadInterpreter } from "./interpret.js";
 
 describe("@nodesecure/ci pipeline checker", () => {

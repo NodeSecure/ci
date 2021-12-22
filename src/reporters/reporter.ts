@@ -1,22 +1,16 @@
 import { Logger, ScannerLoggerEvents } from "@nodesecure/scanner";
-import ms from "pretty-ms";
 import Spinner from "@slimio/async-cli-spinner";
+import ms from "pretty-ms";
 
-import { InterpretedPayload } from "../payload/interpret.js";
-import { ValueOf } from "../types/index.js";
-import { consolePrinter } from "./console/printer.js";
+import { ReporterTarget } from "../nodesecurerc.js";
+import { InterpretedPayload } from "../payload/index.js";
+
+import { consolePrinter } from "./console/index.js";
 
 export type Reporter = {
   type: ReporterTarget;
   report: (payload: InterpretedPayload) => Promise<void>;
 };
-
-export const reporterTarget = {
-  CONSOLE: "console",
-  HTML: "html"
-} as const;
-
-export type ReporterTarget = ValueOf<typeof reporterTarget>;
 
 /**
  * This report has nothing to do with console or html reporters. This function

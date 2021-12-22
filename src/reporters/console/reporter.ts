@@ -1,14 +1,16 @@
 import { performance } from "perf_hooks";
 
 import { Strategy } from "@nodesecure/vuln";
-import ms from "pretty-ms";
 import pluralize from "pluralize";
+import ms from "pretty-ms";
 
+import { reporterTarget } from "../../nodesecurerc.js";
+import { WorkableVulnerability } from "../../payload";
 import * as pipeline from "../../pipeline.js";
-import { DependencyWarning } from "../../types/index.js";
-import { Reporter, reporterTarget } from "../index.js";
+import { DependencyWarning } from "../../types";
+import { Reporter } from "../reporter.js";
+
 import { consolePrinter } from "./printer.js";
-import { WorkableVulnerability } from "../../payload/extract.js";
 
 function reportGlobalWarnings(warnings: Array<unknown>): void {
   if (warnings.length > 0) {
@@ -103,6 +105,7 @@ function reportDependencyVulns(vulnerabilities: WorkableVulnerability[]) {
       .print();
   }
 }
+
 export const consoleReporter: Reporter = {
   type: reporterTarget.CONSOLE,
   async report({ data, status }) {

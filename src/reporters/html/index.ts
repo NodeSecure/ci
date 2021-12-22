@@ -1,4 +1,5 @@
-import { Reporter, reporterTarget } from "../index.js";
+import { reporterTarget } from "../../nodesecurerc.js";
+import { Reporter } from "../reporter.js";
 
 export const htmlReporter: Reporter = {
   type: reporterTarget.HTML,

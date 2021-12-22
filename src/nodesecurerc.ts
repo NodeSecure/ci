@@ -1,4 +1,4 @@
-import { reporterTarget, ReporterTarget } from "./reporters/index.js";
+import { ValueOf } from "./types";
 
 export enum VulnStrategy {
   NPM = "NPM_AUDIT",
@@ -12,6 +12,13 @@ export enum VulnSeverity {
   CRITICAL = "critical",
   ALL = "all"
 }
+
+export const reporterTarget = {
+  CONSOLE: "console",
+  HTML: "html"
+} as const;
+
+export type ReporterTarget = ValueOf<typeof reporterTarget>;
 
 export type RuntimeConfiguration = {
   rootDir: string;

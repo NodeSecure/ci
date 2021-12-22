@@ -1,10 +1,14 @@
-import { RuntimeConfiguration } from "../nodesecurerc.js";
-import { InterpretedPayload } from "../payload/interpret.js";
-import { consoleReporter } from "./console/console.js";
-import { htmlReporter } from "./html/html.js";
-import { reporterTarget, ReporterTarget } from "./report.js";
+import {
+  RuntimeConfiguration,
+  reporterTarget,
+  ReporterTarget
+} from "../nodesecurerc.js";
+import { InterpretedPayload } from "../payload";
 
-export function initializeReporter(reporter: ReporterTarget) {
+import { consoleReporter } from "./console/index.js";
+import { htmlReporter } from "./html/index.js";
+
+function initializeReporter(reporter: ReporterTarget) {
   return reporter === reporterTarget.CONSOLE ? consoleReporter : htmlReporter;
 }
 

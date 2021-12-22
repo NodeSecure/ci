@@ -2,13 +2,13 @@
 
 import sade from "sade";
 
-import { runPipeline } from "../src/main.js";
+import { runPipeline } from "../src/pipeline.js";
 
 const program = sade("nsci", true);
 
 program
   .describe(
-    "Run @nodesecure pipeline checks for source code or dependencies vulnerabilities"
+    "Run @nodesecure pipeline checks to hunt vulnerabilities for both source code and dependencies"
   )
   .action(runPipeline);
 
