@@ -1,16 +1,16 @@
 import { ValueOf } from "./types/index.js";
 
-export const pipelineStatus = {
+export const status = {
   SUCCESS: "success",
   FAILURE: "failure"
 } as const;
 
-export type PipelineStatus = ValueOf<typeof pipelineStatus>;
+export type Status = ValueOf<typeof status>;
 
-export function getPipelineStatus(status: boolean): PipelineStatus {
-  return status ? pipelineStatus.SUCCESS : pipelineStatus.FAILURE;
+export function getStatus(result: boolean): Status {
+  return result ? status.SUCCESS : status.FAILURE;
 }
 
-export function makePipelineFail() {
+export function fail() {
   process.exit(1);
 }

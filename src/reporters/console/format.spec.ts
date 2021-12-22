@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { pluralize } from "./format.js";
 
 describe("When pluralizing a string", () => {

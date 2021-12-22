@@ -8,24 +8,26 @@ type ConsoleMessage = {
   print: () => void;
 };
 
-type ConsoleOutput<I, O = string> = (message: I) => O;
+type ConsoleOutput<Output = string, Input = string> = (
+  message: Input
+) => Output;
 
 type ConsolePrinter = {
   font: {
-    standard: ConsoleOutput<string, ConsoleMessage>;
-    highlight: ConsoleOutput<string, ConsoleMessage>;
-    info: ConsoleOutput<string, ConsoleMessage>;
-    error: ConsoleOutput<string, ConsoleMessage>;
-    success: ConsoleOutput<string, ConsoleMessage>;
-    failure: ConsoleOutput<string, ConsoleMessage>;
+    standard: ConsoleOutput<ConsoleMessage>;
+    highlight: ConsoleOutput<ConsoleMessage>;
+    info: ConsoleOutput<ConsoleMessage>;
+    error: ConsoleOutput<ConsoleMessage>;
+    success: ConsoleOutput<ConsoleMessage>;
+    failure: ConsoleOutput<ConsoleMessage>;
   };
   decoration: {
-    bold: ConsoleOutput<string>;
-    underline: ConsoleOutput<string>;
-    italic: ConsoleOutput<string>;
+    bold: ConsoleOutput;
+    underline: ConsoleOutput;
+    italic: ConsoleOutput;
   };
   util: {
-    concatOutputs: ConsoleOutput<string[], ConsoleMessage>;
+    concatOutputs: ConsoleOutput<ConsoleMessage, string[]>;
   };
 };
 

@@ -1,14 +1,15 @@
-import { Strategy } from "@nodesecure/vuln";
-import type { Logger } from "@nodesecure/scanner";
 import { performance } from "perf_hooks";
 
-import { pipelineStatus } from "../../pipeline.js";
+import { Strategy } from "@nodesecure/vuln";
+import type { Logger } from "@nodesecure/scanner";
+import Spinner from "@slimio/async-cli-spinner";
+
+import * as pipeline from "../../pipeline.js";
 import { DependencyWarning } from "../../types/index.js";
 import { Reporter, ReporterTarget } from "../index.js";
 import { consolePrinter } from "./printer.js";
 import { formatMilliseconds, pluralize } from "./format.js";
 import { WorkableVulnerability } from "../../payload/extract.js";
-import Spinner from "@slimio/async-cli-spinner";
 
 function reportGlobalWarnings(warnings: Array<unknown>): void {
   if (warnings.length > 0) {
@@ -135,7 +136,7 @@ export const consoleReporter: Reporter = {
       ])
       .print();
 
-    if (status === pipelineStatus.SUCCESS) {
+    if (status === pipeline.status.SUCCESS) {
       consolePrinter.font
         .success("[SUCCESS] Pipeline successful")
         .bold()

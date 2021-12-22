@@ -4,7 +4,7 @@ import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
 import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
-import { pipelineStatus } from "../pipeline.js";
+import * as pipeline from "../pipeline.js";
 import { runPayloadInterpreter } from "./interpret.js";
 
 describe("@nodesecure/ci pipeline checker", () => {
@@ -23,7 +23,7 @@ describe("@nodesecure/ci pipeline checker", () => {
         scannerPayload,
         DEFAULT_RUNTIME_CONFIGURATION
       );
-      expect(status).equals(pipelineStatus.SUCCESS);
+      expect(status).equals(pipeline.status.SUCCESS);
     });
   });
 
@@ -43,7 +43,7 @@ describe("@nodesecure/ci pipeline checker", () => {
         scannerPayload,
         DEFAULT_RUNTIME_CONFIGURATION
       );
-      expect(status).equals(pipelineStatus.FAILURE);
+      expect(status).equals(pipeline.status.FAILURE);
     });
   });
 
@@ -127,7 +127,7 @@ describe("@nodesecure/ci pipeline checker", () => {
           scannerPayload,
           DEFAULT_RUNTIME_CONFIGURATION
         );
-        expect(status).equals(pipelineStatus.FAILURE);
+        expect(status).equals(pipeline.status.FAILURE);
       });
     });
   });
@@ -200,7 +200,7 @@ describe("@nodesecure/ci pipeline checker", () => {
           scannerPayload,
           DEFAULT_RUNTIME_CONFIGURATION
         );
-        expect(status).equals(pipelineStatus.FAILURE);
+        expect(status).equals(pipeline.status.FAILURE);
       });
     });
 
@@ -238,7 +238,7 @@ describe("@nodesecure/ci pipeline checker", () => {
           }
         });
 
-        expect(status).equals(pipelineStatus.SUCCESS);
+        expect(status).equals(pipeline.status.SUCCESS);
         expect(data).to.deep.equal({
           warnings: [],
           dependencies: {
@@ -283,7 +283,7 @@ describe("@nodesecure/ci pipeline checker", () => {
             }
           });
 
-          expect(status).equals(pipelineStatus.FAILURE);
+          expect(status).equals(pipeline.status.FAILURE);
         });
 
         it("should make the pipeline fail with severities higher than configured threshold", () => {
@@ -320,7 +320,7 @@ describe("@nodesecure/ci pipeline checker", () => {
             }
           });
 
-          expect(status).equals(pipelineStatus.FAILURE);
+          expect(status).equals(pipeline.status.FAILURE);
           expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
             origin: "npm",
             package: "express",

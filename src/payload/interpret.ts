@@ -5,7 +5,7 @@ import set from "lodash.set";
 import { RuntimeConfiguration } from "../nodesecurerc.js";
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 import { DependencyWarning, GlobalWarning } from "../types/index.js";
-import { getPipelineStatus, PipelineStatus } from "../pipeline.js";
+import * as pipeline from "../pipeline.js";
 
 type CheckableFunction<T> = {
   status: boolean;
@@ -114,7 +114,7 @@ type PipelineCheckFunctions = Array<
 >;
 
 export type InterpretedPayload = {
-  status: PipelineStatus;
+  status: pipeline.Status;
   data: CompactedScannerPayload;
 };
 
@@ -147,7 +147,7 @@ function interpretPayloadChecks(
   const isCheckOk = !pipelineFunctionsResults.status.includes(FAILING_WARNING);
 
   return {
-    status: getPipelineStatus(isCheckOk),
+    status: pipeline.getStatus(isCheckOk),
     data: pipelineFunctionsResults.data
   };
 }

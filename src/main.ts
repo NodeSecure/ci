@@ -9,16 +9,16 @@ import {
 import { runPayloadInterpreter } from "./payload/interpret.js";
 import { initializeReporter } from "./reporters/reporter.js";
 import { ReporterTarget } from "./reporters/index.js";
-import { makePipelineFail, pipelineStatus } from "./pipeline.js";
 import { reportScannerLoggerEvents } from "./reporters/console/console.js";
+import * as pipeline from "./pipeline.js";
 
 async function runChecks(payload: Scanner.Payload, rc: RuntimeConfiguration) {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
   const { report } = initializeReporter(rc.reporter);
   await report(interpretedPayload);
 
-  if (interpretedPayload.status === pipelineStatus.FAILURE) {
-    makePipelineFail();
+  if (interpretedPayload.status === pipeline.status.FAILURE) {
+    pipeline.fail();
   }
 }
 
