@@ -2,15 +2,14 @@
 
 import sade from "sade";
 
-import { runPipelineChecks } from "../src/main.js";
+import { runPipeline } from "../src/main.js";
 
-const program = sade("nci");
+const program = sade("nsci", true);
 
 program
-  .command("run")
   .describe(
     "Run @nodesecure pipeline checks for source code or dependencies vulnerabilities"
   )
-  .action(runPipelineChecks);
+  .action(runPipeline);
 
 program.parse(process.argv);

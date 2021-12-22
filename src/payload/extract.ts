@@ -60,6 +60,10 @@ function extractDependenciesVulnsAndWarnings(
   return { warnings, vulnerabilities };
 }
 
+/**
+ * In order to simplify the next step of scanner payload interpretation, we
+ * extract reduce the payload data to only match interpreter requirements.
+ */
 export function extractScannerPayload(
   payload: Scanner.Payload
 ): CompactedScannerPayload {

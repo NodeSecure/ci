@@ -73,6 +73,10 @@ function convertSeverityAsNumber(
   return DEFAULT_SEVERITY;
 }
 
+/**
+ * We must ensure that each vulnerability with equal or higher severity than
+ * the one defined in the runtime configuration is caught.
+ */
 // eslint-disable-next-line id-length
 function findAllVulnsWithEqualOrHigherSeverity(
   vulnerabilities: Strategy.StandardVulnerability[],
@@ -131,6 +135,12 @@ function interpretPayloadChecks(
 
       set(accumulatedChecks.data, data.key, data.value);
 
+      /**
+       * Here, we accumulate an array of boolean Status returned by each Check
+       * function, allowing us to easily verify if at least one function failed.
+       * We also accumulate each data returned by the Check function, justifying
+       * the given Status returned.
+       */
       return {
         status: [...accumulatedChecks.status, status],
         data: {
@@ -152,6 +162,13 @@ function interpretPayloadChecks(
   };
 }
 
+/**
+ * This interpreter accumulates each Check Function output in order to determine
+ * a global pipeline status and a compacted version of the payload.
+ * The "Status" is used to decide if the pipeline should fail or pass,
+ * whereas the data is compacted in order to be easily reported by any type of
+ * reporter (HTML, Console, etc).
+ */
 export function runPayloadInterpreter(
   payload: Scanner.Payload,
   rc: RuntimeConfiguration

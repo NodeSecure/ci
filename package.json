@@ -53,7 +53,7 @@
   "type": "module",
   "scripts": {
     "prestart": "npm run build",
-    "start": "node dist/bin/cli.js run",
+    "start": "node dist/bin/cli.js",
     "build": "rimraf ./dist && tsc",
     "test": "mocha --parallel",
     "lint": "eslint . --fix"
