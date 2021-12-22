@@ -39,10 +39,16 @@ export async function runPipelineChecks(): Promise<void> {
       reportScannerLoggerEvents(logger);
     }
 
-    const payload = await scanner.cwd(runtimeConfig.rootDir, {
-      vulnerabilityStrategy: strategy
-    }, logger);
+    const payload = await scanner.cwd(
+      runtimeConfig.rootDir,
+      {
+        vulnerabilityStrategy: strategy
+      },
+      logger
+    );
 
     await runChecks(payload, runtimeConfig);
-  } catch {}
+  } catch {
+    process.exit(1);
+  }
 }

@@ -1,5 +1,6 @@
 /* eslint-disable max-nested-callbacks */
 import { Scanner } from "@nodesecure/scanner";
+import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
 import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
@@ -132,6 +133,42 @@ describe("@nodesecure/ci pipeline checker", () => {
   });
 
   describe("When providing a payload with dependencies vulnerabilities", () => {
+    it("should filter unprocessable vulnerabilities", () => {
+      const vuln = {
+        id: undefined,
+        origin: "npm",
+        package: undefined,
+        title: undefined,
+        url: undefined,
+        severity: undefined,
+        vulnerableRanges: [],
+        vulnerableVersions: []
+      } as unknown as StandardVulnerability;
+
+      const scannerPayload: Scanner.Payload = {
+        id: "1",
+        rootDependencyName: "pkg",
+        warnings: [],
+        dependencies: {
+          express: {
+            // @ts-expect-error - we are not interested in metadata
+            metadata: {},
+            versions: {},
+            vulnerabilities: [vuln]
+          }
+        },
+        version: "1.0.0",
+        vulnerabilityStrategy: "npm"
+      };
+
+      const { data } = runPayloadInterpreter(
+        scannerPayload,
+        DEFAULT_RUNTIME_CONFIGURATION
+      );
+
+      expect(data.dependencies.vulnerabilities.length).eq(0);
+    });
+
     describe("When providing default runtime configuration", () => {
       it("should make the pipeline fail", () => {
         const scannerPayload: Scanner.Payload = {

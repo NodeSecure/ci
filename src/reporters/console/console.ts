@@ -6,7 +6,8 @@ import { pipelineStatus } from "../../pipeline.js";
 import { DependencyWarning } from "../../types/index.js";
 import { Reporter, ReporterTarget } from "../index.js";
 import { consolePrinter } from "./printer.js";
-import { formatMilliseconds } from "./format.js";
+import { formatMilliseconds, pluralize } from "./format.js";
+import { WorkableVulnerability } from "../../payload/extract.js";
 
 function reportGlobalWarnings(warnings: Array<unknown>): void {
   if (warnings.length > 0) {
@@ -26,7 +27,10 @@ function reportDependencyWarnings(warnings: DependencyWarning[]): void {
       .concatOutputs([
         consolePrinter.font.error("[DEPENDENCY WARNINGS]:").bold().message,
         consolePrinter.font.error(
-          `${warnings.length} dependency warnings found`
+          `${warnings.length} dependency ${pluralize(
+            "warning",
+            warnings.length
+          )} found`
         ).message
       ])
       .print();
@@ -47,7 +51,7 @@ function reportDependencyWarnings(warnings: DependencyWarning[]): void {
 
         consolePrinter.util
           .concatOutputs([
-            consolePrinter.font.error(`${details.kind}`).bold().message,
+            consolePrinter.font.error(details.kind).bold().underline().message,
             `${warningPath}:${warningLocation}`
           ])
           .print();
@@ -56,27 +60,47 @@ function reportDependencyWarnings(warnings: DependencyWarning[]): void {
   }
 }
 
-function reportDependencyVulns(
-  vulnerabilities: Strategy.StandardVulnerability[]
-) {
-  if (vulnerabilities.length > 0) {
-    consolePrinter.font
-      .error(
-        `[DEPENDENCY VULNERABILITIES]: ${vulnerabilities.length} dependency vulnerabilities found`
-      )
-      .bold()
+function getColorBySeverity(severity: Strategy.Severity) {
+  switch (severity) {
+    case "critical":
+      return consolePrinter.font.highlight(severity);
+    case "high":
+      return consolePrinter.font.error(severity);
+    case "medium":
+      return consolePrinter.font.info(severity);
+    case "info":
+      return consolePrinter.font.standard(severity);
+    case "low":
+      return consolePrinter.font.standard(severity);
+    default:
+      return consolePrinter.font.error(severity);
+  }
+}
+
+function reportDependencyVulns(vulnerabilities: WorkableVulnerability[]) {
+  const vulnsLength = vulnerabilities.length;
+  if (vulnsLength > 0) {
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.error("[DEPENDENCY VULNERABILITIES]:").bold()
+          .message,
+        consolePrinter.font.error(
+          `${vulnsLength} dependency ${pluralize(
+            "vulnerability",
+            vulnsLength
+          )} found`
+        ).message
+      ])
       .print();
   }
 
   for (const vuln of vulnerabilities) {
-    const typeSafeSeverity = vuln.severity as Strategy.Severity;
-    const vulnSeverity = `${typeSafeSeverity.toUpperCase()} vulnerability`;
     const vulnRanges = vuln.vulnerableRanges.join(", ");
-
+    const vulnColored = getColorBySeverity(vuln.severity);
     consolePrinter.util
       .concatOutputs([
-        consolePrinter.font.error(`[${vuln.package}]`).message,
-        consolePrinter.font.error(vulnSeverity).bold().message,
+        vulnColored.bold().underline().message,
+        consolePrinter.font.standard(`${vuln.package}`).bold().message,
         consolePrinter.font.info(vulnRanges).bold().message
       ])
       .print();
@@ -119,10 +143,7 @@ export const consoleReporter: Reporter = {
         .bold()
         .print();
     } else {
-      consolePrinter.font
-        .failure("[FAILURE] Pipeline failed")
-        .bold()
-        .print();
+      consolePrinter.font.failure("[FAILURE] Pipeline failed").bold().print();
     }
 
     consolePrinter.font.standard("").print();

@@ -11,22 +11,32 @@ export type CompactedScannerPayload = {
   warnings: GlobalWarning[];
   dependencies: {
     warnings: DependencyWarning[];
-    vulnerabilities: Strategy.StandardVulnerability[];
+    vulnerabilities: WorkableVulnerability[];
   };
 };
 
-function extractDependenciesVulns(
-  dependencies: ScannerDependencies
-): Strategy.StandardVulnerability[] {
-  return Object.entries(dependencies).flatMap(
-    ([_packageName, packageData]) => packageData.vulnerabilities
-  );
+export type WorkableVulnerability = Strategy.StandardVulnerability & {
+  severity: Strategy.Severity;
+  package: string;
+};
+
+function keepOnlyWorkableVulns(
+  vuln: Strategy.StandardVulnerability
+): vuln is WorkableVulnerability {
+  return vuln.severity !== undefined || vuln.package !== undefined;
 }
 
-function extractDependenciesWarnings(dependencies: ScannerDependencies): {
-  package: string;
-  warnings: Omit<JSXRay.BaseWarning, "value">[];
-}[] {
+function extractDependenciesVulns(
+  dependencies: ScannerDependencies
+): WorkableVulnerability[] {
+  return Object.entries(dependencies)
+    .flatMap(([_packageName, packageData]) => packageData.vulnerabilities)
+    .filter(keepOnlyWorkableVulns);
+}
+
+function extractDependenciesWarnings(
+  dependencies: ScannerDependencies
+): DependencyWarning[] {
   return Object.entries(dependencies).map(([packageName, packageData]) => {
     return {
       package: packageName,
@@ -41,11 +51,8 @@ function extractDependenciesWarnings(dependencies: ScannerDependencies): {
 function extractDependenciesVulnsAndWarnings(
   dependencies: ScannerDependencies
 ): {
-  warnings: {
-    package: string;
-    warnings: Omit<JSXRay.BaseWarning, "value">[];
-  }[];
-  vulnerabilities: Strategy.StandardVulnerability[];
+  warnings: DependencyWarning[];
+  vulnerabilities: WorkableVulnerability[];
 } {
   const warnings = extractDependenciesWarnings(dependencies);
   const vulnerabilities = extractDependenciesVulns(dependencies);

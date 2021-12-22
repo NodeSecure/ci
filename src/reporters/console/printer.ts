@@ -55,12 +55,15 @@ function createConsoleMessage(msg: string): ConsoleMessage {
 
 export const consolePrinter: ConsolePrinter = {
   font: {
-    standard: (message: string) => createConsoleMessage(kleur.dim(message)),
-    highlight: (message: string) => createConsoleMessage(kleur.magenta(message)),
+    standard: (message: string) => createConsoleMessage(kleur.white(message)),
+    highlight: (message: string) =>
+      createConsoleMessage(kleur.magenta(message)),
     info: (message: string) => createConsoleMessage(kleur.yellow(message)),
     error: (message: string) => createConsoleMessage(kleur.red(message)),
-    success: (message: string) => createConsoleMessage(kleur.bgGreen().white(message)),
-    failure: (message: string) => createConsoleMessage(kleur.bgRed().white(message))
+    success: (message: string) =>
+      createConsoleMessage(kleur.bgGreen().white(message)),
+    failure: (message: string) =>
+      createConsoleMessage(kleur.bgRed().white(message))
   },
   decoration: {
     underline: (message: string) => kleur.underline(message),
@@ -68,6 +71,7 @@ export const consolePrinter: ConsolePrinter = {
     bold: (message: string) => kleur.bold(message)
   },
   util: {
-    concatOutputs: (messages: string[], delimiter = " ") => createConsoleMessage(messages.join(delimiter))
+    concatOutputs: (messages: string[], delimiter = " ") =>
+      createConsoleMessage(messages.join(delimiter))
   }
 };
