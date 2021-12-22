@@ -1,4 +1,4 @@
-import { Logger } from "@nodesecure/scanner";
+import { Logger, ScannerLoggerEvents } from "@nodesecure/scanner";
 import ms from "pretty-ms";
 import Spinner from "@slimio/async-cli-spinner";
 
@@ -26,8 +26,6 @@ export type ReporterTarget = ValueOf<typeof reporterTarget>;
  * @param logger
  */
 export function reportScannerLoggerEvents(logger: Logger) {
-  const LAST_SCANNER_EVENT = "registry";
-
   const spinner = new Spinner({
     text: consolePrinter.util.concatOutputs([
       consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
@@ -40,21 +38,18 @@ export function reportScannerLoggerEvents(logger: Logger) {
     spinner.start();
   });
 
-  logger.on("end", (event) => {
-    if (event === LAST_SCANNER_EVENT) {
-      const { elapsedTime } = spinner;
+  logger.once(ScannerLoggerEvents.done, () => {
+    const { elapsedTime } = spinner;
+    const endMessage = consolePrinter.util.concatOutputs([
+      consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
+        .message,
+      consolePrinter.font.standard("Analysis ended").bold().message,
+      consolePrinter.font
+        .info(`${ms(elapsedTime)}`)
+        .italic()
+        .bold().message
+    ]).message;
 
-      const endMessage = consolePrinter.util.concatOutputs([
-        consolePrinter.font.highlight("@nodesecure/scanner").bold().underline()
-          .message,
-        consolePrinter.font.standard("Analysis ended").bold().message,
-        consolePrinter.font
-          .info(`${ms(elapsedTime)}`)
-          .italic()
-          .bold().message
-      ]).message;
-
-      spinner.succeed(endMessage);
-    }
+    spinner.succeed(endMessage);
   });
 }

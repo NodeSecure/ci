@@ -4,8 +4,9 @@ import set from "lodash.set";
 
 import { RuntimeConfiguration } from "../nodesecurerc.js";
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
-import { DependencyWarning, GlobalWarning } from "../types/index.js";
+import { DependencyWarning } from "../types/index.js";
 import * as pipeline from "../pipeline.js";
+import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 
 type CheckableFunction<T> = {
   status: boolean;

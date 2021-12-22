@@ -1,11 +1,8 @@
 import { Scanner } from "@nodesecure/scanner";
+import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 
-import {
-  DependencyWarning,
-  ScannerDependencies,
-  GlobalWarning
-} from "../types/index.js";
+import { DependencyWarning } from "../types/index.js";
 
 export type CompactedScannerPayload = {
   warnings: GlobalWarning[];
@@ -27,7 +24,7 @@ function keepOnlyWorkableVulns(
 }
 
 function extractDependenciesVulns(
-  dependencies: ScannerDependencies
+  dependencies: Scanner.Dependencies
 ): WorkableVulnerability[] {
   return Object.entries(dependencies)
     .flatMap(([_packageName, packageData]) => packageData.vulnerabilities)
@@ -35,7 +32,7 @@ function extractDependenciesVulns(
 }
 
 function extractDependenciesWarnings(
-  dependencies: ScannerDependencies
+  dependencies: Scanner.Dependencies
 ): DependencyWarning[] {
   return Object.entries(dependencies).map(([packageName, packageData]) => {
     return {
@@ -49,7 +46,7 @@ function extractDependenciesWarnings(
 
 // eslint-disable-next-line id-length
 function extractDependenciesVulnsAndWarnings(
-  dependencies: ScannerDependencies
+  dependencies: Scanner.Dependencies
 ): {
   warnings: DependencyWarning[];
   vulnerabilities: WorkableVulnerability[];
