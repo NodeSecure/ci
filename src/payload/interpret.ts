@@ -31,21 +31,54 @@ function checkGlobalWarnings(
 
 function checkDependenciesWarnings(
   warnings: DependencyWarning[],
-  _runtimeConfiguration: RuntimeConfiguration
+  runtimeConfiguration: RuntimeConfiguration
 ): CheckableFunction<DependencyWarning> {
-  /**
-   * TODO: How should we use runtime configuration for dependencies warnings?
-   * For now, each dependency warning is returned, whatever its type is.
-   */
-  const dependencyWarnings = warnings.filter(
-    (dependency) => dependency.warnings.length > 0
+  if (runtimeConfiguration.warnings === "off") {
+    return {
+      status: false,
+      data: {
+        key: "dependencies.warnings",
+        value: []
+      }
+    };
+  }
+
+  if (runtimeConfiguration.warnings === "error") {
+    const allDependencyWarnings = warnings.filter(
+      (dependency) => dependency.warnings.length > 0
+    );
+
+    return {
+      status: allDependencyWarnings.length > 0,
+      data: {
+        key: "dependencies.warnings",
+        value: allDependencyWarnings
+      }
+    };
+  }
+
+  const causingErrorWarnings = new Set(
+    Object.keys(runtimeConfiguration.warnings)
   );
 
+  const errorOnlyWarnings = warnings
+    .map((dependency) => {
+      const errorWarnings = dependency.warnings.filter((dependencyWarning) =>
+        causingErrorWarnings.has(dependencyWarning.kind)
+      );
+
+      return {
+        ...dependency,
+        warnings: errorWarnings
+      };
+    })
+    .filter((collectedWarnings) => collectedWarnings.warnings.length > 0);
+
   return {
-    status: dependencyWarnings.length > 0,
+    status: errorOnlyWarnings.length > 0,
     data: {
       key: "dependencies.warnings",
-      value: dependencyWarnings
+      value: errorOnlyWarnings
     }
   };
 }

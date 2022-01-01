@@ -27,13 +27,15 @@ export type RuntimeConfiguration = {
   vulnerabilities: {
     severity: `${VulnSeverity}`;
   };
+  warnings: "off" | "error" | Record<string, "error" | "warning">;
 };
 
-export const DEFAULT_RUNTIME_CONFIGURATION = {
+export const DEFAULT_RUNTIME_CONFIGURATION: RuntimeConfiguration = {
   rootDir: process.cwd(),
   strategy: VulnStrategy.NPM,
   reporter: reporterTarget.CONSOLE,
   vulnerabilities: {
     severity: VulnSeverity.ALL
-  }
+  },
+  warnings: "error" as const
 };
