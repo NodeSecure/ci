@@ -7,21 +7,20 @@ import { RuntimeConfiguration } from "../nodesecurerc.js";
 import * as pipeline from "../pipeline.js";
 import { DependencyWarning } from "../types";
 
+import {
+  fromBooleanToCheckResult,
+  CheckableFunction,
+  CheckResult,
+  PipelineCheckFunctions,
+  FAILING_CHECK
+} from "./checkable.js";
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
-
-type CheckableFunction<T> = {
-  status: boolean;
-  data: {
-    key: string;
-    value: T[];
-  };
-};
 
 function checkGlobalWarnings(
   warnings: GlobalWarning[]
 ): CheckableFunction<GlobalWarning> {
   return {
-    status: warnings.length > 0,
+    result: fromBooleanToCheckResult(warnings.length > 0),
     data: {
       key: "warnings",
       value: warnings
@@ -35,7 +34,7 @@ function checkDependenciesWarnings(
 ): CheckableFunction<DependencyWarning> {
   if (runtimeConfiguration.warnings === "off") {
     return {
-      status: false,
+      result: fromBooleanToCheckResult(false),
       data: {
         key: "dependencies.warnings",
         value: []
@@ -49,7 +48,7 @@ function checkDependenciesWarnings(
     );
 
     return {
-      status: allDependencyWarnings.length > 0,
+      result: fromBooleanToCheckResult(allDependencyWarnings.length > 0),
       data: {
         key: "dependencies.warnings",
         value: allDependencyWarnings
@@ -75,7 +74,7 @@ function checkDependenciesWarnings(
     .filter((collectedWarnings) => collectedWarnings.warnings.length > 0);
 
   return {
-    status: errorOnlyWarnings.length > 0,
+    result: fromBooleanToCheckResult(errorOnlyWarnings.length > 0),
     data: {
       key: "dependencies.warnings",
       value: errorOnlyWarnings
@@ -138,19 +137,13 @@ function checkDependenciesVulns(
   );
 
   return {
-    status: vulnsClassifiedBySeverity.length > 0,
+    result: fromBooleanToCheckResult(vulnsClassifiedBySeverity.length > 0),
     data: {
       key: "dependencies.vulnerabilities",
       value: vulnsClassifiedBySeverity
     }
   };
 }
-
-type PipelineCheckFunctions = Array<
-  () => CheckableFunction<
-    GlobalWarning | DependencyWarning | Strategy.StandardVulnerability
-  >
->;
 
 export type InterpretedPayload = {
   status: pipeline.Status;
@@ -160,15 +153,14 @@ export type InterpretedPayload = {
 function interpretPayloadChecks(
   pipelineCheckFunctions: PipelineCheckFunctions
 ): InterpretedPayload {
-  const FAILING_WARNING = true;
-  const pipelineFunctionsResults = pipelineCheckFunctions.reduce<{
-    status: boolean[];
+  const pipelineFunctionsResult = pipelineCheckFunctions.reduce<{
+    checks: CheckResult[];
     data: CompactedScannerPayload;
   }>(
-    (accumulatedChecks, checkFunction) => {
-      const { status, data } = checkFunction();
+    (accumulatedDataFromChecks, checkFunction) => {
+      const { result, data } = checkFunction();
 
-      set(accumulatedChecks.data, data.key, data.value);
+      set(accumulatedDataFromChecks.data, data.key, data.value);
 
       /**
        * Here, we accumulate an array of boolean Status returned by each Check
@@ -177,30 +169,32 @@ function interpretPayloadChecks(
        * the given Status returned.
        */
       return {
-        status: [...accumulatedChecks.status, status],
+        checks: [...accumulatedDataFromChecks.checks, result],
         data: {
-          ...accumulatedChecks.data
+          ...accumulatedDataFromChecks.data
         }
       };
     },
     {
-      status: [],
+      checks: [],
       data: {} as CompactedScannerPayload
     }
   );
 
-  const isCheckOk = !pipelineFunctionsResults.status.includes(FAILING_WARNING);
+  const isGlobalCheckPassing =
+    !pipelineFunctionsResult.checks.includes(FAILING_CHECK);
 
   return {
-    status: pipeline.getOutcome(isCheckOk),
-    data: pipelineFunctionsResults.data
+    status: pipeline.getOutcome(isGlobalCheckPassing),
+    data: pipelineFunctionsResult.data
   };
 }
 
 /**
  * This interpreter accumulates each Check Function output in order to determine
- * a global pipeline status and a compacted version of the payload.
- * The "Status" is used to decide if the pipeline should fail or pass,
+ * a global pipeline status and at the same time compact the original payload to
+ * make the reporting step simplified.
+ * The "status" is used to decide if the pipeline should fail or pass,
  * whereas the data is compacted in order to be easily reported by any type of
  * reporter (HTML, Console, etc).
  */
