@@ -25,13 +25,20 @@ function reportGlobalWarnings(warnings: Array<unknown>): void {
 }
 
 function reportDependencyWarnings(warnings: DependencyWarning[]): void {
-  if (warnings.length > 0) {
+  const numberOfDependencyWarnings = warnings.reduce(
+    (accumulatedNumberOfWarnings, dependencyWarning) =>
+      accumulatedNumberOfWarnings + dependencyWarning.warnings.length,
+    0
+  );
+
+  if (numberOfDependencyWarnings > 0) {
     consolePrinter.util
       .concatOutputs([
         consolePrinter.font.error("[DEPENDENCY WARNINGS]:").bold().message,
-        consolePrinter.font.error(`${warnings.length}`).bold().message,
+        consolePrinter.font.error(`${numberOfDependencyWarnings}`).bold()
+          .message,
         consolePrinter.font.error(
-          `${pluralize("warning", warnings.length)} found`
+          `${pluralize("warning", numberOfDependencyWarnings)} found`
         ).message
       ])
       .print();
