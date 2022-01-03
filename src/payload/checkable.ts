@@ -21,6 +21,6 @@ export type PipelineCheckFunctions = Array<
 
 export const FAILING_CHECK: CheckResult = "failed";
 
-export function fromBooleanToCheckResult(result: boolean) {
+export function convertBooleanAsCheckResult(result: boolean) {
   return result ? "failed" : "passed";
 }
