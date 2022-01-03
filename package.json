@@ -53,6 +53,7 @@
   "type": "module",
   "scripts": {
     "prestart": "npm run build",
+    "prepublishOnly": "npm run test && npm run build",
     "start": "node dist/bin/cli.js",
     "build": "rimraf ./dist && tsc",
     "test": "mocha --parallel",
