@@ -6,7 +6,7 @@ import ms from "pretty-ms";
 
 import { reporterTarget } from "../../nodesecurerc.js";
 import { WorkableVulnerability } from "../../payload";
-import * as pipeline from "../../pipeline.js";
+import * as pipeline from "../../pipeline/run.js";
 import { DependencyWarning } from "../../types";
 import { Reporter } from "../reporter.js";
 

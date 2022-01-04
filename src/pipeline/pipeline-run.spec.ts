@@ -9,9 +9,9 @@ import {
   VulnSeverity,
   VulnStrategy
 } from "../nodesecurerc.js";
-import * as pipeline from "../pipeline.js";
+import { runPayloadInterpreter } from "../payload/interpret.js";
 
-import { runPayloadInterpreter } from "./interpret.js";
+import * as pipeline from "./run.js";
 
 const DEFAULT_RUNTIME_CONFIGURATION: RuntimeConfiguration = {
   rootDir: process.cwd(),

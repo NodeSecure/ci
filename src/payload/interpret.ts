@@ -4,16 +4,16 @@ import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
 import { RuntimeConfiguration } from "../nodesecurerc.js";
-import * as pipeline from "../pipeline.js";
-import { DependencyWarning } from "../types";
-
 import {
   convertBooleanAsCheckResult,
   CheckableFunction,
   CheckResult,
   PipelineCheckFunctions,
   FAILING_CHECK
-} from "./checkable.js";
+} from "../pipeline/checkable.js";
+import { pipeline } from "../pipeline/index.js";
+import { DependencyWarning } from "../types";
+
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 
 function checkGlobalWarnings(

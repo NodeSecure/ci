@@ -1,5 +1,5 @@
 import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
-import { Strategy } from "@nodesecure/vuln";
+import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 
 import { DependencyWarning } from "../types";
 
@@ -15,11 +15,11 @@ export type CheckableFunction<T> = {
 
 export type PipelineCheckFunctions = Array<
   () => CheckableFunction<
-    GlobalWarning | DependencyWarning | Strategy.StandardVulnerability
+    GlobalWarning | DependencyWarning | StandardVulnerability
   >
 >;
 
-export const FAILING_CHECK: CheckResult = "failed";
+export const FAILING_CHECK: CheckResult = "failed" as const;
 
 export function convertBooleanAsCheckResult(result: boolean) {
   return result ? "failed" : "passed";

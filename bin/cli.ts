@@ -2,7 +2,7 @@
 
 import sade from "sade";
 
-import { runPipeline } from "../src/pipeline.js";
+import { runPipeline } from "../src/pipeline/run.js";
 
 const program = sade("nsci", true);
 

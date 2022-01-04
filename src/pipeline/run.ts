@@ -5,11 +5,12 @@ import * as vuln from "@nodesecure/vuln";
 import {
   DEFAULT_RUNTIME_CONFIGURATION,
   RuntimeConfiguration
-} from "./nodesecurerc.js";
-import { runPayloadInterpreter } from "./payload/interpret.js";
-import * as pipeline from "./pipeline.js";
-import { reportScannerLoggerEvents, runReporter } from "./reporters/index.js";
-import { ValueOf } from "./types/index.js";
+} from "../nodesecurerc.js";
+import { runPayloadInterpreter } from "../payload/interpret.js";
+import { reportScannerLoggerEvents, runReporter } from "../reporters/index.js";
+import { ValueOf } from "../types/index.js";
+
+import * as pipeline from "./run.js";
 
 export const status = {
   SUCCESS: "success",
