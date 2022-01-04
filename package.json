@@ -57,7 +57,7 @@
     "start": "node dist/bin/cli.js",
     "build": "rimraf ./dist && tsc",
     "test": "mocha --parallel",
-    "lint": "eslint . --fix"
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@nodesecure/eslint-config": "^1.3.0",
