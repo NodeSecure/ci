@@ -3,7 +3,7 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
-import { RuntimeConfiguration } from "../nodesecurerc.js";
+import * as RC from "../config/nodesecurerc.js";
 import {
   convertBooleanAsCheckResult,
   CheckableFunction,
@@ -30,7 +30,7 @@ function checkGlobalWarnings(
 
 function checkDependenciesWarnings(
   warnings: DependencyWarning[],
-  runtimeConfiguration: RuntimeConfiguration
+  runtimeConfiguration: RC.Configuration
 ): CheckableFunction<DependencyWarning> {
   if (runtimeConfiguration.warnings === "off") {
     return {
@@ -125,7 +125,7 @@ function findAllVulnsWithEqualOrHigherSeverity(
 
 function checkDependenciesVulns(
   vulnerabilities: Strategy.StandardVulnerability[],
-  runtimeConfiguration: RuntimeConfiguration
+  runtimeConfiguration: RC.Configuration
 ): CheckableFunction<Strategy.StandardVulnerability> {
   const {
     vulnerabilities: { severity }
@@ -200,7 +200,7 @@ function interpretPayloadChecks(
  */
 export function runPayloadInterpreter(
   payload: Scanner.Payload,
-  rc: RuntimeConfiguration
+  rc: RC.Configuration
 ): InterpretedPayload {
   const { warnings, dependencies } = extractScannerPayload(payload);
 
