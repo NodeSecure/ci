@@ -3,24 +3,19 @@ import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
-import {
-  reporterTarget,
-  RuntimeConfiguration,
-  VulnSeverity,
-  VulnStrategy
-} from "../nodesecurerc.js";
+import * as RC from "../config/nodesecurerc.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 
 import * as pipeline from "./run.js";
 
-const DEFAULT_RUNTIME_CONFIGURATION: RuntimeConfiguration = {
+const DEFAULT_RUNTIME_CONFIGURATION: RC.Configuration = {
   rootDir: process.cwd(),
-  strategy: VulnStrategy.NPM,
-  reporter: reporterTarget.CONSOLE,
+  strategy: RC.vulnStrategy.NPM,
+  reporters: [RC.reporterTarget.CONSOLE],
   vulnerabilities: {
-    severity: VulnSeverity.ALL
+    severity: RC.vulnSeverity.ALL
   },
-  warnings: "error"
+  warnings: RC.warnings.ERROR
 };
 
 const DEFAULT_SCANNER_PAYLOAD: Scanner.Payload = {
@@ -214,7 +209,7 @@ describe("Pipeline check workflow", () => {
 
         const { status, data } = runPayloadInterpreter(scannerPayload, {
           ...DEFAULT_RUNTIME_CONFIGURATION,
-          warnings: "off"
+          warnings: RC.warnings.OFF
         });
 
         expect(status).equals(pipeline.status.SUCCESS);
@@ -308,7 +303,7 @@ describe("Pipeline check workflow", () => {
           const { status, data } = runPayloadInterpreter(scannerPayload, {
             ...DEFAULT_RUNTIME_CONFIGURATION,
             warnings: {
-              "encoded-literal": "error"
+              "encoded-literal": RC.warnings.ERROR
             }
           });
 
