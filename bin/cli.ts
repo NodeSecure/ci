@@ -6,7 +6,7 @@ import * as RC from "../src/config/nodesecurerc.js";
 import { runPipeline } from "../src/pipeline/run.js";
 
 function joinExclusiveList<T>(items: T) {
-  return `'${Object.values(items).join(" | ")}'`;
+  return Object.values(items).join(" | ");
 }
 
 const availableVulnThresholds = joinExclusiveList(RC.vulnSeverity);
@@ -26,28 +26,28 @@ program
 
   .option(
     "-s, --strategy",
-    `@nodesecure/vuln vulnerability strategy. Can be ${availableStrategies}`,
+    `@nodesecure/vuln vulnerability strategy. Can be '${availableStrategies}'`,
     RC.vulnStrategy.NPM
   )
   .example("cli.js --strategy=NPM_AUDIT")
 
   .option(
     "-v, --vulnerability",
-    `Vulnerability severity threshold. Can be ${availableVulnThresholds})`,
+    `Vulnerability severity threshold. Can be '${availableVulnThresholds})'`,
     RC.vulnSeverity.ALL
   )
-  .example("cli.js --severity=all")
+  .example("cli.js --vulnerability=all")
 
   .option(
     "-w, --warnings",
-    `Action when detecting warnings. Can be ${availableWarnings}`,
+    `Action when detecting warnings. Can be '${availableWarnings}'`,
     RC.warnings.ERROR
   )
   .example("cli.js --warnings=off")
 
   .option(
     "-r, --reporters",
-    `Pipeline reporters. Can be ${availableReporters}`,
+    `Pipeline reporters. Can be '${availableReporters}'`,
     RC.reporterTarget.CONSOLE
   )
   .example("cli.js --reporters=console,html")
