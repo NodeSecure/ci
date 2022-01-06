@@ -5,7 +5,7 @@
 )
 [![mit](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/NodeSecure/rc/blob/master/LICENSE)
 
-## Getting Started
+## Installation
 
 This package is available in the Node Package Repository and can be easily installed with [npm](https://docs.npmjs.com/getting-started/what-is-npm) or [yarn](https://yarnpkg.com).
 
@@ -14,6 +14,29 @@ $ npm i @nodesecure/ci
 # or
 $ yarn add @nodesecure/ci
 ```
+
+## Getting Started
+
+@nodesecure/ci brings together a set of tools to identify dependencies vulnerabilities 
+and track most common malicious code and patterns.
+
+Before going further, here is an overview of the available features depending on
+your project configuration:
+
+| Static Analysis | Compatibility |
+|------|--------------|
+| JavaScript | ✅ |
+| TypeScript | ❌ |
+
+Static Analysis is powered by [@nodesecure/js-x-ray](https://github.com/NodeSecure/js-x-ray) and 
+[@nodesecure/scanner](https://github.com/NodeSecure/scanner).
+
+| Vulnerabilities Strategy | package-lock.json | yarn.lock |
+|------|--------------|-----------|
+| npm | ✅ | ❌ |
+| node | ✅ | ✅ |
+
+Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/NodeSecure/vuln).
 
 ## Usage example
 
@@ -30,8 +53,23 @@ If any warning or dependency is met, the pipeline will eventually fail depending
 
 ## Custom configuration
 
-For now, the configuration is managed internally and is not yet configurable.
-However, we aim to expose some sort of configuration like this:
+For now, the configuration is managed internally and is only configurable through
+the CLI.
+
+```bash
+$ npm run nsci --directory=/Users/user1/myproject
+$ npm run nsci --strategy=npm
+$ npm run nsci --vulnerability=all
+$ npm run nsci --warnings=error
+$ npm run nsci --reporters=console
+```
+
+To see all available options, you can run:
+```bash
+$ npm run nsci --help
+```
+
+In the future, we aim to expose some sort of configuration like this:
 
 ```ts
 {
@@ -49,11 +87,17 @@ However, we aim to expose some sort of configuration like this:
 };
 ```
 
+To know more about the future configuration, see [@nodesecure/rc](https://github.com/NodeSecure/rc)
+
 ## Reporters
 
-For now, two reporters are targeted to work with the @nodesecure/ci.
+Two reporters are targeted to work with the @nodesecure/ci. For now,
+only the "Console" reporter is available.
 - [x] Console
 - [ ] HTML
+
+## Requirements
+- [Node.js](https://nodejs.org/en/) v16 or higher
 
 ## Contributors ✨
 
@@ -76,9 +120,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-## Requirements
-- [Node.js](https://nodejs.org/en/) >= v16
 
 ## License
 MIT
