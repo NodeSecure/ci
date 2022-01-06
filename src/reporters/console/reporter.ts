@@ -4,7 +4,7 @@ import { Strategy } from "@nodesecure/vuln";
 import pluralize from "pluralize";
 import ms from "pretty-ms";
 
-import { reporterTarget } from "../../config/nodesecurerc.js";
+import { reporterTarget } from "../../nodesecurerc.js";
 import { WorkableVulnerability } from "../../payload";
 import * as pipeline from "../../pipeline/run.js";
 import { DependencyWarning } from "../../types";

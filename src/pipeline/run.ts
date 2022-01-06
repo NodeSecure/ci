@@ -2,7 +2,11 @@ import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
-import * as RC from "../config/nodesecurerc.js";
+import {
+  CliInputOptions,
+  standardizeConfig
+} from "../cli-config/standardize.js";
+import * as RC from "../nodesecurerc.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 import { reportScannerLoggerEvents, runReporter } from "../reporters/index.js";
 import { ValueOf } from "../types/index.js";
@@ -57,23 +61,18 @@ async function runPayloadChecks(
   }
 }
 
-export async function runPipeline(options: {
-  warnings: RC.Warnings;
-  vulnerability: RC.Severity;
-}): Promise<void> {
-  const { warnings, vulnerability } = options;
+export async function runPipeline(options: CliInputOptions): Promise<void> {
+  const standardizedCliConfig = standardizeConfig(options);
   /**
    * For now, the runtime configuration comes from a in-memory constant.
    * In the future, this configuration will come from a .nodesecurerc parsed
    * at runtime.
    */
   try {
+    // @ts-expect-error - dont worry
     const runtimeConfig: RC.Configuration = {
       ...RC.DEFAULT_RUNTIME_CONFIGURATION,
-      vulnerabilities: {
-        severity: vulnerability
-      },
-      warnings
+      ...standardizedCliConfig
     };
     const analysisPayload = await runScannerAnalysis(runtimeConfig);
     /**

@@ -3,7 +3,7 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
-import * as RC from "../config/nodesecurerc.js";
+import * as RC from "../nodesecurerc.js";
 import {
   convertBooleanAsCheckResult,
   CheckableFunction,
@@ -127,13 +127,11 @@ function checkDependenciesVulns(
   vulnerabilities: Strategy.StandardVulnerability[],
   runtimeConfiguration: RC.Configuration
 ): CheckableFunction<Strategy.StandardVulnerability> {
-  const {
-    vulnerabilities: { severity }
-  } = runtimeConfiguration;
+  const { vulnerabilitySeverity } = runtimeConfiguration;
 
   const vulnsClassifiedBySeverity = findAllVulnsWithEqualOrHigherSeverity(
     vulnerabilities,
-    severity
+    vulnerabilitySeverity
   );
 
   return {

@@ -1,4 +1,4 @@
-import * as RC from "../config/nodesecurerc.js";
+import * as RC from "../nodesecurerc.js";
 import { InterpretedPayload } from "../payload";
 
 import { consoleReporter } from "./console/index.js";

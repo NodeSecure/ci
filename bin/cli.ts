@@ -2,7 +2,7 @@
 
 import sade from "sade";
 
-import * as RC from "../src/config/nodesecurerc.js";
+import * as RC from "../src/nodesecurerc.js";
 import { runPipeline } from "../src/pipeline/run.js";
 
 function joinExclusiveList<T>(items: T) {
@@ -27,16 +27,16 @@ program
   .option(
     "-s, --strategy",
     `@nodesecure/vuln vulnerability strategy. Can be '${availableStrategies}'`,
-    RC.vulnStrategy.NPM
+    RC.vulnStrategy.npm
   )
-  .example("cli.js --strategy=NPM_AUDIT")
+  .example("cli.js --strategy=npm")
 
   .option(
-    "-v, --vulnerability",
+    "-v, --vulnerabilities",
     `Vulnerability severity threshold. Can be '${availableVulnThresholds})'`,
     RC.vulnSeverity.ALL
   )
-  .example("cli.js --vulnerability=all")
+  .example("cli.js --vulnerabilities=all")
 
   .option(
     "-w, --warnings",

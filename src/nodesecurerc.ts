@@ -1,10 +1,13 @@
-import { ValueOf } from "../types";
+import { ValueOf } from "./types";
 
 export const vulnStrategy = {
-  NPM: "NPM_AUDIT",
-  NODE: "SECURITY_WG",
-  NONE: "NONE"
+  npm: "NPM_AUDIT",
+  node: "SECURITY_WG",
+  none: "NONE"
 } as const;
+
+export type InputStrategy = keyof typeof vulnStrategy;
+export type Strategy = ValueOf<typeof vulnStrategy>;
 
 export const vulnSeverity = {
   MEDIUM: "medium",
@@ -34,20 +37,16 @@ export type Configuration = {
   rootDir: string;
   strategy: ValueOf<typeof vulnStrategy>;
   reporters: ReporterTarget[];
-  vulnerabilities: {
-    severity: ValueOf<typeof vulnSeverity>;
-  };
+  vulnerabilitySeverity: ValueOf<typeof vulnSeverity>;
   warnings: Warnings | Record<string, Warnings>;
 };
 
 function generateDefaultRC(): Configuration {
   return {
     rootDir: process.cwd(),
-    strategy: vulnStrategy.NPM,
+    strategy: vulnStrategy.npm,
     reporters: [reporterTarget.CONSOLE],
-    vulnerabilities: {
-      severity: vulnSeverity.ALL
-    },
+    vulnerabilitySeverity: vulnSeverity.ALL,
     warnings: warnings.ERROR
   };
 }

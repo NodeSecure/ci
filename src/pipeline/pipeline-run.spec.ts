@@ -3,18 +3,16 @@ import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
-import * as RC from "../config/nodesecurerc.js";
+import * as RC from "../nodesecurerc.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 
 import * as pipeline from "./run.js";
 
 const DEFAULT_RUNTIME_CONFIGURATION: RC.Configuration = {
   rootDir: process.cwd(),
-  strategy: RC.vulnStrategy.NPM,
+  strategy: RC.vulnStrategy.npm,
   reporters: [RC.reporterTarget.CONSOLE],
-  vulnerabilities: {
-    severity: RC.vulnSeverity.ALL
-  },
+  vulnerabilitySeverity: RC.vulnSeverity.ALL,
   warnings: RC.warnings.ERROR
 };
 
@@ -420,9 +418,7 @@ describe("Pipeline check workflow", () => {
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
             ...DEFAULT_RUNTIME_CONFIGURATION,
-            vulnerabilities: {
-              severity: "high"
-            }
+            vulnerabilitySeverity: "high"
           });
 
           expect(status).equals(pipeline.status.SUCCESS);
@@ -462,9 +458,7 @@ describe("Pipeline check workflow", () => {
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
             ...DEFAULT_RUNTIME_CONFIGURATION,
-            vulnerabilities: {
-              severity: "all"
-            }
+            vulnerabilitySeverity: "all"
           });
 
           expect(status).equals(pipeline.status.FAILURE);
@@ -513,9 +507,7 @@ describe("Pipeline check workflow", () => {
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
             ...DEFAULT_RUNTIME_CONFIGURATION,
-            vulnerabilities: {
-              severity: "high"
-            }
+            vulnerabilitySeverity: "high"
           });
 
           expect(status).equals(pipeline.status.FAILURE);

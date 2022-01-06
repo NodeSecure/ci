@@ -2,7 +2,7 @@ import { Logger, ScannerLoggerEvents } from "@nodesecure/scanner";
 import Spinner from "@slimio/async-cli-spinner";
 import ms from "pretty-ms";
 
-import { ReporterTarget } from "../config/nodesecurerc.js";
+import { ReporterTarget } from "../nodesecurerc.js";
 import { InterpretedPayload } from "../payload/index.js";
 
 import { consolePrinter } from "./console/index.js";
