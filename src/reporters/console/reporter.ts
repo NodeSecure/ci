@@ -106,7 +106,8 @@ function reportDependencyVulns(vulnerabilities: WorkableVulnerability[]) {
     consolePrinter.util
       .concatOutputs([
         vulnColored.bold().underline().message,
-        consolePrinter.font.standard(`${vuln.package}`).bold().message,
+        consolePrinter.font.standard(`[${vuln.package}]`).bold().message,
+        consolePrinter.font.standard(vuln.title).italic().message,
         consolePrinter.font.info(vulnRanges).bold().message
       ])
       .print();
