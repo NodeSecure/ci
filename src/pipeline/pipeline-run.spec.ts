@@ -21,7 +21,7 @@ const DEFAULT_SCANNER_PAYLOAD: Scanner.Payload = {
   rootDependencyName: "pkg",
   warnings: [],
   dependencies: {},
-  version: "1.0.0",
+  scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
 
