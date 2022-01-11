@@ -40,9 +40,21 @@ Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/
 
 ## Usage example
 
+First, add the script in the package.json
+
+```json
+{
+  "scripts": {
+    "nsci": "nsci"
+  }
+}
+```
+
+Then run it
+
 ```bash
 $ npm run nsci
-```
+ ```
 
 Once the script is run, the @nodesecure/ci pipeline will look for dependencies warnings and vulnerabilities in the current working directory.
 If any warning or dependency is met, the pipeline will eventually fail depending on the provided .nodesecurerc file.
@@ -56,17 +68,36 @@ If any warning or dependency is met, the pipeline will eventually fail depending
 For now, the configuration is managed internally and is only configurable through
 the CLI.
 
+Add CLI options directly in the npm script 
+
+```json
+{
+  "scripts": {
+    "nsci": "nsci --directory=/Users/user1/myproject"
+  }
+}
+```
+
+Or provide it from the "npm run [script]" command (don't forget to supply "--") or
+the params will be applied to the "npm run [script]" command. 
+
 ```bash
-$ npm run nsci --directory=/Users/user1/myproject
-$ npm run nsci --strategy=npm
-$ npm run nsci --vulnerability=all
-$ npm run nsci --warnings=error
-$ npm run nsci --reporters=console
+$ npm run nsci -- --directory=/Users/user1/myproject
+$ npm run nsci -- --strategy=npm
+$ npm run nsci -- --vulnerability=all
+$ npm run nsci -- --warnings=error
+$ npm run nsci -- --reporters=console
+```
+
+Or use yarn (params are provided to the target script by default)
+
+```bash
+$ yarn nsci --reporters=console
 ```
 
 To see all available options, you can run:
 ```bash
-$ npm run nsci --help
+$ npm run nsci -- --help
 ```
 
 In the future, we aim to expose some sort of configuration like this:
