@@ -2,23 +2,15 @@
   "name": "@nodesecure/ci",
   "version": "1.0.2",
   "description": "NodeSecure tool enabling secured continuous delivery",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NodeSecure/ci.git"
-  },
-  "bugs": {
-    "url": "https://github.com/NodeSecure/ci/issues"
-  },
-  "homepage": "https://github.com/NodeSecure/ci#readme",
   "bin": {
     "nsci": "./dist/bin/cli.js"
   },
-  "main": "./dist/src/pipeline.js",
-  "exports": "./dist/src/pipeline.js",
+  "main": "./dist/src/pipeline/run.js",
+  "exports": "./dist/src/pipeline/run.js",
   "typesVersions": {
     "*": {
-      "pipeline.d.ts": [
-        "dist/src/pipeline.d.ts"
+      "run.d.ts": [
+        "dist/src/pipeline/run.d.ts"
       ]
     }
   },
@@ -51,6 +43,14 @@
   "author": "NodeSecure",
   "license": "MIT",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NodeSecure/ci.git"
+  },
+  "bugs": {
+    "url": "https://github.com/NodeSecure/ci/issues"
+  },
+  "homepage": "https://github.com/NodeSecure/ci#readme",
   "scripts": {
     "prestart": "npm run build",
     "prepublishOnly": "npm run test && npm run build",
