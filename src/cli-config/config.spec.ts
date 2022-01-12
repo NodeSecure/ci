@@ -7,8 +7,10 @@ import { standardizeConfig } from "./standardize.js";
 describe("CLI configuration to Runtime configuration adapter", () => {
   describe("When providing complete CLI configuration options", () => {
     it("should standardize config options", () => {
+      const cwd = process.cwd();
+
       const externalOptions = {
-        directory: "/Users/dev",
+        directory: "src",
         strategy: "npm",
         vulnerabilities: "all",
         warnings: "",
@@ -16,7 +18,7 @@ describe("CLI configuration to Runtime configuration adapter", () => {
       };
 
       const finalConfig = {
-        rootDir: "/Users/dev",
+        rootDir: `${cwd}/src`,
         strategy: "NPM_AUDIT",
         reporters: ["console", "html"],
         vulnerabilitySeverity: "all",
@@ -31,14 +33,14 @@ describe("CLI configuration to Runtime configuration adapter", () => {
     // eslint-disable-next-line id-length
     const partialOrInvalidConfigThatShouldFallbackToDefaultRC = [
       {
-        directory: "",
+        directory: "/Users/NonExistingDirectory/XYZ",
         strategy: "",
         vulnerabilities: "",
         warnings: "",
         reporters: "console html"
       },
       {
-        directory: "  ",
+        directory: "../NonExistingDirectory",
         strategy: "snyk",
         vulnerabilities: "unknown",
         warnings: "all",

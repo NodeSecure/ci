@@ -1,4 +1,21 @@
+import { constants, accessSync } from "fs";
+import { resolve } from "path";
+
 import * as RC from "../nodesecurerc.js";
+
+function isValidRootDirectory(directory: string): string {
+  try {
+    accessSync(directory, constants.F_OK);
+
+    return resolve(directory);
+  } catch {
+    return RC.DEFAULT_RUNTIME_CONFIGURATION.rootDir;
+  }
+}
+
+export function adaptDirectory(directory: string): string {
+  return isValidRootDirectory(directory);
+}
 
 function isValidReporter(reporter: string): reporter is RC.ReporterTarget {
   return Object.values(RC.reporterTarget).includes(

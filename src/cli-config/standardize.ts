@@ -5,7 +5,8 @@ import {
   adaptReporters,
   adaptSeverity,
   adaptStrategy,
-  adaptWarnings
+  adaptWarnings,
+  adaptDirectory
 } from "./adapters.js";
 
 function isInvalidConfigOption<T>(value: T): boolean {
@@ -63,7 +64,7 @@ function adaptConfigOptions(
   const { vulnerabilities, directory, strategy, warnings, reporters } = options;
 
   return {
-    rootDir: directory,
+    rootDir: adaptDirectory(directory),
     reporters: adaptReporters(reporters),
     strategy: adaptStrategy(strategy),
     vulnerabilitySeverity: adaptSeverity(vulnerabilities),
