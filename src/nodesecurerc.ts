@@ -7,7 +7,7 @@ export const vulnStrategy = {
 } as const;
 
 export type InputStrategy = keyof typeof vulnStrategy;
-export type Strategy = ValueOf<typeof vulnStrategy>;
+export type OutputStrategy = ValueOf<typeof vulnStrategy>;
 
 export const vulnSeverity = {
   MEDIUM: "medium",

@@ -3,9 +3,10 @@ import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
 import {
-  CliInputOptions,
+  ConfigOptions,
+  defaultConfigOptions,
   standardizeConfig
-} from "../cli-config/standardize.js";
+} from "../config/standardize.js";
 import * as RC from "../nodesecurerc.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 import { reportScannerLoggerEvents, runReporter } from "../reporters/index.js";
@@ -61,15 +62,14 @@ async function runPayloadChecks(
   }
 }
 
-export async function runPipeline(options: CliInputOptions): Promise<void> {
+export async function runPipeline(
+  options: ConfigOptions = defaultConfigOptions
+): Promise<void> {
   const standardizedCliConfig = standardizeConfig(options);
-  /**
-   * For now, the runtime configuration comes from a in-memory constant.
-   * In the future, this configuration will come from a .nodesecurerc parsed
-   * at runtime.
-   */
+
   try {
     const runtimeConfig = {
+      // For now, the runtime configuration comes from a in-memory constant.
       ...RC.DEFAULT_RUNTIME_CONFIGURATION,
       ...standardizedCliConfig
     } as RC.Configuration;

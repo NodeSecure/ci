@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
 
-import { standardizeConfig } from "./standardize.js";
+import { ConfigOptions, standardizeConfig } from "./standardize.js";
 
 describe("CLI configuration to Runtime configuration adapter", () => {
   describe("When providing complete CLI configuration options", () => {
@@ -25,7 +25,9 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         warnings: "error"
       };
 
-      expect(standardizeConfig(externalOptions)).to.deep.equal(finalConfig);
+      expect(standardizeConfig(externalOptions as ConfigOptions)).to.deep.equal(
+        finalConfig
+      );
     });
   });
 
@@ -44,7 +46,14 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         strategy: "snyk",
         vulnerabilities: "unknown",
         warnings: "all",
-        reporters: "json, console"
+        reporters: "json, console, console"
+      },
+      {
+        directory: "../NonExistingDirectory",
+        strategy: "snyk",
+        vulnerabilities: "unknown",
+        warnings: "all",
+        reporters: ["json", "invalidReporter", "console", "console"]
       }
     ];
 
@@ -52,9 +61,9 @@ describe("CLI configuration to Runtime configuration adapter", () => {
       partialOrInvalidConfigThatShouldFallbackToDefaultRC.forEach(
         // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
-          expect(standardizeConfig(partialConfig)).to.deep.equal(
-            DEFAULT_RUNTIME_CONFIGURATION
-          );
+          expect(
+            standardizeConfig(partialConfig as ConfigOptions)
+          ).to.deep.equal(DEFAULT_RUNTIME_CONFIGURATION);
         }
       );
     });

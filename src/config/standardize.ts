@@ -39,27 +39,36 @@ function mergeConfigs(
 
   return {
     ...RC.DEFAULT_RUNTIME_CONFIGURATION,
-    // we override default config with the one provided from the cli
+    // we override default config with the one provided from the cli or the api
     ...validatedPartialConfig
   } as RC.Configuration;
 }
 
-export type CliInputOptions = {
+export type ConfigOptions = {
   directory: string;
-  strategy: string;
-  vulnerabilities: string;
-  warnings: string;
-  reporters: string;
+  strategy: RC.InputStrategy;
+  vulnerabilities: RC.Severity;
+  warnings: RC.Warnings;
+  reporters: string | RC.ReporterTarget[];
+};
+
+export const defaultConfigOptions: ConfigOptions = {
+  vulnerabilities: RC.vulnSeverity.ALL,
+  directory: process.cwd(),
+  strategy: "npm",
+  warnings: RC.warnings.ERROR,
+  reporters: RC.reporterTarget.CONSOLE
 };
 
 /**
- * In the first place, we need to adapt options from the CLI in order to
- * be used as a RC.Configuration structure.
- * This adapt takes into account name bindings but also checks about values
- * that were supplied from the CLI (e.g: valid severity threshold supplied)
+ * In the first place, we need to adapt options from the either the CLI or
+ * the API call in order to be used as a RC.Configuration structure.
+ * This adapt takes into account name bindings but also checks validity of values
+ * that were supplied from the external world (API or CLI)
+ * (e.g: valid severity threshold supplied)
  */
 function adaptConfigOptions(
-  options: CliInputOptions
+  options: ConfigOptions
 ): DeepPartialRecord<RC.Configuration> {
   const { vulnerabilities, directory, strategy, warnings, reporters } = options;
 
@@ -73,7 +82,7 @@ function adaptConfigOptions(
 }
 
 export function standardizeConfig(
-  externalConfig: CliInputOptions
+  externalConfig: ConfigOptions
 ): DeepPartialRecord<RC.Configuration> {
   return mergeConfigs(adaptConfigOptions(externalConfig));
 }
