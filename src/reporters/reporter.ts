@@ -2,10 +2,9 @@ import { Logger, ScannerLoggerEvents } from "@nodesecure/scanner";
 import Spinner from "@slimio/async-cli-spinner";
 import ms from "pretty-ms";
 
+import { consolePrinter } from "../lib/console-printer/index.js";
 import { ReporterTarget } from "../nodesecurerc.js";
 import { InterpretedPayload } from "../payload/index.js";
-
-import { consolePrinter } from "./console/index.js";
 
 export type Reporter = {
   type: ReporterTarget;
