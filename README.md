@@ -40,6 +40,35 @@ Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/
 
 ## Usage example
 
+@nodesecure/ci can be used as a Script or as an API (GitHub action coming soon).
+
+### API
+
+@nodesecure/ci exposes its pipeline runner as an API to allow use in any other combined workflow.
+
+```ts
+import { runPipeline } from "@nodesecure/ci"
+
+const optionsExample = {
+    directory: process.cwd();
+    strategy: "node";
+    vulnerabilities: "all";
+    warnings: "error";
+    reporters: ["console"];
+}
+
+try {
+  await runPipeline(optionsExample);
+  console.log('Congrats, your code passed all security checks!');
+} catch {
+  console.error('Whooops, the pipeline failed.');
+}
+ ```
+
+For now, the API does not expose any sort of data returned back from the runner.
+
+### Script
+
 First, add the script in the package.json
 
 ```json
@@ -63,12 +92,12 @@ If any warning or dependency is met, the pipeline will eventually fail depending
     <img src="https://user-images.githubusercontent.com/43391199/147159090-72a5f570-2091-4724-af34-21dd0ee6ca88.gif">
 </p>
 
-## Custom configuration
+### Custom configuration
 
-For now, the configuration is managed internally and is only configurable through
-the CLI.
+For now, the configuration is managed internally and is configurable through
+the CLI (when using the tool as a script).
 
-Add CLI options directly in the npm script 
+Add CLI options directly in the package.json script 
 
 ```json
 {
