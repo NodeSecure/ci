@@ -2,11 +2,7 @@ import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
-import {
-  ConfigOptions,
-  defaultConfigOptions,
-  standardizeConfig
-} from "../config/standardize.js";
+import { ConfigOptions, standardizeConfig } from "../config/standardize.js";
 import * as RC from "../nodesecurerc.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 import { reportScannerLoggerEvents, runReporter } from "../reporters/index.js";
@@ -62,12 +58,9 @@ async function runPayloadChecks(
   }
 }
 
-export async function runPipeline(
-  options: ConfigOptions = defaultConfigOptions
-): Promise<void> {
-  const standardizedCliConfig = standardizeConfig(options);
-
+export async function runPipeline(options: ConfigOptions): Promise<void> {
   try {
+    const standardizedCliConfig = standardizeConfig(options);
     const runtimeConfig = {
       // For now, the runtime configuration comes from a in-memory constant.
       ...RC.DEFAULT_RUNTIME_CONFIGURATION,

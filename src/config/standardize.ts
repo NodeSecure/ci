@@ -14,16 +14,20 @@ function isInvalidConfigOption<T>(value: T): boolean {
     typeof value === "string" && value.replace(/\s/g, "") === "";
 
   const isEmptyArray = Array.isArray(value) && value.length === 0;
+  const isUndefinedOrNull = !value;
 
-  return isEmptyArray || isEmptyString;
+  return isEmptyArray || isEmptyString || isUndefinedOrNull;
 }
 
 function extractValidPropsFromConfig(
-  partialConfig: DeepPartialRecord<RC.Configuration>
-): DeepPartialRecord<RC.Configuration> {
+  partialConfig: Partial<ConfigOptions>
+): Partial<ConfigOptions> {
+  if (!partialConfig) {
+    return {};
+  }
   /**
-   * We only keep valid options provided from the CLI. Otherwise it would introduce
-   * inconsistency when merging with the default RC.
+   * We only keep valid options provided from the CLI or through the API.
+   * Otherwise it would introduce inconsistency when merging with the default RC.
    */
   const filteredEntries = Object.entries(partialConfig).filter(
     ([, value]) => !isInvalidConfigOption(value)
@@ -32,15 +36,14 @@ function extractValidPropsFromConfig(
   return Object.fromEntries(filteredEntries);
 }
 
-function mergeConfigs(
-  partialConfig: DeepPartialRecord<RC.Configuration>
-): RC.Configuration {
-  const validatedPartialConfig = extractValidPropsFromConfig(partialConfig);
-
+function mergeConfigs(adaptedConfig: RC.Configuration): RC.Configuration {
   return {
     ...RC.DEFAULT_RUNTIME_CONFIGURATION,
-    // we override default config with the one provided from the cli or the api
-    ...validatedPartialConfig
+    /**
+     * We override default config with the one provided from the cli or the api
+     * which has just been sanitized and adapted to fit the RC format.
+     */
+    ...adaptedConfig
   } as RC.Configuration;
 }
 
@@ -68,9 +71,12 @@ export const defaultConfigOptions: ConfigOptions = {
  * (e.g: valid severity threshold supplied)
  */
 function adaptConfigOptions(
-  options: ConfigOptions
-): DeepPartialRecord<RC.Configuration> {
-  const { vulnerabilities, directory, strategy, warnings, reporters } = options;
+  sanitizedOptions: Partial<ConfigOptions>
+): RC.Configuration {
+  const { vulnerabilities, directory, strategy, warnings, reporters } = {
+    ...defaultConfigOptions,
+    ...sanitizedOptions
+  };
 
   return {
     rootDir: adaptDirectory(directory),
@@ -84,5 +90,7 @@ function adaptConfigOptions(
 export function standardizeConfig(
   externalConfig: ConfigOptions
 ): DeepPartialRecord<RC.Configuration> {
-  return mergeConfigs(adaptConfigOptions(externalConfig));
+  return mergeConfigs(
+    adaptConfigOptions(extractValidPropsFromConfig(externalConfig))
+  );
 }

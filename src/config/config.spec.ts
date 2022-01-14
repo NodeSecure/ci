@@ -1,11 +1,11 @@
 import { expect } from "chai";
 
-import { DEFAULT_RUNTIME_CONFIGURATION } from "../nodesecurerc.js";
+import * as RC from "../nodesecurerc.js";
 
 import { ConfigOptions, standardizeConfig } from "./standardize.js";
 
 describe("CLI configuration to Runtime configuration adapter", () => {
-  describe("When providing complete CLI configuration options", () => {
+  describe("When providing a complete configuration with valid options", () => {
     it("should standardize config options", () => {
       const cwd = process.cwd();
 
@@ -31,15 +31,25 @@ describe("CLI configuration to Runtime configuration adapter", () => {
     });
   });
 
-  describe("When providing partial CLI configuration options", () => {
+  describe("When providing a partial configuration with invalid options", () => {
     // eslint-disable-next-line id-length
     const partialOrInvalidConfigThatShouldFallbackToDefaultRC = [
+      {},
+      undefined,
+      null,
+      {
+        directory: undefined,
+        strategy: undefined,
+        vulnerabilities: undefined,
+        warnings: undefined,
+        reporters: null
+      },
       {
         directory: "/Users/NonExistingDirectory/XYZ",
         strategy: "",
         vulnerabilities: "",
         warnings: "",
-        reporters: "console html"
+        reporters: "console"
       },
       {
         directory: "../NonExistingDirectory",
@@ -57,13 +67,13 @@ describe("CLI configuration to Runtime configuration adapter", () => {
       }
     ];
 
-    it("should keep only valid options from partial config to allow correct merging with default rc", () => {
+    it("should only keep valid options from partial config to allow correct merging with default RC", () => {
       partialOrInvalidConfigThatShouldFallbackToDefaultRC.forEach(
         // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
           expect(
             standardizeConfig(partialConfig as ConfigOptions)
-          ).to.deep.equal(DEFAULT_RUNTIME_CONFIGURATION);
+          ).to.deep.equal(RC.DEFAULT_RUNTIME_CONFIGURATION);
         }
       );
     });
