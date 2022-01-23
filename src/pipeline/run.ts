@@ -79,8 +79,9 @@ export async function runPipeline(
   options: ConfigOptions & { autoExitAfterFailure: boolean }
 ): Promise<Maybe<InterpretedPayload>> {
   try {
-    const { autoExitAfterFailure = true, ...configOptions } = options;
-    const standardizedCliConfig = standardizeConfig(configOptions);
+    const defaultAutoExitAfterFailure =
+      (options && options.autoExitAfterFailure) ?? true;
+    const standardizedCliConfig = standardizeConfig(options);
     const runtimeConfig = {
       // For now, the runtime configuration comes from a in-memory constant.
       ...RC.DEFAULT_RUNTIME_CONFIGURATION,
@@ -96,7 +97,7 @@ export async function runPipeline(
     return await runPayloadChecks(
       analysisPayload,
       runtimeConfig,
-      autoExitAfterFailure
+      defaultAutoExitAfterFailure
     );
   } catch {
     provideErrorCodeToProcess();
