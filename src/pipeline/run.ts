@@ -9,7 +9,7 @@ import {
   InterpretedPayload,
   runPayloadInterpreter
 } from "../payload/interpret.js";
-import { reportScannerLoggerEvents, runReporter } from "../reporters/index.js";
+import { reportScannerLoggerEvents, runReporting } from "../reporters/index.js";
 
 import * as pipeline from "./run.js";
 
@@ -55,13 +55,15 @@ function provideErrorCodeToProcess() {
   process.exitCode = 1;
 }
 
+type Maybe<T> = T | undefined;
+
 async function runPayloadChecks(
   payload: Scanner.Payload,
   rc: RC.Configuration,
   autoExitAfterFailure: boolean
 ): Promise<Maybe<InterpretedPayload>> {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
-  await runReporter(interpretedPayload, rc);
+  await runReporting(interpretedPayload, rc);
 
   if (
     interpretedPayload.status === pipeline.status.FAILURE &&

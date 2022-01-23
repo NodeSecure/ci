@@ -10,10 +10,10 @@ function initializeReporter(reporter: RC.ReporterTarget) {
     : htmlReporter;
 }
 
-export async function runReporter(
+export async function runReporting(
   payload: InterpretedPayload,
   rc: RC.Configuration
-) {
+): Promise<void> {
   const reportersTasks = rc.reporters.map((reporter) => {
     const { report } = initializeReporter(reporter);
 
