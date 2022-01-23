@@ -3,10 +3,10 @@ import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
 import { ConfigOptions, standardizeConfig } from "../config/standardize.js";
+import { ValueOf } from "../lib/types";
 import * as RC from "../nodesecurerc.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 import { reportScannerLoggerEvents, runReporter } from "../reporters/index.js";
-import { ValueOf } from "../types/index.js";
 
 import * as pipeline from "./run.js";
 

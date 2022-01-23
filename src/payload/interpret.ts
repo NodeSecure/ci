@@ -3,6 +3,7 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
+import { DependencyWarning } from "../lib/types";
 import * as RC from "../nodesecurerc.js";
 import {
   convertBooleanAsCheckResult,
@@ -12,7 +13,6 @@ import {
   FAILING_CHECK
 } from "../pipeline/checkable.js";
 import { pipeline } from "../pipeline/index.js";
-import { DependencyWarning } from "../types";
 
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 

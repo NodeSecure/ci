@@ -1,4 +1,4 @@
-import { ValueOf } from "./types";
+import { ValueOf } from "./lib/types";
 
 export const vulnStrategy = {
   npm: "NPM_AUDIT",
