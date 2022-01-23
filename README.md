@@ -47,7 +47,7 @@ Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/
 @nodesecure/ci exposes its pipeline runner as an API to allow use in any other combined workflow.
 
 ```ts
-import { runPipeline } from "@nodesecure/ci"
+import { runPipeline } from "@nodesecure/ci";
 
 const optionsExample = {
     directory: process.cwd();
@@ -57,15 +57,24 @@ const optionsExample = {
     reporters: ["console"];
 }
 
-try {
-  await runPipeline(optionsExample);
-  console.log('Congrats, your code passed all security checks!');
-} catch {
-  console.error('Whooops, the pipeline failed.');
-}
- ```
+await runPipeline(optionsExample);
+// => the process can either exit with error code (1) or no error code (0), depending on the pipeline status.
+```
 
-For now, the API does not expose any sort of data returned back from the runner.
+If you need a more fine-grained control over the pipeline process, you can
+provide an "autoExitAfterFailure" property to the entry point options to manually 
+exit or interpret the returned payload.
+
+```ts
+const { status, data } = await runPipeline({ autoExitAfterFailure: false });
+
+if(status === 'success') {
+  console.log('Congrats, your code passed all security checks!');
+} else {
+  console.log('Whoops, the pipeline failed to pass all checks :(');
+  interpretData(data);
+}
+```
 
 ### Script
 
