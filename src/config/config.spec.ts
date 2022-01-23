@@ -49,21 +49,21 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         strategy: "",
         vulnerabilities: "",
         warnings: "",
-        reporters: "console"
+        reporters: ""
       },
       {
         directory: "../NonExistingDirectory",
         strategy: "snyk",
         vulnerabilities: "unknown",
         warnings: "all",
-        reporters: "json, console, console"
+        reporters: "json"
       },
       {
         directory: "../NonExistingDirectory",
         strategy: "snyk",
         vulnerabilities: "unknown",
         warnings: "all",
-        reporters: ["json", "invalidReporter", "console", "console"]
+        reporters: ["invalidReporter1", "invalidReporter2"]
       }
     ];
 

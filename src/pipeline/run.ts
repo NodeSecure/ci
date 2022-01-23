@@ -30,9 +30,15 @@ async function runScannerAnalysis(
   const { strategy } = await vuln.setStrategy(
     vuln.strategies[runtimeConfig.strategy]
   );
-  const logger = new scanner.Logger();
-
-  reportScannerLoggerEvents(logger);
+  let logger;
+  /**
+   * If the "console" reporter is selected, we enhance the reporting by attaching
+   * an external logger from the @nodesecure/scanner.
+   */
+  if (runtimeConfig.reporters.includes("console")) {
+    logger = new scanner.Logger();
+    reportScannerLoggerEvents(logger);
+  }
 
   const payload = await scanner.cwd(
     runtimeConfig.rootDir,

@@ -60,7 +60,7 @@ export const defaultConfigOptions: ConfigOptions = {
   directory: process.cwd(),
   strategy: "npm",
   warnings: RC.warnings.ERROR,
-  reporters: RC.reporterTarget.CONSOLE
+  reporters: []
 };
 
 /**
