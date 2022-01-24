@@ -3,26 +3,11 @@ import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
 import { ConfigOptions, standardizeConfig } from "../config/standardize.js";
-import { ValueOf } from "../lib/types";
 import * as RC from "../nodesecurerc.js";
-import {
-  InterpretedPayload,
-  runPayloadInterpreter
-} from "../payload/interpret.js";
+import { InterpretedPayload, runPayloadInterpreter } from "../payload/index.js";
 import { reportScannerLoggerEvents, runReporting } from "../reporters/index.js";
 
-import * as pipeline from "./run.js";
-
-export const status = {
-  SUCCESS: "success",
-  FAILURE: "failure"
-} as const;
-
-export type Status = ValueOf<typeof status>;
-
-export function getOutcome(result: boolean): Status {
-  return result ? status.SUCCESS : status.FAILURE;
-}
+import { status } from "./status.js";
 
 async function runScannerAnalysis(
   runtimeConfig: RC.Configuration
@@ -71,10 +56,7 @@ async function runPayloadChecks(
   const interpretedPayload = runPayloadInterpreter(payload, rc);
   await runReporting(interpretedPayload, rc);
 
-  if (
-    interpretedPayload.status === pipeline.status.FAILURE &&
-    autoExitAfterFailure
-  ) {
+  if (interpretedPayload.status === status.FAILURE && autoExitAfterFailure) {
     provideErrorCodeToProcess();
   }
 

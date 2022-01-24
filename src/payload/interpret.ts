@@ -6,13 +6,13 @@ import set from "lodash.set";
 import { DependencyWarning } from "../lib/types";
 import * as RC from "../nodesecurerc.js";
 import {
+  pipeline,
   convertBooleanAsCheckResult,
   CheckableFunction,
   CheckResult,
   PipelineCheckFunctions,
   FAILING_CHECK
-} from "../pipeline/checkable.js";
-import { pipeline } from "../pipeline/index.js";
+} from "../pipeline/index.js";
 
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 

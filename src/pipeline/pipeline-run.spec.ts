@@ -6,7 +6,7 @@ import { expect } from "chai";
 import * as RC from "../nodesecurerc.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 
-import * as pipeline from "./run.js";
+import * as pipeline from "./status.js";
 
 const DEFAULT_RUNTIME_CONFIGURATION: RC.Configuration = {
   rootDir: process.cwd(),
