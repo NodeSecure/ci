@@ -50,11 +50,11 @@ Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/
 import { runPipeline } from "@nodesecure/ci";
 
 const optionsExample = {
-    directory: process.cwd();
-    strategy: "node";
-    vulnerabilities: "all";
-    warnings: "error";
-    reporters: ["console"];
+    directory: process.cwd(),
+    strategy: "node",
+    vulnerabilities: "all",
+    warnings: "error",
+    reporters: ["console"]
 }
 
 await runPipeline(optionsExample);
@@ -143,8 +143,8 @@ In the future, we aim to expose some sort of configuration like this:
 ```ts
 {
   rootDir: string;
-  strategy: "npm" | "node" // any kind of supported strategy by @nodesecure/vuln
-  reporter: "console" | "html";
+  strategy: "npm" | "node" | "snyk" | "none" // any kind of supported strategy by @nodesecure/vuln
+  reporters: ("console" | "html")[];
   rules: {
     vulnerabilities: {
         severity: "all" | "high" | "critical" | "medium" | "low" 
