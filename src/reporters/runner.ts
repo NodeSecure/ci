@@ -1,5 +1,5 @@
 import * as RC from "../nodesecurerc.js";
-import { InterpretedPayload } from "../payload";
+import type { InterpretedPayload } from "../payload";
 
 import { consoleReporter } from "./console/index.js";
 import { htmlReporter } from "./html/index.js";

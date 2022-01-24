@@ -5,10 +5,10 @@ import pluralize from "pluralize";
 import ms from "pretty-ms";
 
 import { consolePrinter } from "../../lib/console-printer/index.js";
-import { DependencyWarning } from "../../lib/types";
+import type { DependencyWarning } from "../../lib/types";
 import { reporterTarget } from "../../nodesecurerc.js";
-import { WorkableVulnerability } from "../../payload";
-import * as pipeline from "../../pipeline/status.js";
+import type { WorkableVulnerability } from "../../payload";
+import { pipeline } from "../../pipeline/index.js";
 import { Reporter } from "../reporter.js";
 
 function reportGlobalWarnings(warnings: Array<unknown>): void {

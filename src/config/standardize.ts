@@ -1,4 +1,4 @@
-import { DeepPartialRecord } from "../lib/types";
+import type { DeepPartialRecord } from "../lib/types";
 import * as RC from "../nodesecurerc.js";
 
 import {
