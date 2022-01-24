@@ -1,6 +1,6 @@
 {
   "name": "@nodesecure/ci",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "NodeSecure tool enabling secured continuous delivery",
   "bin": {
     "nsci": "./dist/bin/cli.js"
