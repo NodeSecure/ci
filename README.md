@@ -40,7 +40,12 @@ Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/
 
 ## Usage example
 
-@nodesecure/ci can be used as a Script or as an API (GitHub action coming soon).
+@nodesecure/ci can be used as a Script, as an API or [through the GitHub action](https://github.com/marketplace/actions/nodesecure-continuous-integration)
+
+Let's see how to use @nodesecure/ci in these three different ways:
+- API
+- Script
+- GitHub Action
 
 ### API
 
@@ -101,10 +106,16 @@ If any warning or dependency is met, the pipeline will eventually fail depending
     <img src="https://user-images.githubusercontent.com/43391199/147159090-72a5f570-2091-4724-af34-21dd0ee6ca88.gif">
 </p>
 
+### GitHub Action
+
+[The documentation of the @nodesecure/ci GitHub Action is detailed here](https://github.com/marketplace/actions/nodesecure-continuous-integration) 
+
 ### Custom configuration
 
-For now, the configuration is managed internally and is configurable through
-the CLI (when using the tool as a script).
+For now, the configuration is managed internally and is only configurable there:
+- via the CLI when using as a script
+- via the API options when using the exposed Node.js module
+- via the .yaml config file for the GitHub action
 
 Add CLI options directly in the package.json script 
 
