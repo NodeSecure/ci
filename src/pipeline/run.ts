@@ -3,9 +3,11 @@ import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
 import { ConfigOptions, standardizeConfig } from "../config/standardize.js";
+import { collectEnvironmentContext } from "../environment/index.js";
 import * as RC from "../nodesecurerc.js";
 import { InterpretedPayload, runPayloadInterpreter } from "../payload/index.js";
 import { reportScannerLoggerEvents, runReporting } from "../reporters/index.js";
+import { reportEnvironmentContext } from "../reporters/internal/environment.js";
 
 import { status } from "./status.js";
 
@@ -75,6 +77,10 @@ export async function runPipeline(
       ...RC.DEFAULT_RUNTIME_CONFIGURATION,
       ...standardizedCliConfig
     } as RC.Configuration;
+
+    const environment = await collectEnvironmentContext(runtimeConfig);
+    await reportEnvironmentContext(runtimeConfig)(environment);
+
     const analysisPayload = await runScannerAnalysis(runtimeConfig);
 
     /**

@@ -5,6 +5,8 @@ type ConsoleMessage = {
   underline: () => ConsoleMessage;
   italic: () => ConsoleMessage;
   bold: () => ConsoleMessage;
+  prefix: (message: string) => ConsoleMessage;
+  suffix: (message: string) => ConsoleMessage;
   print: () => void;
 };
 
@@ -28,12 +30,13 @@ type ConsolePrinter = {
   };
   util: {
     concatOutputs: ConsoleOutput<ConsoleMessage, string[]>;
+    emptyLine: () => void;
   };
 };
 
-function createConsoleMessage(msg: string): ConsoleMessage {
+function createConsoleMessage(message: string): ConsoleMessage {
   return {
-    message: msg,
+    message,
     bold() {
       this.message = consolePrinter.decoration.bold(this.message);
 
@@ -46,6 +49,16 @@ function createConsoleMessage(msg: string): ConsoleMessage {
     },
     underline() {
       this.message = consolePrinter.decoration.underline(this.message);
+
+      return this;
+    },
+    prefix(msg?: string) {
+      this.message = `${msg} ${this.message}`;
+
+      return this;
+    },
+    suffix(msg?: string) {
+      this.message = `${this.message} ${msg}`;
 
       return this;
     },
@@ -74,6 +87,7 @@ export const consolePrinter: ConsolePrinter = {
   },
   util: {
     concatOutputs: (messages: string[], delimiter = " ") =>
-      createConsoleMessage(messages.join(delimiter))
+      createConsoleMessage(messages.join(delimiter)),
+    emptyLine: () => console.log()
   }
 };
