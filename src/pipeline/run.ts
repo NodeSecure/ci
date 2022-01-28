@@ -6,7 +6,11 @@ import { ConfigOptions, standardizeConfig } from "../config/standardize.js";
 import { collectEnvironmentContext } from "../environment/index.js";
 import * as RC from "../nodesecurerc.js";
 import { InterpretedPayload, runPayloadInterpreter } from "../payload/index.js";
-import { reportScannerLoggerEvents, runReporting } from "../reporters/index.js";
+import {
+  reportScannerAnalysis,
+  reportScannerLoggerEvents,
+  runReporting
+} from "../reporters/index.js";
 import { reportEnvironmentContext } from "../reporters/internal/environment.js";
 
 import { status } from "./status.js";
@@ -17,15 +21,8 @@ async function runScannerAnalysis(
   const { strategy } = await vuln.setStrategy(
     vuln.strategies[runtimeConfig.strategy]
   );
-  let logger;
-  /**
-   * If the "console" reporter is selected, we enhance the reporting by attaching
-   * an external logger from the @nodesecure/scanner.
-   */
-  if (runtimeConfig.reporters.includes("console")) {
-    logger = new scanner.Logger();
-    reportScannerLoggerEvents(logger);
-  }
+  const logger = new scanner.Logger();
+  reportScannerLoggerEvents(logger);
 
   const payload = await scanner.cwd(
     runtimeConfig.rootDir,
@@ -34,6 +31,8 @@ async function runScannerAnalysis(
     },
     logger
   );
+
+  reportScannerAnalysis(payload);
 
   return payload;
 }
@@ -79,7 +78,7 @@ export async function runPipeline(
     } as RC.Configuration;
 
     const environment = await collectEnvironmentContext(runtimeConfig);
-    await reportEnvironmentContext(runtimeConfig)(environment);
+    reportEnvironmentContext(runtimeConfig)(environment);
 
     const analysisPayload = await runScannerAnalysis(runtimeConfig);
 

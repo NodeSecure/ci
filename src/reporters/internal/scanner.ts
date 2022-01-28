@@ -1,4 +1,4 @@
-import { Logger, ScannerLoggerEvents } from "@nodesecure/scanner";
+import { Logger, Scanner, ScannerLoggerEvents } from "@nodesecure/scanner";
 import Spinner from "@slimio/async-cli-spinner";
 import ms from "pretty-ms";
 
@@ -65,4 +65,12 @@ export function reportScannerLoggerEvents(logger: Logger): void {
 
     spinner.succeed(endMessageWithElapsedTime);
   });
+}
+
+export function reportScannerAnalysis(
+  _analysisPayload: Scanner.Payload
+): (logger: Logger) => void {
+  return (logger) => {
+    reportScannerLoggerEvents(logger);
+  };
 }

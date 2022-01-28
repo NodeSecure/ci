@@ -6,7 +6,7 @@ import { reportEnvironmentContext } from "./environment.js";
 
 export const internalReporter: Reporter<
   RC.Configuration,
-  (env: EnvironmentContext) => Promise<void>
+  (env: EnvironmentContext) => void
 > = {
   type: RC.reporterTarget.CONSOLE,
   report: reportEnvironmentContext
