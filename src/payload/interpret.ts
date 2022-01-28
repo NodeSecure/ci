@@ -143,14 +143,14 @@ function checkDependenciesVulns(
   };
 }
 
-export type InterpretedPayload = {
+export type OutcomePayloadFromPipelineChecks = {
   status: pipeline.Status;
   data: CompactedScannerPayload;
 };
 
 function interpretPayloadChecks(
   pipelineCheckFunctions: PipelineCheckFunctions
-): InterpretedPayload {
+): OutcomePayloadFromPipelineChecks {
   const pipelineFunctionsResult = pipelineCheckFunctions.reduce<{
     checks: CheckResult[];
     data: CompactedScannerPayload;
@@ -199,7 +199,7 @@ function interpretPayloadChecks(
 export function runPayloadInterpreter(
   payload: Scanner.Payload,
   rc: RC.Configuration
-): InterpretedPayload {
+): OutcomePayloadFromPipelineChecks {
   const { warnings, dependencies } = extractScannerPayload(payload);
 
   return interpretPayloadChecks([

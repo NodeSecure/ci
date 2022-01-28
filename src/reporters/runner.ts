@@ -1,17 +1,16 @@
 import * as RC from "../nodesecurerc.js";
-import type { InterpretedPayload } from "../payload";
+import type { OutcomePayloadFromPipelineChecks } from "../payload";
 
-import { consoleReporter } from "./console/index.js";
-import { htmlReporter } from "./html/index.js";
+import * as postPipelineReporting from "./post-pipeline/index.js";
 
 function initializeReporter(reporter: RC.ReporterTarget) {
   return reporter === RC.reporterTarget.CONSOLE
-    ? consoleReporter
-    : htmlReporter;
+    ? postPipelineReporting.consoleReporter
+    : postPipelineReporting.htmlReporter;
 }
 
 export async function runReporting(
-  payload: InterpretedPayload,
+  payload: OutcomePayloadFromPipelineChecks,
   rc: RC.Configuration
 ): Promise<void> {
   const reportersTasks = rc.reporters.map((reporter) => {

@@ -5,7 +5,10 @@ import * as vuln from "@nodesecure/vuln";
 import { ConfigOptions, standardizeConfig } from "../config/standardize.js";
 import { collectEnvironmentContext } from "../environment/index.js";
 import * as RC from "../nodesecurerc.js";
-import { InterpretedPayload, runPayloadInterpreter } from "../payload/index.js";
+import {
+  OutcomePayloadFromPipelineChecks,
+  runPayloadInterpreter
+} from "../payload/index.js";
 import {
   reportScannerAnalysis,
   reportScannerLoggerEvents,
@@ -53,7 +56,7 @@ async function runPayloadChecks(
   payload: Scanner.Payload,
   rc: RC.Configuration,
   autoExitAfterFailure: boolean
-): Promise<Maybe<InterpretedPayload>> {
+): Promise<Maybe<OutcomePayloadFromPipelineChecks>> {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
   await runReporting(interpretedPayload, rc);
 
@@ -66,7 +69,7 @@ async function runPayloadChecks(
 
 export async function runPipeline(
   options: ConfigOptions & { autoExitAfterFailure: boolean }
-): Promise<Maybe<InterpretedPayload>> {
+): Promise<Maybe<OutcomePayloadFromPipelineChecks>> {
   try {
     const defaultAutoExitAfterFailure =
       (options && options.autoExitAfterFailure) ?? true;

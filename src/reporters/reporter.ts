@@ -1,7 +1,10 @@
 import { ReporterTarget } from "../nodesecurerc.js";
-import { InterpretedPayload } from "../payload/index.js";
+import { OutcomePayloadFromPipelineChecks } from "../payload/index.js";
 
-export type Reporter<T = InterpretedPayload, R = Promise<void>> = {
+export type Reporter<
+  T = OutcomePayloadFromPipelineChecks,
+  R = Promise<void>
+> = {
   type: ReporterTarget;
   report: (payload: T) => R;
 };
