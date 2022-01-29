@@ -91,3 +91,7 @@ export const consolePrinter: ConsolePrinter = {
     emptyLine: () => console.log()
   }
 };
+
+export function removeWhiteSpaces(msg: string) {
+  return msg.replace(/\s\s+/g, " ");
+}
