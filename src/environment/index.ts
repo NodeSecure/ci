@@ -56,7 +56,7 @@ function getFallbackStrategy(strategy: RC.OutputStrategy): RC.OutputStrategy {
   return strategy === "NONE" ? strategy : RC.vulnStrategy.node;
 }
 
-export async function collectEnvironmentContext({
+export async function analyzeEnvironmentContext({
   rootDir,
   strategy
 }: RC.Configuration): Promise<EnvironmentContext> {

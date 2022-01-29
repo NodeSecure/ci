@@ -1,8 +1,11 @@
 import { Logger, Scanner, ScannerLoggerEvents } from "@nodesecure/scanner";
 import Spinner from "@slimio/async-cli-spinner";
+import pluralize from "pluralize";
 import ms from "pretty-ms";
 
 import { consolePrinter } from "../../lib/console-printer/index.js";
+import * as RC from "../../nodesecurerc.js";
+import { Reporter } from "../reporter.js";
 
 /**
  * This report has nothing to do with console or html reporters. This function
@@ -67,10 +70,33 @@ export function reportScannerLoggerEvents(logger: Logger): void {
   });
 }
 
-export function reportScannerAnalysis(
-  _analysisPayload: Scanner.Payload
-): (logger: Logger) => void {
-  return (logger) => {
-    reportScannerLoggerEvents(logger);
+function reportScannerDependencies(payload: Scanner.Payload) {
+  const { dependencies } = payload;
+  const numberOfDeps = Object.keys(dependencies).length;
+  consolePrinter.util
+    .concatOutputs([
+      consolePrinter.font.standard(`analyzed`).message,
+      consolePrinter.font.highlight(
+        `${numberOfDeps} ${pluralize("dependencies", numberOfDeps)}`
+      ).message
+    ])
+    .prefix(consolePrinter.font.success(payload.rootDependencyName).message)
+    .print();
+}
+
+function reportScannerAnalysis(_payload: unknown): (log: Logger) => Generator {
+  return function* report(logger: Logger) {
+    while (true) {
+      reportScannerLoggerEvents(logger);
+      reportScannerDependencies((yield) as Scanner.Payload);
+    }
   };
 }
+
+export const scannerReporter: Reporter<
+  undefined,
+  (logger: Logger) => Generator
+> = {
+  type: RC.reporterTarget.CONSOLE,
+  report: reportScannerAnalysis
+};

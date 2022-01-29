@@ -7,7 +7,7 @@ import { expect } from "chai";
 
 import * as RC from "../nodesecurerc.js";
 
-import { collectEnvironmentContext } from "./index.js";
+import { analyzeEnvironmentContext } from "./index.js";
 
 const fixtureEnvironment = {
   yarn: {
@@ -62,7 +62,7 @@ describe("Environment data collection", () => {
       it("should find the yarn lockfile at the given location", async () => {
         expect(
           (
-            await collectEnvironmentContext({
+            await analyzeEnvironmentContext({
               ...RC.DEFAULT_RUNTIME_CONFIGURATION,
               rootDir: getFixtureFolderPath(fixtureEnvironment.yarn.folderName)
             })
@@ -75,7 +75,7 @@ describe("Environment data collection", () => {
 
       it("should find the shrinkwrap at the given location", async () => {
         expect(
-          await collectEnvironmentContext({
+          await analyzeEnvironmentContext({
             ...RC.DEFAULT_RUNTIME_CONFIGURATION,
             rootDir: getFixtureFolderPath(
               fixtureEnvironment.shrinkwrap.folderName
@@ -93,7 +93,7 @@ describe("Environment data collection", () => {
       it("should find the package-lock lockfile at the given location", async () => {
         expect(
           (
-            await collectEnvironmentContext({
+            await analyzeEnvironmentContext({
               ...RC.DEFAULT_RUNTIME_CONFIGURATION,
               rootDir: getFixtureFolderPath(
                 fixtureEnvironment.packageLock.folderName
@@ -109,7 +109,7 @@ describe("Environment data collection", () => {
       it("should fallback to 'none' when no lockfile is found at the given location", async () => {
         expect(
           (
-            await collectEnvironmentContext({
+            await analyzeEnvironmentContext({
               ...RC.DEFAULT_RUNTIME_CONFIGURATION,
               rootDir: getFixtureFolderPath(
                 fixtureEnvironment.noLockFile.folderName
@@ -126,7 +126,7 @@ describe("Environment data collection", () => {
     describe("When dealing with multiple lockfiles", () => {
       it("should keep the package-lock file", async () => {
         expect(
-          await collectEnvironmentContext({
+          await analyzeEnvironmentContext({
             ...RC.DEFAULT_RUNTIME_CONFIGURATION,
             rootDir: getFixtureFolderPath(
               fixtureEnvironment.multipleLockFiles.folderName
@@ -146,7 +146,7 @@ describe("Environment data collection", () => {
       describe("When the lockfile is missing or incompatible with the environment", () => {
         it("should fallback to 'NODE' strategy", async () => {
           expect(
-            await collectEnvironmentContext({
+            await analyzeEnvironmentContext({
               ...RC.DEFAULT_RUNTIME_CONFIGURATION,
               strategy: "NPM_AUDIT",
               rootDir: getFixtureFolderPath(fixtureEnvironment.yarn.folderName)
@@ -160,7 +160,7 @@ describe("Environment data collection", () => {
           });
 
           expect(
-            await collectEnvironmentContext({
+            await analyzeEnvironmentContext({
               ...RC.DEFAULT_RUNTIME_CONFIGURATION,
               strategy: "NPM_AUDIT",
               rootDir: getFixtureFolderPath(
@@ -182,7 +182,7 @@ describe("Environment data collection", () => {
       it("should not fallback to any strategy", async () => {
         const SAME_NODE_STRATEGY = "SECURITY_WG";
         expect(
-          await collectEnvironmentContext({
+          await analyzeEnvironmentContext({
             ...RC.DEFAULT_RUNTIME_CONFIGURATION,
             strategy: SAME_NODE_STRATEGY,
             rootDir: getFixtureFolderPath(
@@ -200,7 +200,7 @@ describe("Environment data collection", () => {
         const SAME_NONE_STRATEGY = "NONE";
 
         expect(
-          await collectEnvironmentContext({
+          await analyzeEnvironmentContext({
             ...RC.DEFAULT_RUNTIME_CONFIGURATION,
             strategy: SAME_NONE_STRATEGY,
             rootDir: getFixtureFolderPath(fixtureEnvironment.yarn.folderName)

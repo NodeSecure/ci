@@ -1,10 +1,10 @@
 import { EnvironmentContext } from "../../environment";
-import { consolePrinter } from "../../lib/console-printer/index.js";
+import {
+  consolePrinter,
+  removeWhiteSpaces
+} from "../../lib/console-printer/index.js";
 import * as RC from "../../nodesecurerc.js";
-
-function removeWhiteSpaces(msg: string) {
-  return msg.replace(/\s\s+/g, " ");
-}
+import { Reporter } from "../reporter.js";
 
 function invertRecord(obj: Record<string, string>): Record<string, string> {
   const invertedEntries = Object.entries(obj).map(([key, value]) => [
@@ -101,7 +101,7 @@ function reportLockFileContext(
     .print();
 }
 
-export function reportEnvironmentContext(
+function reportEnvironmentContext(
   rc: RC.Configuration
 ): (env: EnvironmentContext) => void {
   return (env) => {
@@ -109,3 +109,11 @@ export function reportEnvironmentContext(
     reportLockFileContext(env, rc);
   };
 }
+
+export const environmentContextReporter: Reporter<
+  RC.Configuration,
+  (env: EnvironmentContext) => void
+> = {
+  type: RC.reporterTarget.CONSOLE,
+  report: reportEnvironmentContext
+};
