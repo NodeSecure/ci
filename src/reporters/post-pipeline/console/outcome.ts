@@ -50,7 +50,7 @@ export function printPipelineOutcome(
 
   const depsWarningsConsoleMsg =
     warningsMode === "off"
-      ? consolePrinter.font.info("")
+      ? consolePrinter.font.info("⚠ dependency warnings skipped")
       : getStatsConsoleMessage(
           "dependency warnings",
           numberOfDependencyWarnings,
@@ -66,7 +66,9 @@ export function printPipelineOutcome(
   consolePrinter.util
     .concatOutputs([
       globalWarningsConsoleMsg.bold().message,
+      consolePrinter.font.standard("|").message,
       depsWarningsConsoleMsg.bold().message,
+      consolePrinter.font.standard("|").message,
       vulnConsoleMsg.bold().message
     ])
     .print();

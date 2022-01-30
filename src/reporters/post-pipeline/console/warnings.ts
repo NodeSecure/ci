@@ -69,6 +69,11 @@ export function reportDependencyWarnings(
     )
       .bold()
       .print();
+  } else if (warningsMode === "off") {
+    consolePrinter.font
+      .info(`⚠ dependency warnings were skipped`)
+      .bold()
+      .print();
   } else {
     consolePrinter.font.success(`✓ 0 dependency warnings`).bold().print();
   }
