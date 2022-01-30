@@ -15,12 +15,15 @@ function invertRecord(obj: Record<string, string>): Record<string, string> {
   return Object.fromEntries(invertedEntries);
 }
 
+const vulnStrategiesLabels = invertRecord(RC.vulnStrategy);
+
 function dumpInputCommand(rc: RC.Configuration): void {
   const inputStrategy = invertRecord(RC.vulnStrategy)[rc.strategy];
   const inputVulnerability = rc.vulnerabilitySeverity;
   const inputWarnings =
     typeof rc.warnings === "string" ? rc.warnings : "object-literal";
-  const reporters = rc.reporters.length === 0 ? "''" : rc.reporters.join(", ");
+  const reporters =
+    rc.reporters.length === 0 ? undefined : rc.reporters.join(", ");
 
   consolePrinter.util
     .concatOutputs([
@@ -28,9 +31,10 @@ function dumpInputCommand(rc: RC.Configuration): void {
       consolePrinter.font.standard(`--vulnerabilities=${inputVulnerability} `)
         .message,
       consolePrinter.font.standard(`--warnings=${inputWarnings}`).message,
-      consolePrinter.font.standard(`--reporters=${reporters}`).message
+      consolePrinter.font.standard(reporters ? `--reporters=${reporters}` : "")
+        .message
     ])
-    .prefix(consolePrinter.font.info("command dump").message)
+    .prefix(consolePrinter.font.info("node_modules/.bin/nsci").message)
     .print();
 }
 
@@ -67,12 +71,15 @@ function reportLockFileContext(
       .print();
   }
 
+  const rcStrategy = vulnStrategiesLabels[rc.strategy];
+  const compatibleStrategy = vulnStrategiesLabels[env.compatibleStrategy];
+
   if (env.compatibleStrategy !== rc.strategy) {
     consolePrinter.util
       .concatOutputs([
         consolePrinter.font.info("info").message,
         consolePrinter.font.standard("Provided strategy").message,
-        consolePrinter.font.highlight(rc.strategy).message,
+        consolePrinter.font.highlight(rcStrategy).message,
         consolePrinter.font.standard("is not compatible with").message,
         consolePrinter.font.highlight(
           env.lockFile.current === "none" ? "no lockfile" : env.lockFile.current
@@ -84,9 +91,9 @@ function reportLockFileContext(
       .concatOutputs([
         consolePrinter.font.info("info").message,
         consolePrinter.font.standard("Vulnerability strategy swap:").message,
-        consolePrinter.font.highlight(rc.strategy).message,
+        consolePrinter.font.highlight(rcStrategy).message,
         consolePrinter.font.standard("==>").message,
-        consolePrinter.font.highlight(env.compatibleStrategy).message
+        consolePrinter.font.highlight(compatibleStrategy).message
       ])
       .print();
   }
@@ -95,7 +102,7 @@ function reportLockFileContext(
     .concatOutputs([
       consolePrinter.font.info("info").message,
       consolePrinter.font.standard("Using").message,
-      consolePrinter.font.highlight(env.compatibleStrategy).message,
+      consolePrinter.font.highlight(compatibleStrategy).message,
       consolePrinter.font.standard("vulnerability strategy").message
     ])
     .print();
