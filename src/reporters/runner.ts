@@ -16,7 +16,7 @@ export async function runReporting(
   const reportersTasks = rc.reporters.map((reporter) => {
     const { report } = initializeReporter(reporter);
 
-    return report(payload);
+    return report({ ...payload, ...rc });
   });
 
   await Promise.all(reportersTasks);

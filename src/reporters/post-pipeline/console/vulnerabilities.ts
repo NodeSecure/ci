@@ -1,10 +1,13 @@
 import { Strategy } from "@nodesecure/vuln";
 import pluralize from "pluralize";
 
-import { consolePrinter } from "../../../lib/console-printer/index.js";
+import {
+  ConsoleMessage,
+  consolePrinter
+} from "../../../lib/console-printer/index.js";
 import type { WorkableVulnerability } from "../../../payload";
 
-function getColorBySeverity(severity: Strategy.Severity) {
+function getColorBySeverity(severity: Strategy.Severity): ConsoleMessage {
   switch (severity) {
     case "critical":
       return consolePrinter.font.highlight(severity);
@@ -23,31 +26,33 @@ function getColorBySeverity(severity: Strategy.Severity) {
 
 export function reportDependencyVulns(
   vulnerabilities: WorkableVulnerability[]
-) {
+): void {
   const vulnsLength = vulnerabilities.length;
   if (vulnsLength > 0) {
     consolePrinter.util
       .concatOutputs([
-        consolePrinter.font.error("[DEPENDENCY VULNERABILITIES]:").bold()
-          .message,
-        consolePrinter.font.error(`${vulnsLength}`).bold().message,
-        consolePrinter.font.error(
-          `${pluralize("vulnerability", vulnsLength)} found`
-        ).message
+        consolePrinter.font.error(`✖ ${vulnsLength}`).bold().message,
+        consolePrinter.font.error(`${pluralize("vulnerability", vulnsLength)}`)
+          .message
       ])
       .print();
-  }
 
-  for (const vuln of vulnerabilities) {
-    const vulnRanges = vuln.vulnerableRanges.join(", ");
-    const vulnColored = getColorBySeverity(vuln.severity);
-    consolePrinter.util
-      .concatOutputs([
-        vulnColored.bold().underline().message,
-        consolePrinter.font.standard(`[${vuln.package}]`).bold().message,
-        consolePrinter.font.standard(vuln.title).italic().message,
-        consolePrinter.font.info(vulnRanges).bold().message
-      ])
+    for (const vuln of vulnerabilities) {
+      const vulnRanges = vuln.vulnerableRanges.join(", ");
+      const vulnColored = getColorBySeverity(vuln.severity);
+      consolePrinter.util
+        .concatOutputs([
+          vulnColored.bold().underline().message,
+          consolePrinter.font.standard(`[${vuln.package}]`).bold().message,
+          consolePrinter.font.standard(vuln.title).italic().message,
+          consolePrinter.font.info(vulnRanges).bold().message
+        ])
+        .print();
+    }
+  } else {
+    consolePrinter.font
+      .success("✓ 0 vulnerabilities detected in the dependency tree")
+      .bold()
       .print();
   }
 }

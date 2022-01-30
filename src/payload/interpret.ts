@@ -42,13 +42,19 @@ function checkDependenciesWarnings(
     };
   }
 
-  if (runtimeConfiguration.warnings === "error") {
+  if (
+    runtimeConfiguration.warnings === "error" ||
+    runtimeConfiguration.warnings === "warning"
+  ) {
     const allDependencyWarnings = warnings.filter(
       (dependency) => dependency.warnings.length > 0
     );
 
     return {
-      result: convertBooleanAsCheckResult(allDependencyWarnings.length > 0),
+      result:
+        runtimeConfiguration.warnings === "error"
+          ? convertBooleanAsCheckResult(allDependencyWarnings.length > 0)
+          : convertBooleanAsCheckResult(false),
       data: {
         key: "dependencies.warnings",
         value: allDependencyWarnings

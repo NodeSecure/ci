@@ -1,6 +1,6 @@
 import kleur from "kleur";
 
-type ConsoleMessage = {
+export type ConsoleMessage = {
   message: string;
   underline: () => ConsoleMessage;
   italic: () => ConsoleMessage;
@@ -21,7 +21,8 @@ type ConsolePrinter = {
     info: ConsoleOutput<ConsoleMessage>;
     error: ConsoleOutput<ConsoleMessage>;
     success: ConsoleOutput<ConsoleMessage>;
-    failure: ConsoleOutput<ConsoleMessage>;
+    highlightedSuccess: ConsoleOutput<ConsoleMessage>;
+    highlightedError: ConsoleOutput<ConsoleMessage>;
   };
   decoration: {
     bold: ConsoleOutput;
@@ -75,10 +76,11 @@ export const consolePrinter: ConsolePrinter = {
       createConsoleMessage(kleur.magenta(message)),
     info: (message: string) => createConsoleMessage(kleur.yellow(message)),
     error: (message: string) => createConsoleMessage(kleur.red(message)),
-    success: (message: string) =>
-      createConsoleMessage(kleur.bgGreen().white(message)),
-    failure: (message: string) =>
-      createConsoleMessage(kleur.bgRed().white(message))
+    success: (message: string) => createConsoleMessage(kleur.green(message)),
+    highlightedSuccess: (message: string) =>
+      createConsoleMessage(kleur.bgGreen().bold().white(message)),
+    highlightedError: (message: string) =>
+      createConsoleMessage(kleur.bgRed().bold().white(message))
   },
   decoration: {
     underline: (message: string) => kleur.underline(message),

@@ -2,20 +2,56 @@ import pluralize from "pluralize";
 
 import { consolePrinter } from "../../../lib/console-printer/index.js";
 import type { DependencyWarning } from "../../../lib/types";
+import { Warnings } from "../../../nodesecurerc.js";
+
+import { printWarnOrError } from "./util.js";
 
 export function reportGlobalWarnings(warnings: Array<unknown>): void {
   if (warnings.length > 0) {
-    consolePrinter.util
-      .concatOutputs([
-        consolePrinter.font.error("[GLOBAL WARNING]:").bold().message,
-        consolePrinter.font.error(`${warnings.length} global warnings found`)
-          .message
-      ])
+    consolePrinter.font
+      .error(
+        `✖ ${warnings.length} global ${pluralize("warning", warnings.length)}`
+      )
+      .bold()
       .print();
+  } else {
+    consolePrinter.font.success("✓ 0 global warnings").bold().print();
   }
 }
 
-export function reportDependencyWarnings(warnings: DependencyWarning[]): void {
+function printDependencyWarnings(
+  warnings: DependencyWarning[],
+  warningsMode: Warnings
+): void {
+  for (const warning of warnings) {
+    for (const details of warning.warnings) {
+      const warningPath = consolePrinter.font.standard(
+        `${details.file ? `${warning.package}/${details.file}` : ""}`
+      ).message;
+
+      const warningLocation = consolePrinter.font.info(
+        `${
+          details.file
+            ? `${details.location.flatMap((location) => location.join(":"))}`
+            : ""
+        }`
+      ).message;
+
+      consolePrinter.util
+        .concatOutputs([
+          printWarnOrError(warningsMode)(details.kind).bold().underline()
+            .message,
+          `${warningPath}:${warningLocation}`
+        ])
+        .print();
+    }
+  }
+}
+
+export function reportDependencyWarnings(
+  warnings: DependencyWarning[],
+  warningsMode: Warnings
+): void {
   const numberOfDependencyWarnings = warnings.reduce(
     (accumulatedNumberOfWarnings, dependencyWarning) =>
       accumulatedNumberOfWarnings + dependencyWarning.warnings.length,
@@ -23,38 +59,17 @@ export function reportDependencyWarnings(warnings: DependencyWarning[]): void {
   );
 
   if (numberOfDependencyWarnings > 0) {
-    consolePrinter.util
-      .concatOutputs([
-        consolePrinter.font.error("[DEPENDENCY WARNINGS]:").bold().message,
-        consolePrinter.font.error(`${numberOfDependencyWarnings}`).bold()
-          .message,
-        consolePrinter.font.error(
-          `${pluralize("warning", numberOfDependencyWarnings)} found`
-        ).message
-      ])
+    printDependencyWarnings(warnings, warningsMode);
+
+    printWarnOrError(warningsMode)(
+      `✖ ${numberOfDependencyWarnings} dependency ${pluralize(
+        "warning",
+        numberOfDependencyWarnings
+      )}`
+    )
+      .bold()
       .print();
-
-    for (const warning of warnings) {
-      for (const details of warning.warnings) {
-        const warningPath = consolePrinter.font.standard(
-          `${details.file ? `${warning.package}/${details.file}` : ""}`
-        ).message;
-
-        const warningLocation = consolePrinter.font.info(
-          `${
-            details.file
-              ? `${details.location.flatMap((location) => location.join(":"))}`
-              : ""
-          }`
-        ).message;
-
-        consolePrinter.util
-          .concatOutputs([
-            consolePrinter.font.error(details.kind).bold().underline().message,
-            `${warningPath}:${warningLocation}`
-          ])
-          .print();
-      }
-    }
+  } else {
+    consolePrinter.font.success(`✓ 0 dependency warnings`).bold().print();
   }
 }

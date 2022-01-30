@@ -75,12 +75,12 @@ function reportScannerDependencies(payload: Scanner.Payload) {
   const numberOfDeps = Object.keys(dependencies).length;
   consolePrinter.util
     .concatOutputs([
-      consolePrinter.font.standard(`analyzed`).message,
-      consolePrinter.font.highlight(
-        `${numberOfDeps} ${pluralize("dependencies", numberOfDeps)}`
-      ).message
+      consolePrinter.font
+        .highlight(`${numberOfDeps} ${pluralize("dependencies", numberOfDeps)}`)
+        .bold().message,
+      consolePrinter.font.standard(`analyzed from`).message,
+      consolePrinter.font.info(payload.rootDependencyName).message
     ])
-    .prefix(consolePrinter.font.success(payload.rootDependencyName).message)
     .print();
 }
 
