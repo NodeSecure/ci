@@ -63,7 +63,8 @@ const optionsExample = {
 }
 
 await runPipeline(optionsExample);
-// => the process can either exit with error code (1) or no error code (0), depending on the pipeline status.
+// => the process can either exit with error code (1) 
+// or no error code (0), depending on the pipeline status.
 ```
 
 If you need a more fine-grained control over the pipeline process, you can
@@ -103,7 +104,7 @@ Once the script is run, the @nodesecure/ci pipeline will look for dependencies w
 If any warning or dependency is met, the pipeline will eventually fail depending on the provided .nodesecurerc file.
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/43391199/147159090-72a5f570-2091-4724-af34-21dd0ee6ca88.gif">
+    <img src="https://user-images.githubusercontent.com/43391199/151719690-e382829b-9844-467e-9e74-256bfab82df6.gif">
 </p>
 
 ### GitHub Action
