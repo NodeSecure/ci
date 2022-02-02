@@ -45,7 +45,7 @@ function generateDefaultRC(): Configuration {
   return {
     rootDir: process.cwd(),
     strategy: vulnStrategy.npm,
-    reporters: [],
+    reporters: [reporterTarget.CONSOLE],
     vulnerabilitySeverity: vulnSeverity.ALL,
     warnings: warnings.ERROR
   };

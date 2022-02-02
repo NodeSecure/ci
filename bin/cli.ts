@@ -47,7 +47,8 @@ program
 
   .option(
     "-r, --reporters",
-    `Pipeline reporters. Can be '${availableReporters}'`
+    `Pipeline reporters. Can be '${availableReporters}'`,
+    RC.reporterTarget.CONSOLE
   )
   .example("cli.js --reporters=console,html")
 

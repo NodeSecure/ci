@@ -60,7 +60,7 @@ export const defaultConfigOptions: ConfigOptions = {
   directory: process.cwd(),
   strategy: "npm",
   warnings: RC.warnings.ERROR,
-  reporters: []
+  reporters: [RC.reporterTarget.CONSOLE]
 };
 
 /**
@@ -90,6 +90,12 @@ function adaptConfigOptions(
 export function standardizeConfig(
   externalConfig: ConfigOptions
 ): DeepPartialRecord<RC.Configuration> {
+  console.log(
+    mergeConfigs(
+      adaptConfigOptions(extractValidPropsFromConfig(externalConfig))
+    )
+  );
+
   return mergeConfigs(
     adaptConfigOptions(extractValidPropsFromConfig(externalConfig))
   );
