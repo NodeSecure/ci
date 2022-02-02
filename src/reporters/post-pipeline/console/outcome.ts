@@ -1,3 +1,5 @@
+import pluralize from "pluralize";
+
 import {
   ConsoleMessage,
   consolePrinter
@@ -52,15 +54,15 @@ export function printPipelineOutcome(
     warningsMode === "off"
       ? consolePrinter.font.info("⚠ dependency warnings skipped")
       : getStatsConsoleMessage(
-          "dependency warnings",
+          `dependency ${pluralize("warning", numberOfDependencyWarnings)}`,
           numberOfDependencyWarnings,
           warningsMode
         );
 
   const vulnConsoleMsg = getStatsConsoleMessage(
-    "vulnerabilities",
+    pluralize("vulnerability", vulnerabilities.length),
     vulnerabilities.length,
-    warningsMode
+    "error"
   );
 
   consolePrinter.util

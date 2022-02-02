@@ -29,14 +29,6 @@ export function reportDependencyVulns(
 ): void {
   const vulnsLength = vulnerabilities.length;
   if (vulnsLength > 0) {
-    consolePrinter.util
-      .concatOutputs([
-        consolePrinter.font.error(`✖ ${vulnsLength}`).bold().message,
-        consolePrinter.font.error(`${pluralize("vulnerability", vulnsLength)}`)
-          .message
-      ])
-      .print();
-
     for (const vuln of vulnerabilities) {
       const vulnRanges = vuln.vulnerableRanges.join(", ");
       const vulnColored = getColorBySeverity(vuln.severity);
@@ -49,6 +41,13 @@ export function reportDependencyVulns(
         ])
         .print();
     }
+    consolePrinter.util
+      .concatOutputs([
+        consolePrinter.font.error(`✖ ${vulnsLength}`).bold().message,
+        consolePrinter.font.error(`${pluralize("vulnerability", vulnsLength)}`)
+          .message
+      ])
+      .print();
   } else {
     consolePrinter.font
       .success("✓ 0 vulnerabilities detected in the dependency tree")
