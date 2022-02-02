@@ -90,12 +90,6 @@ function adaptConfigOptions(
 export function standardizeConfig(
   externalConfig: ConfigOptions
 ): DeepPartialRecord<RC.Configuration> {
-  console.log(
-    mergeConfigs(
-      adaptConfigOptions(extractValidPropsFromConfig(externalConfig))
-    )
-  );
-
   return mergeConfigs(
     adaptConfigOptions(extractValidPropsFromConfig(externalConfig))
   );
