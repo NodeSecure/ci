@@ -31,6 +31,20 @@ your project configuration:
 Static Analysis is powered by [@nodesecure/js-x-ray](https://github.com/NodeSecure/js-x-ray) and 
 [@nodesecure/scanner](https://github.com/NodeSecure/scanner).
 
+---
+**NOTE**
+
+For now, TypeScript can't directly be analyzed on the fly. 
+However as you might know, any transpiled TypeScript code is JavaScript code 
+hence can be analyzed.
+
+Moreover, it is recommended to launch the Static Analysis with a source code state as 
+close as possible to the state of your production code (and before minification).
+In fact, you want to make sure that you are not introducing anything malicious 
+when you're compiling your code at some point (for production or when transpiling with TypeScript).
+
+---
+
 | Vulnerabilities Strategy | package-lock.json | yarn.lock |
 |------|--------------|-----------|
 | npm | ✅ | ❌ |
