@@ -1,10 +1,10 @@
 import { expect } from "chai";
 
-import * as RC from "../internal/nsci.js";
+import { Nsci } from "../internal/index.js";
 
 import {
   ExternalRuntimeConfiguration,
-  standardizeConfig
+  standardizeExternalConfig
 } from "./standardize.js";
 
 describe("CLI configuration to Runtime configuration adapter", () => {
@@ -29,7 +29,9 @@ describe("CLI configuration to Runtime configuration adapter", () => {
       };
 
       expect(
-        standardizeConfig(externalOptions as ExternalRuntimeConfiguration)
+        standardizeExternalConfig(
+          externalOptions as ExternalRuntimeConfiguration
+        )
       ).to.deep.equal(finalConfig);
     });
   });
@@ -75,8 +77,10 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
           expect(
-            standardizeConfig(partialConfig as ExternalRuntimeConfiguration)
-          ).to.deep.equal(RC.DEFAULT_NSCI_RUNTIME_CONFIGURATION);
+            standardizeExternalConfig(
+              partialConfig as ExternalRuntimeConfiguration
+            )
+          ).to.deep.equal(Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION);
         }
       );
     });

@@ -1,20 +1,14 @@
 import type { DeepPartialRecord } from "../../lib/types";
-import * as RC from "../internal/nsci.js";
+import { Nsci } from "../internal/index.js";
 
-import {
-  adaptReporters,
-  adaptSeverity,
-  adaptStrategy,
-  adaptWarnings,
-  adaptDirectory
-} from "./adapters.js";
+import { adaptExternalToStandardConfiguration } from "./adapt.js";
 
 export type ExternalRuntimeConfiguration = {
   directory: string;
-  strategy: RC.InputStrategy;
-  vulnerabilities: RC.Severity;
-  warnings: RC.Warnings;
-  reporters: string | RC.ReporterTarget[];
+  strategy: Nsci.InputStrategy;
+  vulnerabilities: Nsci.Severity;
+  warnings: Nsci.Warnings;
+  reporters: string | Nsci.ReporterTarget[];
 };
 
 function isInvalidConfigOption<T>(value: T): boolean {
@@ -44,52 +38,28 @@ function extractOnlyValidPropsFromExternalConfig(
   return Object.fromEntries(filteredEntries);
 }
 
-function mergeConfigs(adaptedConfig: RC.Configuration): RC.Configuration {
+function mergeConfigs(adaptedConfig: Nsci.Configuration): Nsci.Configuration {
   return {
-    ...RC.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+    ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
     /**
      * We override default config with the one provided from the cli or the api
      * which has just been sanitized and adapted to fit the RC format.
      */
     ...adaptedConfig
-  } as RC.Configuration;
+  } as Nsci.Configuration;
 }
 
 export const defaultExternalConfigOptions: ExternalRuntimeConfiguration = {
-  vulnerabilities: RC.vulnSeverity.ALL,
+  vulnerabilities: Nsci.vulnSeverity.ALL,
   directory: process.cwd(),
   strategy: "npm",
-  warnings: RC.warnings.ERROR,
-  reporters: [RC.reporterTarget.CONSOLE]
+  warnings: Nsci.warnings.ERROR,
+  reporters: [Nsci.reporterTarget.CONSOLE]
 };
 
-/**
- * In the first place, we need to adapt options from the either the CLI or
- * the API call in order to be used as a RC.Configuration structure.
- * This adapt takes into account name bindings but also checks validity of values
- * that were supplied from the external world (API or CLI)
- * (e.g: valid severity threshold supplied)
- */
-function adaptExternalToStandardConfiguration(
-  sanitizedOptions: Partial<ExternalRuntimeConfiguration>
-): RC.Configuration {
-  const { vulnerabilities, directory, strategy, warnings, reporters } = {
-    ...defaultExternalConfigOptions,
-    ...sanitizedOptions
-  };
-
-  return {
-    rootDir: adaptDirectory(directory),
-    reporters: adaptReporters(reporters),
-    strategy: adaptStrategy(strategy),
-    vulnerabilitySeverity: adaptSeverity(vulnerabilities),
-    warnings: adaptWarnings(warnings)
-  };
-}
-
-export function standardizeConfig(
+export function standardizeExternalConfig(
   externalConfig: ExternalRuntimeConfiguration
-): DeepPartialRecord<RC.Configuration> {
+): DeepPartialRecord<Nsci.Configuration> {
   return mergeConfigs(
     adaptExternalToStandardConfiguration(
       extractOnlyValidPropsFromExternalConfig(externalConfig)

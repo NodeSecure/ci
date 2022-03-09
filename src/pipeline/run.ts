@@ -4,7 +4,7 @@ import * as vuln from "@nodesecure/vuln";
 
 import {
   ExternalRuntimeConfiguration,
-  standardizeConfig
+  standardizeExternalConfig
 } from "../config/external/standardize.js";
 import * as RC from "../config/internal/nsci.js";
 import { analyzeEnvironmentContext } from "../environment/index.js";
@@ -86,7 +86,7 @@ async function runPayloadChecks(
 async function sanitizeRuntimeConfig(
   options: ExternalRuntimeConfiguration
 ): Promise<RC.Configuration> {
-  const standardizedCliConfig = standardizeConfig(options);
+  const standardizedCliConfig = standardizeExternalConfig(options);
   const runtimeConfig = {
     /**
      * The default @nodesecure/ci runtime configuration comes from a constant
