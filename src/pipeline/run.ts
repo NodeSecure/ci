@@ -6,9 +6,9 @@ import {
   ExternalRuntimeConfiguration,
   standardizeConfig
 } from "../config/external/standardize.js";
+import * as RC from "../config/nodesecurerc.js";
 import { analyzeEnvironmentContext } from "../environment/index.js";
 import { consolePrinter } from "../lib/console-printer/index.js";
-import * as RC from "../nodesecurerc.js";
 import {
   OutcomePayloadFromPipelineChecks,
   runPayloadInterpreter

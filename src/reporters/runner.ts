@@ -1,4 +1,4 @@
-import * as RC from "../nodesecurerc.js";
+import * as RC from "../config/nodesecurerc.js";
 import type { OutcomePayloadFromPipelineChecks } from "../payload";
 
 import * as postPipelineReporting from "./post-pipeline/index.js";

@@ -5,7 +5,7 @@ import path from "path";
 
 import { expect } from "chai";
 
-import * as RC from "../nodesecurerc.js";
+import * as RC from "../config/nodesecurerc.js";
 
 import { analyzeEnvironmentContext } from "./index.js";
 

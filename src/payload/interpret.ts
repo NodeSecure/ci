@@ -3,8 +3,8 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
+import * as RC from "../config/nodesecurerc.js";
 import type { DependencyWarning } from "../lib/types";
-import * as RC from "../nodesecurerc.js";
 import {
   pipeline,
   convertBooleanAsCheckResult,

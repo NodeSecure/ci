@@ -1,9 +1,9 @@
+import * as RC from "../../config/nodesecurerc.js";
 import { EnvironmentContext } from "../../environment";
 import {
   consolePrinter,
   removeWhiteSpaces
 } from "../../lib/console-printer/index.js";
-import * as RC from "../../nodesecurerc.js";
 import { Reporter } from "../reporter.js";
 
 function invertRecord(obj: Record<string, string>): Record<string, string> {

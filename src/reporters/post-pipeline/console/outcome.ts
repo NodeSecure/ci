@@ -1,10 +1,10 @@
 import pluralize from "pluralize";
 
+import { Warnings } from "../../../config/nodesecurerc.js";
 import {
   ConsoleMessage,
   consolePrinter
 } from "../../../lib/console-printer/index.js";
-import { Warnings } from "../../../nodesecurerc.js";
 import type { CompactedScannerPayload } from "../../../payload";
 import { pipeline } from "../../../pipeline/index.js";
 

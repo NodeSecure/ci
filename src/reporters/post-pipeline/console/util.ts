@@ -1,5 +1,5 @@
+import { Warnings } from "../../../config/nodesecurerc";
 import { consolePrinter } from "../../../lib/console-printer/index.js";
-import { Warnings } from "../../../nodesecurerc";
 
 export function printWarnOrError(warningsMode: Warnings) {
   /**

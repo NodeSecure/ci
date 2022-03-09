@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import * as RC from "../../nodesecurerc.js";
+import * as RC from "../nodesecurerc.js";
 
 import {
   ExternalRuntimeConfiguration,

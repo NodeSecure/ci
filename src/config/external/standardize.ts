@@ -1,5 +1,5 @@
 import type { DeepPartialRecord } from "../../lib/types";
-import * as RC from "../../nodesecurerc.js";
+import * as RC from "../nodesecurerc.js";
 
 import {
   adaptReporters,

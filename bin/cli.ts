@@ -2,7 +2,7 @@
 
 import sade from "sade";
 
-import * as RC from "../src/nodesecurerc.js";
+import * as RC from "../src/config/nodesecurerc.js";
 import { runPipeline } from "../src/pipeline/run.js";
 
 function joinExclusiveList<T>(items: T) {
