@@ -1,5 +1,5 @@
-import type { DeepPartialRecord } from "../lib/types";
-import * as RC from "../nodesecurerc.js";
+import type { DeepPartialRecord } from "../../lib/types";
+import * as RC from "../../nodesecurerc.js";
 
 import {
   adaptReporters,
@@ -8,6 +8,14 @@ import {
   adaptWarnings,
   adaptDirectory
 } from "./adapters.js";
+
+export type ExternalRuntimeConfiguration = {
+  directory: string;
+  strategy: RC.InputStrategy;
+  vulnerabilities: RC.Severity;
+  warnings: RC.Warnings;
+  reporters: string | RC.ReporterTarget[];
+};
 
 function isInvalidConfigOption<T>(value: T): boolean {
   const isEmptyString =
@@ -19,9 +27,9 @@ function isInvalidConfigOption<T>(value: T): boolean {
   return isEmptyArray || isEmptyString || isUndefinedOrNull;
 }
 
-function extractValidPropsFromConfig(
-  partialConfig: Partial<ConfigOptions>
-): Partial<ConfigOptions> {
+function extractOnlyValidPropsFromExternalConfig(
+  partialConfig: Partial<ExternalRuntimeConfiguration>
+): Partial<ExternalRuntimeConfiguration> {
   if (!partialConfig) {
     return {};
   }
@@ -47,15 +55,7 @@ function mergeConfigs(adaptedConfig: RC.Configuration): RC.Configuration {
   } as RC.Configuration;
 }
 
-export type ConfigOptions = {
-  directory: string;
-  strategy: RC.InputStrategy;
-  vulnerabilities: RC.Severity;
-  warnings: RC.Warnings;
-  reporters: string | RC.ReporterTarget[];
-};
-
-export const defaultConfigOptions: ConfigOptions = {
+export const defaultExternalConfigOptions: ExternalRuntimeConfiguration = {
   vulnerabilities: RC.vulnSeverity.ALL,
   directory: process.cwd(),
   strategy: "npm",
@@ -70,11 +70,11 @@ export const defaultConfigOptions: ConfigOptions = {
  * that were supplied from the external world (API or CLI)
  * (e.g: valid severity threshold supplied)
  */
-function adaptConfigOptions(
-  sanitizedOptions: Partial<ConfigOptions>
+function adaptExternalToStandardConfiguration(
+  sanitizedOptions: Partial<ExternalRuntimeConfiguration>
 ): RC.Configuration {
   const { vulnerabilities, directory, strategy, warnings, reporters } = {
-    ...defaultConfigOptions,
+    ...defaultExternalConfigOptions,
     ...sanitizedOptions
   };
 
@@ -88,9 +88,11 @@ function adaptConfigOptions(
 }
 
 export function standardizeConfig(
-  externalConfig: ConfigOptions
+  externalConfig: ExternalRuntimeConfiguration
 ): DeepPartialRecord<RC.Configuration> {
   return mergeConfigs(
-    adaptConfigOptions(extractValidPropsFromConfig(externalConfig))
+    adaptExternalToStandardConfiguration(
+      extractOnlyValidPropsFromExternalConfig(externalConfig)
+    )
   );
 }

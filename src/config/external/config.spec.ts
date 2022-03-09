@@ -1,8 +1,11 @@
 import { expect } from "chai";
 
-import * as RC from "../nodesecurerc.js";
+import * as RC from "../../nodesecurerc.js";
 
-import { ConfigOptions, standardizeConfig } from "./standardize.js";
+import {
+  ExternalRuntimeConfiguration,
+  standardizeConfig
+} from "./standardize.js";
 
 describe("CLI configuration to Runtime configuration adapter", () => {
   describe("When providing a complete configuration with valid options", () => {
@@ -25,9 +28,9 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         warnings: "error"
       };
 
-      expect(standardizeConfig(externalOptions as ConfigOptions)).to.deep.equal(
-        finalConfig
-      );
+      expect(
+        standardizeConfig(externalOptions as ExternalRuntimeConfiguration)
+      ).to.deep.equal(finalConfig);
     });
   });
 
@@ -72,7 +75,7 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
           expect(
-            standardizeConfig(partialConfig as ConfigOptions)
+            standardizeConfig(partialConfig as ExternalRuntimeConfiguration)
           ).to.deep.equal(RC.DEFAULT_RUNTIME_CONFIGURATION);
         }
       );

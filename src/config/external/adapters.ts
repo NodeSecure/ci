@@ -1,7 +1,7 @@
 import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
-import * as RC from "../nodesecurerc.js";
+import * as RC from "../../nodesecurerc.js";
 
 function isValidRootDirectory(directory: string): string {
   try {

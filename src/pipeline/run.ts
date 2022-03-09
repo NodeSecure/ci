@@ -2,7 +2,10 @@ import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
-import { ConfigOptions, standardizeConfig } from "../config/standardize.js";
+import {
+  ExternalRuntimeConfiguration,
+  standardizeConfig
+} from "../config/external/standardize.js";
 import { analyzeEnvironmentContext } from "../environment/index.js";
 import { consolePrinter } from "../lib/console-printer/index.js";
 import * as RC from "../nodesecurerc.js";
@@ -81,11 +84,22 @@ async function runPayloadChecks(
 }
 
 async function sanitizeRuntimeConfig(
-  options: ConfigOptions
+  options: ExternalRuntimeConfiguration
 ): Promise<RC.Configuration> {
   const standardizedCliConfig = standardizeConfig(options);
   const runtimeConfig = {
-    // For now, the runtime configuration comes from a in-memory constant.
+    /**
+     * The default @nodesecure/ci runtime configuration comes from a constant
+     * and should be used as a fallback when no external config or a partial one
+     * is provided.
+     * The external config can be coming from three distincts sources:
+     * - NodeSecure runtime config (.nodesecurerc file)
+     * - CLI config when running the script through the CLI
+     * - API config when using the module API
+     *
+     * This ensure that we have a consistent representation of the @nodesecure/ci
+     * runtime configuration wherever the options are coming from.
+     */
     ...RC.DEFAULT_RUNTIME_CONFIGURATION,
     ...standardizedCliConfig
   } as RC.Configuration;
@@ -105,7 +119,7 @@ async function sanitizeRuntimeConfig(
 }
 
 export async function runPipeline(
-  options: ConfigOptions & { autoExitAfterFailure: boolean }
+  options: ExternalRuntimeConfiguration & { autoExitAfterFailure: boolean }
 ): Promise<Maybe<OutcomePayloadFromPipelineChecks>> {
   try {
     const defaultAutoExitAfterFailure =
