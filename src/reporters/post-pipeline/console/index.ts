@@ -2,7 +2,7 @@ import { performance } from "perf_hooks";
 
 import ms from "pretty-ms";
 
-import * as RC from "../../../config/nodesecurerc.js";
+import * as RC from "../../../config/internal/nsci.js";
 import { consolePrinter } from "../../../lib/console-printer/index.js";
 import { OutcomePayloadFromPipelineChecks } from "../../../payload/interpret.js";
 import { Reporter } from "../../reporter.js";

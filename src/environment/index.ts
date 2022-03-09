@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import * as RC from "../config/nodesecurerc.js";
+import * as RC from "../config/internal/nsci.js";
 import { ValueOf } from "../lib/types";
 
 type LockFile = ValueOf<typeof lockFiles>;

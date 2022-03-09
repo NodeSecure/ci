@@ -3,7 +3,7 @@ import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
-import * as RC from "../config/nodesecurerc.js";
+import * as RC from "../config/internal/nsci.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 
 import * as pipeline from "./status.js";

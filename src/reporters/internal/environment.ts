@@ -1,4 +1,4 @@
-import * as RC from "../../config/nodesecurerc.js";
+import * as RC from "../../config/internal/nsci.js";
 import { EnvironmentContext } from "../../environment";
 import {
   consolePrinter,

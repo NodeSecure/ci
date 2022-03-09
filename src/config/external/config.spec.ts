@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import * as RC from "../nodesecurerc.js";
+import * as RC from "../internal/nsci.js";
 
 import {
   ExternalRuntimeConfiguration,
@@ -76,7 +76,7 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         (partialConfig) => {
           expect(
             standardizeConfig(partialConfig as ExternalRuntimeConfiguration)
-          ).to.deep.equal(RC.DEFAULT_RUNTIME_CONFIGURATION);
+          ).to.deep.equal(RC.DEFAULT_NSCI_RUNTIME_CONFIGURATION);
         }
       );
     });

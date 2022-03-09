@@ -1,7 +1,7 @@
 import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
-import * as RC from "../nodesecurerc.js";
+import * as RC from "../internal/nsci.js";
 
 function isValidRootDirectory(directory: string): string {
   try {
@@ -9,7 +9,7 @@ function isValidRootDirectory(directory: string): string {
 
     return resolve(directory);
   } catch {
-    return RC.DEFAULT_RUNTIME_CONFIGURATION.rootDir;
+    return RC.DEFAULT_NSCI_RUNTIME_CONFIGURATION.rootDir;
   }
 }
 

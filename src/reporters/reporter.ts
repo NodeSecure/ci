@@ -1,4 +1,4 @@
-import { ReporterTarget } from "../config/nodesecurerc.js";
+import { ReporterTarget } from "../config/internal/nsci.js";
 import { OutcomePayloadFromPipelineChecks } from "../payload/index.js";
 
 export type Reporter<T = OutcomePayloadFromPipelineChecks, R = void> = {

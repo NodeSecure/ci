@@ -3,7 +3,7 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
-import * as RC from "../config/nodesecurerc.js";
+import * as RC from "../config/internal/nsci.js";
 import type { DependencyWarning } from "../lib/types";
 import {
   pipeline,

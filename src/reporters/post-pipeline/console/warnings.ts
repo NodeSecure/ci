@@ -1,6 +1,6 @@
 import pluralize from "pluralize";
 
-import { Warnings } from "../../../config/nodesecurerc.js";
+import { Warnings } from "../../../config/internal/nsci.js";
 import { consolePrinter } from "../../../lib/console-printer/index.js";
 import type { DependencyWarning } from "../../../lib/types";
 

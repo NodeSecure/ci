@@ -1,4 +1,4 @@
-import { ValueOf } from "../lib/types";
+import { ValueOf } from "../../lib/types";
 
 export const vulnStrategy = {
   npm: "NPM_AUDIT",
@@ -51,4 +51,4 @@ function generateDefaultRC(): Configuration {
   };
 }
 
-export const DEFAULT_RUNTIME_CONFIGURATION = generateDefaultRC();
+export const DEFAULT_NSCI_RUNTIME_CONFIGURATION = generateDefaultRC();

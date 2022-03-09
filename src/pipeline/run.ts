@@ -6,7 +6,7 @@ import {
   ExternalRuntimeConfiguration,
   standardizeConfig
 } from "../config/external/standardize.js";
-import * as RC from "../config/nodesecurerc.js";
+import * as RC from "../config/internal/nsci.js";
 import { analyzeEnvironmentContext } from "../environment/index.js";
 import { consolePrinter } from "../lib/console-printer/index.js";
 import {
@@ -100,7 +100,7 @@ async function sanitizeRuntimeConfig(
      * This ensure that we have a consistent representation of the @nodesecure/ci
      * runtime configuration wherever the options are coming from.
      */
-    ...RC.DEFAULT_RUNTIME_CONFIGURATION,
+    ...RC.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
     ...standardizedCliConfig
   } as RC.Configuration;
 

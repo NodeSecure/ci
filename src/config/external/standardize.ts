@@ -1,5 +1,5 @@
 import type { DeepPartialRecord } from "../../lib/types";
-import * as RC from "../nodesecurerc.js";
+import * as RC from "../internal/nsci.js";
 
 import {
   adaptReporters,
@@ -46,7 +46,7 @@ function extractOnlyValidPropsFromExternalConfig(
 
 function mergeConfigs(adaptedConfig: RC.Configuration): RC.Configuration {
   return {
-    ...RC.DEFAULT_RUNTIME_CONFIGURATION,
+    ...RC.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
     /**
      * We override default config with the one provided from the cli or the api
      * which has just been sanitized and adapted to fit the RC format.
