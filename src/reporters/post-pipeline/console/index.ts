@@ -2,7 +2,7 @@ import { performance } from "perf_hooks";
 
 import ms from "pretty-ms";
 
-import * as RC from "../../../config/internal/nsci.js";
+import { Nsci } from "../../../config/standard/index.js";
 import { consolePrinter } from "../../../lib/console-printer/index.js";
 import { OutcomePayloadFromPipelineChecks } from "../../../payload/interpret.js";
 import { Reporter } from "../../reporter.js";
@@ -36,9 +36,9 @@ function printEndPipeline(endedAt: number): void {
 }
 
 export const consoleReporter: Reporter<
-  OutcomePayloadFromPipelineChecks & RC.Configuration
+  OutcomePayloadFromPipelineChecks & Nsci.Configuration
 > = {
-  type: RC.reporterTarget.CONSOLE,
+  type: Nsci.reporterTarget.CONSOLE,
   report({ data, status, warnings }) {
     const startedAt = performance.now();
     printPipelineStart();
@@ -47,12 +47,12 @@ export const consoleReporter: Reporter<
     reportDependencyWarnings(
       data.dependencies.warnings,
       // For now, we are only dealing with union types
-      warnings as RC.Warnings
+      warnings as Nsci.Warnings
     );
     reportDependencyVulns(data.dependencies.vulnerabilities);
 
     const endedAt = performance.now() - startedAt;
     printEndPipeline(endedAt);
-    printPipelineOutcome(data, status, warnings as RC.Warnings);
+    printPipelineOutcome(data, status, warnings as Nsci.Warnings);
   }
 };

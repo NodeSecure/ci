@@ -1,13 +1,14 @@
 import { expect } from "chai";
 
-import { Nsci } from "../internal/index.js";
+import { Nsci } from "../standard/index.js";
 
-import {
-  ExternalRuntimeConfiguration,
-  standardizeExternalConfig
-} from "./standardize.js";
+import { cliConfigAdapter } from "./cli/adapt.js";
+import { ExternalRuntimeConfiguration } from "./common.js";
+import { provideAdapterInOrderToStandardize } from "./standardize.js";
 
-describe("CLI configuration to Runtime configuration adapter", () => {
+describe("Standardize CLI/API configuration to Nsci runtime configuration", () => {
+  const cliStandardizer = provideAdapterInOrderToStandardize(cliConfigAdapter);
+
   describe("When providing a complete configuration with valid options", () => {
     it("should standardize config options", () => {
       const cwd = process.cwd();
@@ -29,9 +30,7 @@ describe("CLI configuration to Runtime configuration adapter", () => {
       };
 
       expect(
-        standardizeExternalConfig(
-          externalOptions as ExternalRuntimeConfiguration
-        )
+        cliStandardizer(externalOptions as ExternalRuntimeConfiguration)
       ).to.deep.equal(finalConfig);
     });
   });
@@ -77,9 +76,7 @@ describe("CLI configuration to Runtime configuration adapter", () => {
         // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
           expect(
-            standardizeExternalConfig(
-              partialConfig as ExternalRuntimeConfiguration
-            )
+            cliStandardizer(partialConfig as ExternalRuntimeConfiguration)
           ).to.deep.equal(Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION);
         }
       );

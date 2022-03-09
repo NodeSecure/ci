@@ -3,7 +3,7 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
-import * as RC from "../config/internal/nsci.js";
+import { Nsci } from "../config/standard/index.js";
 import type { DependencyWarning } from "../lib/types";
 import {
   pipeline,
@@ -30,7 +30,7 @@ function checkGlobalWarnings(
 
 function checkDependenciesWarnings(
   warnings: DependencyWarning[],
-  runtimeConfiguration: RC.Configuration
+  runtimeConfiguration: Nsci.Configuration
 ): CheckableFunction<DependencyWarning> {
   if (runtimeConfiguration.warnings === "off") {
     return {
@@ -131,7 +131,7 @@ function findAllVulnsWithEqualOrHigherSeverity(
 
 function checkDependenciesVulns(
   vulnerabilities: Strategy.StandardVulnerability[],
-  runtimeConfiguration: RC.Configuration
+  runtimeConfiguration: Nsci.Configuration
 ): CheckableFunction<Strategy.StandardVulnerability> {
   const { vulnerabilitySeverity } = runtimeConfiguration;
 
@@ -204,7 +204,7 @@ function interpretPayloadChecks(
  */
 export function runPayloadInterpreter(
   payload: Scanner.Payload,
-  rc: RC.Configuration
+  rc: Nsci.Configuration
 ): OutcomePayloadFromPipelineChecks {
   const { warnings, dependencies } = extractScannerPayload(payload);
 

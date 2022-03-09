@@ -3,17 +3,17 @@ import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
-import * as RC from "../config/internal/nsci.js";
+import { Nsci } from "../config/standard/index.js";
 import { runPayloadInterpreter } from "../payload/interpret.js";
 
 import * as pipeline from "./status.js";
 
-const DEFAULT_RUNTIME_CONFIGURATION: RC.Configuration = {
+const DEFAULT_RUNTIME_CONFIGURATION: Nsci.Configuration = {
   rootDir: process.cwd(),
-  strategy: RC.vulnStrategy.npm,
-  reporters: [RC.reporterTarget.CONSOLE],
-  vulnerabilitySeverity: RC.vulnSeverity.ALL,
-  warnings: RC.warnings.ERROR
+  strategy: Nsci.vulnStrategy.npm,
+  reporters: [Nsci.reporterTarget.CONSOLE],
+  vulnerabilitySeverity: Nsci.vulnSeverity.ALL,
+  warnings: Nsci.warnings.ERROR
 };
 
 const DEFAULT_SCANNER_PAYLOAD: Scanner.Payload = {
@@ -207,7 +207,7 @@ describe("Pipeline check workflow", () => {
 
         const { status, data } = runPayloadInterpreter(scannerPayload, {
           ...DEFAULT_RUNTIME_CONFIGURATION,
-          warnings: RC.warnings.OFF
+          warnings: Nsci.warnings.OFF
         });
 
         expect(status).equals(pipeline.status.SUCCESS);
@@ -301,7 +301,7 @@ describe("Pipeline check workflow", () => {
           const { status, data } = runPayloadInterpreter(scannerPayload, {
             ...DEFAULT_RUNTIME_CONFIGURATION,
             warnings: {
-              "encoded-literal": RC.warnings.ERROR
+              "encoded-literal": Nsci.warnings.ERROR
             }
           });
 

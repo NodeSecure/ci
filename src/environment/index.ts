@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import * as RC from "../config/internal/nsci.js";
+import { Nsci } from "../config/standard/index.js";
 import { ValueOf } from "../lib/types";
 
 type LockFile = ValueOf<typeof lockFiles>;
@@ -11,7 +11,7 @@ export type EnvironmentContext = {
     current: LockFile;
     multiple: boolean;
   };
-  compatibleStrategy: RC.OutputStrategy;
+  compatibleStrategy: Nsci.OutputStrategy;
 };
 
 const lockFiles = {
@@ -44,22 +44,24 @@ const fallbackEnvironmentContext = {
     current: lockFiles.none,
     multiple: false
   },
-  compatibleStrategy: RC.vulnStrategy.none
+  compatibleStrategy: Nsci.vulnStrategy.none
 };
 
-function getFallbackStrategy(strategy: RC.OutputStrategy): RC.OutputStrategy {
+function getFallbackStrategy(
+  strategy: Nsci.OutputStrategy
+): Nsci.OutputStrategy {
   /**
    * "node" and "none" are strategies compatible with all environments.
    * Consequently at this point, if anything else different of "none" is provided,
    * we must fallback to "node".
    */
-  return strategy === "NONE" ? strategy : RC.vulnStrategy.node;
+  return strategy === "NONE" ? strategy : Nsci.vulnStrategy.node;
 }
 
 export async function analyzeEnvironmentContext({
   rootDir,
   strategy
-}: RC.Configuration): Promise<EnvironmentContext> {
+}: Nsci.Configuration): Promise<EnvironmentContext> {
   try {
     const collectedLockFiles = await collectLockFiles(rootDir);
     const multipleLockFiles = collectedLockFiles.size > 1 ?? false;

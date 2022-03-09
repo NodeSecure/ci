@@ -1,15 +1,7 @@
 import type { DeepPartialRecord } from "../../lib/types";
-import { Nsci } from "../internal/index.js";
+import { Nsci } from "../standard/index.js";
 
-import { adaptExternalToStandardConfiguration } from "./adapt.js";
-
-export type ExternalRuntimeConfiguration = {
-  directory: string;
-  strategy: Nsci.InputStrategy;
-  vulnerabilities: Nsci.Severity;
-  warnings: Nsci.Warnings;
-  reporters: string | Nsci.ReporterTarget[];
-};
+import { ConfigAdapter, ExternalRuntimeConfiguration } from "./common.js";
 
 function isInvalidConfigOption<T>(value: T): boolean {
   const isEmptyString =
@@ -57,12 +49,16 @@ export const defaultExternalConfigOptions: ExternalRuntimeConfiguration = {
   reporters: [Nsci.reporterTarget.CONSOLE]
 };
 
-export function standardizeExternalConfig(
-  externalConfig: ExternalRuntimeConfiguration
-): DeepPartialRecord<Nsci.Configuration> {
-  return mergeConfigs(
-    adaptExternalToStandardConfiguration(
-      extractOnlyValidPropsFromExternalConfig(externalConfig)
-    )
-  );
+export function provideAdapterInOrderToStandardize(
+  configAdapter: ConfigAdapter<ExternalRuntimeConfiguration>
+) {
+  return function standardize(
+    externalConfig: ExternalRuntimeConfiguration
+  ): DeepPartialRecord<Nsci.Configuration> {
+    return mergeConfigs(
+      configAdapter.adaptToStandardConfig(
+        extractOnlyValidPropsFromExternalConfig(externalConfig)
+      )
+    );
+  };
 }

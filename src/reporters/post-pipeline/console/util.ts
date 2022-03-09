@@ -1,4 +1,4 @@
-import { Warnings } from "../../../config/internal/nsci";
+import { Warnings } from "../../../config/standard/nsci";
 import { consolePrinter } from "../../../lib/console-printer/index.js";
 
 export function printWarnOrError(warningsMode: Warnings) {

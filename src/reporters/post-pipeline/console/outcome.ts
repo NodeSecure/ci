@@ -1,6 +1,6 @@
 import pluralize from "pluralize";
 
-import { Warnings } from "../../../config/internal/nsci.js";
+import { Warnings } from "../../../config/standard/nsci.js";
 import {
   ConsoleMessage,
   consolePrinter

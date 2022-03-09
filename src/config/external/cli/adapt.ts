@@ -1,12 +1,9 @@
 import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
-import { Nsci } from "../internal/index.js";
-
-import {
-  defaultExternalConfigOptions,
-  ExternalRuntimeConfiguration
-} from "./standardize.js";
+import { Nsci } from "../../standard/index.js";
+import { ConfigAdapter, ExternalRuntimeConfiguration } from "../common.js";
+import { defaultExternalConfigOptions } from "../standardize.js";
 
 function isValidRootDirectory(directory: string): string {
   try {
@@ -84,12 +81,12 @@ function adaptSeverity(vulnerabilityThreshold: Nsci.Severity): Nsci.Severity {
 
 /**
  * In the first place, we need to adapt options from the either the CLI or
- * the API call in order to be used as a RC.Configuration structure.
+ * the API call in order to be used as a Nsci.Configuration structure.
  * This adapt takes into account name bindings but also checks validity of values
  * that were supplied from the external world (API or CLI)
- * (e.g: valid severity threshold supplied)
+ * (e.g: validate severity threshold supplied)
  */
-export function adaptExternalToStandardConfiguration(
+function adaptCLIToStandardConfiguration(
   sanitizedOptions: Partial<ExternalRuntimeConfiguration>
 ): Nsci.Configuration {
   const { vulnerabilities, directory, strategy, warnings, reporters } = {
@@ -105,3 +102,7 @@ export function adaptExternalToStandardConfiguration(
     warnings: adaptWarnings(warnings)
   };
 }
+
+export const cliConfigAdapter: ConfigAdapter<ExternalRuntimeConfiguration> = {
+  adaptToStandardConfig: adaptCLIToStandardConfiguration
+};

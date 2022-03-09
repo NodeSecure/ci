@@ -1,4 +1,4 @@
-import * as RC from "../../config/internal/nsci.js";
+import { Nsci } from "../../config/standard/index.js";
 import { EnvironmentContext } from "../../environment";
 import {
   consolePrinter,
@@ -15,10 +15,10 @@ function invertRecord(obj: Record<string, string>): Record<string, string> {
   return Object.fromEntries(invertedEntries);
 }
 
-const vulnStrategiesLabels = invertRecord(RC.vulnStrategy);
+const vulnStrategiesLabels = invertRecord(Nsci.vulnStrategy);
 
-function dumpInputCommand(rc: RC.Configuration): void {
-  const inputStrategy = invertRecord(RC.vulnStrategy)[rc.strategy];
+function dumpInputCommand(rc: Nsci.Configuration): void {
+  const inputStrategy = invertRecord(Nsci.vulnStrategy)[rc.strategy];
   const inputVulnerability = rc.vulnerabilitySeverity;
   const inputWarnings =
     typeof rc.warnings === "string" ? rc.warnings : "object-literal";
@@ -40,7 +40,7 @@ function dumpInputCommand(rc: RC.Configuration): void {
 
 function reportLockFileContext(
   env: EnvironmentContext,
-  rc: RC.Configuration
+  rc: Nsci.Configuration
 ): void {
   if (env.lockFile.current === "none") {
     consolePrinter.font
@@ -109,7 +109,7 @@ function reportLockFileContext(
 }
 
 function reportEnvironmentContext(
-  rc: RC.Configuration
+  rc: Nsci.Configuration
 ): (env: EnvironmentContext) => void {
   return (env) => {
     dumpInputCommand(rc);
@@ -118,9 +118,9 @@ function reportEnvironmentContext(
 }
 
 export const environmentContextReporter: Reporter<
-  RC.Configuration,
+  Nsci.Configuration,
   (env: EnvironmentContext) => void
 > = {
-  type: RC.reporterTarget.CONSOLE,
+  type: Nsci.reporterTarget.CONSOLE,
   report: reportEnvironmentContext
 };

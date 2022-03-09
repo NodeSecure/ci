@@ -14,3 +14,5 @@ export type DependencyWarning = {
   package: string;
   warnings: Omit<JSXRay.BaseWarning, "value">[];
 };
+
+export type Maybe<T> = T | undefined;

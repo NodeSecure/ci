@@ -3,7 +3,7 @@ import Spinner from "@slimio/async-cli-spinner";
 import pluralize from "pluralize";
 import ms from "pretty-ms";
 
-import * as RC from "../../config/internal/nsci.js";
+import { Nsci } from "../../config/standard/index.js";
 import { consolePrinter } from "../../lib/console-printer/index.js";
 import { Reporter } from "../reporter.js";
 
@@ -97,6 +97,6 @@ export const scannerReporter: Reporter<
   undefined,
   (logger: Logger) => Generator
 > = {
-  type: RC.reporterTarget.CONSOLE,
+  type: Nsci.reporterTarget.CONSOLE,
   report: reportScannerAnalysis
 };

@@ -1,4 +1,4 @@
-import { ValueOf } from "../../lib/types";
+import { ValueOf as Nsci } from "../../lib/types";
 
 export const vulnStrategy = {
   npm: "NPM_AUDIT",
@@ -7,7 +7,7 @@ export const vulnStrategy = {
 } as const;
 
 export type InputStrategy = keyof typeof vulnStrategy;
-export type OutputStrategy = ValueOf<typeof vulnStrategy>;
+export type OutputStrategy = Nsci<typeof vulnStrategy>;
 
 export const vulnSeverity = {
   MEDIUM: "medium",
@@ -16,7 +16,7 @@ export const vulnSeverity = {
   ALL: "all"
 } as const;
 
-export type Severity = ValueOf<typeof vulnSeverity>;
+export type Severity = Nsci<typeof vulnSeverity>;
 
 export const warnings = {
   ERROR: "error",
@@ -24,20 +24,20 @@ export const warnings = {
   WARNING: "warning"
 } as const;
 
-export type Warnings = ValueOf<typeof warnings>;
+export type Warnings = Nsci<typeof warnings>;
 
 export const reporterTarget = {
   CONSOLE: "console",
   HTML: "html"
 } as const;
 
-export type ReporterTarget = ValueOf<typeof reporterTarget>;
+export type ReporterTarget = Nsci<typeof reporterTarget>;
 
 export type Configuration = {
   rootDir: string;
-  strategy: ValueOf<typeof vulnStrategy>;
+  strategy: Nsci<typeof vulnStrategy>;
   reporters: ReporterTarget[];
-  vulnerabilitySeverity: ValueOf<typeof vulnSeverity>;
+  vulnerabilitySeverity: Nsci<typeof vulnSeverity>;
   warnings: Warnings | Record<string, Warnings>;
 };
 

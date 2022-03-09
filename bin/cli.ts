@@ -2,17 +2,17 @@
 
 import sade from "sade";
 
-import * as RC from "../src/config/internal/nsci.js";
+import { Nsci } from "../src/config/standard/index.js";
 import { runPipeline } from "../src/pipeline/run.js";
 
 function joinExclusiveList<T>(items: T) {
   return Object.values(items).join(" | ");
 }
 
-const availableVulnThresholds = joinExclusiveList(RC.vulnSeverity);
-const availableWarnings = joinExclusiveList(RC.warnings);
-const availableStrategies = joinExclusiveList(RC.vulnStrategy);
-const availableReporters = joinExclusiveList(RC.reporterTarget);
+const availableVulnThresholds = joinExclusiveList(Nsci.vulnSeverity);
+const availableWarnings = joinExclusiveList(Nsci.warnings);
+const availableStrategies = joinExclusiveList(Nsci.vulnStrategy);
+const availableReporters = joinExclusiveList(Nsci.reporterTarget);
 
 const program = sade("nsci", true);
 
@@ -27,28 +27,28 @@ program
   .option(
     "-s, --strategy",
     `@nodesecure/vuln vulnerability strategy. Can be '${availableStrategies}'`,
-    RC.vulnStrategy.npm
+    Nsci.vulnStrategy.npm
   )
   .example("cli.js --strategy=npm")
 
   .option(
     "-v, --vulnerabilities",
     `Vulnerability severity threshold. Can be '${availableVulnThresholds})'`,
-    RC.vulnSeverity.ALL
+    Nsci.vulnSeverity.ALL
   )
   .example("cli.js --vulnerabilities=all")
 
   .option(
     "-w, --warnings",
     `Action when detecting warnings. Can be '${availableWarnings}'`,
-    RC.warnings.ERROR
+    Nsci.warnings.ERROR
   )
   .example("cli.js --warnings=off")
 
   .option(
     "-r, --reporters",
     `Pipeline reporters. Can be '${availableReporters}'`,
-    RC.reporterTarget.CONSOLE
+    Nsci.reporterTarget.CONSOLE
   )
   .example("cli.js --reporters=console,html")
 

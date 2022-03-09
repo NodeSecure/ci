@@ -2,13 +2,13 @@ import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
-import {
-  ExternalRuntimeConfiguration,
-  standardizeExternalConfig
-} from "../config/external/standardize.js";
-import * as RC from "../config/internal/nsci.js";
+import { cliConfigAdapter } from "../config/external/cli/adapt.js";
+import { ExternalRuntimeConfiguration } from "../config/external/common.js";
+import { provideAdapterInOrderToStandardize } from "../config/external/standardize.js";
+import { Nsci } from "../config/standard/index.js";
 import { analyzeEnvironmentContext } from "../environment/index.js";
 import { consolePrinter } from "../lib/console-printer/index.js";
+import { Maybe } from "../lib/types/index.js";
 import {
   OutcomePayloadFromPipelineChecks,
   runPayloadInterpreter
@@ -19,7 +19,7 @@ import { environmentContextReporter } from "../reporters/internal/environment.js
 import { status } from "./status.js";
 
 async function runScannerAnalysis(
-  runtimeConfig: RC.Configuration
+  runtimeConfig: Nsci.Configuration
 ): Promise<Scanner.Payload> {
   const { strategy } = await vuln.setStrategy(
     vuln.strategies[runtimeConfig.strategy]
@@ -66,11 +66,9 @@ function provideErrorCodeToProcess() {
   process.exitCode = 1;
 }
 
-type Maybe<T> = T | undefined;
-
 async function runPayloadChecks(
   payload: Scanner.Payload,
-  rc: RC.Configuration,
+  rc: Nsci.Configuration,
   autoExitAfterFailure: boolean
 ): Promise<Maybe<OutcomePayloadFromPipelineChecks>> {
   const interpretedPayload = runPayloadInterpreter(payload, rc);
@@ -85,8 +83,9 @@ async function runPayloadChecks(
 
 async function sanitizeRuntimeConfig(
   options: ExternalRuntimeConfiguration
-): Promise<RC.Configuration> {
-  const standardizedCliConfig = standardizeExternalConfig(options);
+): Promise<Nsci.Configuration> {
+  const standardizedCliConfig =
+    provideAdapterInOrderToStandardize(cliConfigAdapter)(options);
   const runtimeConfig = {
     /**
      * The default @nodesecure/ci runtime configuration comes from a constant
@@ -100,9 +99,9 @@ async function sanitizeRuntimeConfig(
      * This ensure that we have a consistent representation of the @nodesecure/ci
      * runtime configuration wherever the options are coming from.
      */
-    ...RC.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+    ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
     ...standardizedCliConfig
-  } as RC.Configuration;
+  } as Nsci.Configuration;
 
   const environment = await analyzeEnvironmentContext(runtimeConfig);
   environmentContextReporter.report(runtimeConfig)(environment);
