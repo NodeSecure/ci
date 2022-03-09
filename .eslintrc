@@ -27,6 +27,7 @@
   "rules": {
     "indent": "off",
     "brace-style": "off",
+    "id-length": "off",
     "no-empty": ["error", { "allowEmptyCatch": true }],
     "import/order": [
       "error",
