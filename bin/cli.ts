@@ -34,9 +34,9 @@ program
   .option(
     "-v, --vulnerabilities",
     `Vulnerability severity threshold. Can be '${availableVulnThresholds})'`,
-    Nsci.vulnSeverity.ALL
+    Nsci.vulnSeverity.MEDIUM
   )
-  .example("cli.js --vulnerabilities=all")
+  .example("cli.js --vulnerabilities=medium")
 
   .option(
     "-w, --warnings",

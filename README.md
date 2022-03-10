@@ -1,8 +1,8 @@
 # Secure Continuous Integration
+
 ![version](https://img.shields.io/badge/dynamic/json.svg?url=https://raw.githubusercontent.com/NodeSecure/ci/master/package.json&query=$.version&label=Version)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/NodeSecure/ci/commit-activity)
-[![Security Responsible Disclosure](https://img.shields.io/badge/Security-Responsible%20Disclosure-yellow.svg)](https://github.com/nodejs/security-wg/blob/master/processes/responsible_disclosure_template.md
-)
+[![Security Responsible Disclosure](https://img.shields.io/badge/Security-Responsible%20Disclosure-yellow.svg)](https://github.com/nodejs/security-wg/blob/master/processes/responsible_disclosure_template.md)
 [![mit](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/NodeSecure/rc/blob/master/LICENSE)
 
 ## Installation
@@ -17,38 +17,39 @@ $ yarn add @nodesecure/ci
 
 ## Getting Started
 
-@nodesecure/ci brings together a set of tools to identify dependencies vulnerabilities 
+@nodesecure/ci brings together a set of tools to identify dependencies vulnerabilities
 and track most common malicious code and patterns.
 
 Before going further, here is an overview of the available features depending on
 your project configuration:
 
 | Static Analysis | Compatibility |
-|------|--------------|
-| JavaScript | ✅ |
-| TypeScript | ❌ |
+| --------------- | ------------- |
+| JavaScript      | ✅            |
+| TypeScript      | ❌            |
 
-Static Analysis is powered by [@nodesecure/js-x-ray](https://github.com/NodeSecure/js-x-ray) and 
+Static Analysis is powered by [@nodesecure/js-x-ray](https://github.com/NodeSecure/js-x-ray) and
 [@nodesecure/scanner](https://github.com/NodeSecure/scanner).
 
 ---
+
 **NOTE**
 
-For now, TypeScript can't directly be analyzed on the fly. 
-However as you might know, any transpiled TypeScript code is JavaScript code 
+For now, TypeScript can't directly be analyzed on the fly.
+However as you might know, any transpiled TypeScript code is JavaScript code
 hence can be analyzed.
 
-Moreover, it is recommended to launch the Static Analysis with a source code state as 
+Moreover, it is recommended to launch the Static Analysis with a source code state as
 close as possible to the state of your production code (and before minification).
-In fact, you want to make sure that you are not introducing anything malicious 
+In fact, you want to make sure that you are not introducing anything malicious
 when you're compiling your code at some point (for production or when transpiling with TypeScript).
 
 ---
 
 | Vulnerabilities Strategy | package-lock.json | yarn.lock |
-|------|--------------|-----------|
-| npm | ✅ | ❌ |
-| node | ✅ | ✅ |
+| ------------------------ | ----------------- | --------- |
+| npm                      | ✅                | ❌        |
+| node                     | ✅                | ✅        |
 
 Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/NodeSecure/vuln).
 
@@ -57,6 +58,7 @@ Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/
 @nodesecure/ci can be used as a Script, as an API or [through the GitHub action](https://github.com/marketplace/actions/nodesecure-continuous-integration)
 
 Let's see how to use @nodesecure/ci in these three different ways:
+
 - API
 - Script
 - GitHub Action
@@ -66,32 +68,32 @@ Let's see how to use @nodesecure/ci in these three different ways:
 @nodesecure/ci exposes its pipeline runner as an API to allow use in any other combined workflow.
 
 ```ts
-import { runPipeline } from "@nodesecure/ci";
+import { runPipeline } from "@nodesecure/ci";
 
 const optionsExample = {
-    directory: process.cwd(),
-    strategy: "node",
-    vulnerabilities: "all",
-    warnings: "error",
-    reporters: ["console"]
-}
+  directory: process.cwd(),
+  strategy: "node",
+  vulnerabilities: "medium",
+  warnings: "error",
+  reporters: ["console"]
+};
 
 await runPipeline(optionsExample);
-// => the process can either exit with error code (1) 
+// => the process can either exit with error code (1)
 // or no error code (0), depending on the pipeline status.
 ```
 
 If you need a more fine-grained control over the pipeline process, you can
-provide an "autoExitAfterFailure" property to the entry point options to manually 
+provide an "autoExitAfterFailure" property to the entry point options to manually
 exit or interpret the returned payload.
 
 ```ts
-const { status, data } = await runPipeline({ autoExitAfterFailure: false });
+const { status, data } = await runPipeline({ autoExitAfterFailure: false });
 
-if(status === 'success') {
-  console.log('Congrats, your code passed all security checks!');
+if (status === "success") {
+  console.log("Congrats, your code passed all security checks!");
 } else {
-  console.log('Whoops, the pipeline failed to pass all checks :(');
+  console.log("Whoops, the pipeline failed to pass all checks :(");
   interpretData(data);
 }
 ```
@@ -112,7 +114,7 @@ Then run it
 
 ```bash
 $ npm run nsci
- ```
+```
 
 Once the script is run, the @nodesecure/ci pipeline will look for dependencies warnings and vulnerabilities in the current working directory.
 If any warning or dependency is met, the pipeline will eventually fail depending on the provided .nodesecurerc file.
@@ -123,16 +125,17 @@ If any warning or dependency is met, the pipeline will eventually fail depending
 
 ### GitHub Action
 
-[The documentation of the @nodesecure/ci GitHub Action is detailed here](https://github.com/marketplace/actions/nodesecure-continuous-integration) 
+[The documentation of the @nodesecure/ci GitHub Action is detailed here](https://github.com/marketplace/actions/nodesecure-continuous-integration)
 
 ### Custom configuration
 
 For now, the configuration is managed internally and is only configurable there:
+
 - via the CLI when using as a script
 - via the API options when using the exposed Node.js module
 - via the .yaml config file for the GitHub action
 
-Add CLI options directly in the package.json script 
+Add CLI options directly in the package.json script
 
 ```json
 {
@@ -143,12 +146,12 @@ Add CLI options directly in the package.json script
 ```
 
 Or provide it from the "npm run [script]" command (don't forget to supply "--") or
-the params will be applied to the "npm run [script]" command. 
+the params will be applied to the "npm run [script]" command.
 
 ```bash
 $ npm run nsci -- --directory=/Users/user1/myproject
 $ npm run nsci -- --strategy=npm
-$ npm run nsci -- --vulnerability=all
+$ npm run nsci -- --vulnerability=medium
 $ npm run nsci -- --warnings=error
 $ npm run nsci -- --reporters=console
 ```
@@ -160,6 +163,7 @@ $ yarn nsci --reporters=console
 ```
 
 To see all available options, you can run:
+
 ```bash
 $ npm run nsci -- --help
 ```
@@ -173,7 +177,7 @@ In the future, we aim to expose some sort of configuration like this:
   reporters: ("console" | "html")[];
   rules: {
     vulnerabilities: {
-        severity: "all" | "high" | "critical" | "medium" | "low" 
+        severity: "all" | "high" | "critical" | "medium" | "low"
     },
     warnings: {
         "obfuscated-code": "error"
@@ -188,16 +192,20 @@ To know more about the future configuration, see [@nodesecure/rc](https://github
 
 Two reporters are targeted to work with the @nodesecure/ci. For now,
 only the "Console" reporter is available.
+
 - [x] Console
 - [ ] HTML
 
 ## Requirements
+
 - [Node.js](https://nodejs.org/en/) v16 or higher
 
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -217,4 +225,5 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 ## License
+
 MIT

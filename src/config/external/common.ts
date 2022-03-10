@@ -8,6 +8,17 @@ export type ExternalRuntimeConfiguration = {
   reporters: string | Nsci.ReporterTarget[];
 };
 
-export type ConfigAdapter<T extends Record<string, unknown>> = {
-  adaptToStandardConfig: (config: T | Partial<T>) => Nsci.Configuration;
+/**
+ * In order to unify all types of external configurations (NodeSecure runtime
+ * config, API config, CLI config), we must provide a standard
+ * ExternalRuntimeConfiguration type which can be then sanitized, validated and
+ * adapted to the standard @nodesecure/ci runtime config format.
+ *
+ * Consequently each external config must implement an ExternalConfigAdapter
+ * which converts any type of config to the ExternalRuntimeConfiguration type.
+ * This ExternalRuntimeConfiguration type can then be transparently sanitized,
+ * validated without too many edge cases.
+ */
+export type ExternalConfigAdapter<T> = {
+  adaptToExternalConfig: (config: T) => ExternalRuntimeConfiguration;
 };

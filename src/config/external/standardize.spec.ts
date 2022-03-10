@@ -1,14 +1,18 @@
+import { unlinkSync } from "fs";
+import path from "path";
+
 import { expect } from "chai";
 
 import { Nsci } from "../standard/index.js";
 
-import { cliConfigAdapter } from "./cli/adapt.js";
 import { ExternalRuntimeConfiguration } from "./common.js";
-import { provideAdapterInOrderToStandardize } from "./standardize.js";
+import * as NodeSecureRC from "./nodesecure/index.js";
+import {
+  defaultExternalConfigOptions,
+  standardizeExternalConfiguration
+} from "./standardize.js";
 
 describe("Standardize CLI/API configuration to Nsci runtime configuration", () => {
-  const cliStandardizer = provideAdapterInOrderToStandardize(cliConfigAdapter);
-
   describe("When providing a complete configuration with valid options", () => {
     it("should standardize config options", () => {
       const cwd = process.cwd();
@@ -30,7 +34,9 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
       };
 
       expect(
-        cliStandardizer(externalOptions as ExternalRuntimeConfiguration)
+        standardizeExternalConfiguration(
+          externalOptions as ExternalRuntimeConfiguration
+        )
       ).to.deep.equal(finalConfig);
     });
   });
@@ -57,14 +63,14 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
       },
       {
         directory: "../NonExistingDirectory",
-        strategy: "snyk",
+        strategy: "unknown",
         vulnerabilities: "unknown",
         warnings: "all",
         reporters: "json, console"
       },
       {
         directory: "../NonExistingDirectory",
-        strategy: "snyk",
+        strategy: "unknown",
         vulnerabilities: "unknown",
         warnings: "all",
         reporters: ["invalidReporter1", "invalidReporter2", "console"]
@@ -76,10 +82,36 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
         // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
           expect(
-            cliStandardizer(partialConfig as ExternalRuntimeConfiguration)
+            standardizeExternalConfiguration(
+              partialConfig as ExternalRuntimeConfiguration
+            )
           ).to.deep.equal(Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION);
         }
       );
     });
+  });
+});
+
+describe("Standardize NodeSecure runtime configuration to Nsci runtime configuration", () => {
+  afterEach(() => {
+    unlinkSync(path.join(process.cwd(), ".nodesecurerc"));
+  });
+  describe("When generating the NodeSecure runtime config file", () => {
+    it("should retrieve the config after generation", async () => {
+      const cfg = await NodeSecureRC.generateDefaultNodeSecureConfig();
+      expect(cfg).not.to.equal(undefined);
+
+      const currentCfg = await NodeSecureRC.getNodeSecureConfig();
+      expect(cfg).to.deep.equal(currentCfg);
+    });
+  });
+
+  it("should convert the NodeSecure runtime config as an External config", async () => {
+    const cfg = await NodeSecureRC.generateDefaultNodeSecureConfig();
+
+    const adaptedConfig =
+      NodeSecureRC.nodesecureConfigAdapter.adaptToExternalConfig(cfg);
+
+    expect(adaptedConfig).to.deep.equal(defaultExternalConfigOptions);
   });
 });

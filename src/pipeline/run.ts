@@ -2,7 +2,7 @@ import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
-import { cliConfigAdapter } from "../config/external/cli/adapt.js";
+import { cliConfigAdapter } from "../config/external/cli/index.js";
 import { ExternalRuntimeConfiguration } from "../config/external/common.js";
 import { provideAdapterInOrderToStandardize } from "../config/external/standardize.js";
 import { Nsci } from "../config/standard/index.js";

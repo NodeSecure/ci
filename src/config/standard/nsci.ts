@@ -1,13 +1,14 @@
-import { ValueOf as Nsci } from "../../lib/types";
+import { ValueOf } from "../../lib/types";
 
 export const vulnStrategy = {
   npm: "NPM_AUDIT",
   node: "SECURITY_WG",
+  snyk: "SNYK",
   none: "NONE"
 } as const;
 
 export type InputStrategy = keyof typeof vulnStrategy;
-export type OutputStrategy = Nsci<typeof vulnStrategy>;
+export type OutputStrategy = ValueOf<typeof vulnStrategy>;
 
 export const vulnSeverity = {
   MEDIUM: "medium",
@@ -16,7 +17,7 @@ export const vulnSeverity = {
   ALL: "all"
 } as const;
 
-export type Severity = Nsci<typeof vulnSeverity>;
+export type Severity = ValueOf<typeof vulnSeverity>;
 
 export const warnings = {
   ERROR: "error",
@@ -24,20 +25,22 @@ export const warnings = {
   WARNING: "warning"
 } as const;
 
-export type Warnings = Nsci<typeof warnings>;
+export type Warnings =
+  | ValueOf<typeof warnings>
+  | Record<string, ValueOf<typeof warnings>>;
 
 export const reporterTarget = {
   CONSOLE: "console",
   HTML: "html"
 } as const;
 
-export type ReporterTarget = Nsci<typeof reporterTarget>;
+export type ReporterTarget = ValueOf<typeof reporterTarget>;
 
 export type Configuration = {
   rootDir: string;
-  strategy: Nsci<typeof vulnStrategy>;
+  strategy: ValueOf<typeof vulnStrategy>;
   reporters: ReporterTarget[];
-  vulnerabilitySeverity: Nsci<typeof vulnSeverity>;
+  vulnerabilitySeverity: ValueOf<typeof vulnSeverity>;
   warnings: Warnings | Record<string, Warnings>;
 };
 
@@ -46,7 +49,7 @@ function generateDefaultRC(): Configuration {
     rootDir: process.cwd(),
     strategy: vulnStrategy.npm,
     reporters: [reporterTarget.CONSOLE],
-    vulnerabilitySeverity: vulnSeverity.ALL,
+    vulnerabilitySeverity: vulnSeverity.MEDIUM,
     warnings: warnings.ERROR
   };
 }
