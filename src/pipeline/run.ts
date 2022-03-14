@@ -4,6 +4,7 @@ import * as vuln from "@nodesecure/vuln";
 
 import { ApiConfig } from "../config/external/api/index.js";
 import { CliConfig } from "../config/external/cli/index.js";
+import { defaultExternalConfigOptions } from "../config/external/standardize.js";
 import { useRuntimeConfig } from "../config/manage.js";
 import { Nsci } from "../config/standard/index.js";
 import { consolePrinter } from "../lib/console-printer/index.js";
@@ -82,7 +83,7 @@ async function runPayloadChecks(
 export async function runPipeline(
   options: (ApiConfig | CliConfig) & {
     autoExitAfterFailure: boolean;
-  }
+  } = { ...defaultExternalConfigOptions, autoExitAfterFailure: true }
 ): Promise<Maybe<OutcomePayloadFromPipelineChecks>> {
   try {
     const defaultAutoExitAfterFailure =

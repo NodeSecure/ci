@@ -1,12 +1,13 @@
-import { RC, read } from "@nodesecure/rc";
+import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
 
+import { Maybe } from "../../../lib/types/index.js";
 import {
   ExternalConfigAdapter,
   ExternalRuntimeConfiguration
 } from "../common.js";
 import { defaultExternalConfigOptions } from "../standardize.js";
 
-export async function generateDefaultNodeSecureConfig(): Promise<RC> {
+export async function generateDefaultNodeSecureConfig(): Promise<NodeSecureRuntimeConfig> {
   return (
     await read(process.cwd(), {
       createIfDoesNotExist: true,
@@ -15,7 +16,9 @@ export async function generateDefaultNodeSecureConfig(): Promise<RC> {
   ).unwrap();
 }
 
-export async function getNodeSecureConfig() {
+export async function getNodeSecureConfig(): Promise<
+  Maybe<NodeSecureRuntimeConfig>
+> {
   try {
     return await (await read(process.cwd())).unwrap();
   } catch {
@@ -24,7 +27,7 @@ export async function getNodeSecureConfig() {
 }
 
 function adaptNodeSecureConfigToExternalConfig(
-  runtimeConfig: RC
+  runtimeConfig: NodeSecureRuntimeConfig
 ): ExternalRuntimeConfiguration {
   return {
     directory: process.cwd(),
@@ -39,6 +42,7 @@ function adaptNodeSecureConfigToExternalConfig(
   };
 }
 
-export const NodeSecureConfigAdapter: ExternalConfigAdapter<RC> = {
-  adaptToExternalConfig: adaptNodeSecureConfigToExternalConfig
-};
+export const NodeSecureConfigAdapter: ExternalConfigAdapter<NodeSecureRuntimeConfig> =
+  {
+    adaptToExternalConfig: adaptNodeSecureConfigToExternalConfig
+  };
