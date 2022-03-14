@@ -117,7 +117,6 @@ function convertSeverityAsNumber(
  * We must ensure that each vulnerability with equal or higher severity than
  * the one defined in the runtime configuration is caught.
  */
-// eslint-disable-next-line id-length
 function findAllVulnsWithEqualOrHigherSeverity(
   vulnerabilities: Strategy.StandardVulnerability[],
   severity: Strategy.Severity | "all"

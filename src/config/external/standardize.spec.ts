@@ -42,7 +42,6 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
   });
 
   describe("When providing a partial configuration with invalid options", () => {
-    // eslint-disable-next-line id-length
     const partialOrInvalidConfigThatShouldFallbackToDefaultRC = [
       {},
       undefined,

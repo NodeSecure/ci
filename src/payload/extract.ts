@@ -44,7 +44,6 @@ function extractDependenciesWarnings(
   });
 }
 
-// eslint-disable-next-line id-length
 function extractDependenciesVulnsAndWarnings(
   dependencies: Scanner.Dependencies
 ): {
