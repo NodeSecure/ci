@@ -3,8 +3,8 @@ import Spinner from "@slimio/async-cli-spinner";
 import pluralize from "pluralize";
 import ms from "pretty-ms";
 
+import { consolePrinter } from "../../../../lib/console-printer/index.js";
 import { Nsci } from "../../../config/standard/index.js";
-import { consolePrinter } from "../../../lib/console-printer/index.js";
 import { Reporter } from "../reporter.js";
 
 /**

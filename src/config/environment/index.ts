@@ -1,7 +1,7 @@
 import { promises as fs } from "fs";
 import path from "path";
 
-import { ValueOf } from "../../lib/types";
+import { ValueOf } from "../../types";
 import { Nsci } from "../standard/index.js";
 
 type LockFile = ValueOf<typeof lockFiles>;

@@ -2,6 +2,7 @@ import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
+import { consolePrinter } from "../../lib/console-printer/index.js";
 import {
   OutcomePayloadFromPipelineChecks,
   runPayloadInterpreter
@@ -13,8 +14,7 @@ import {
   useRuntimeConfig,
   Nsci
 } from "../config/index.js";
-import { consolePrinter } from "../lib/console-printer/index.js";
-import { Maybe } from "../lib/types/index.js";
+import { Maybe } from "../types/index.js";
 
 import { scannerReporter, runReporting } from "./reporters/index.js";
 import { status } from "./status.js";

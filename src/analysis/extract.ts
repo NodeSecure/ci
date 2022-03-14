@@ -2,7 +2,7 @@ import { Scanner } from "@nodesecure/scanner";
 import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 
-import type { DependencyWarning } from "../lib/types";
+import type { DependencyWarning } from "../types";
 
 export type CompactedScannerPayload = {
   warnings: GlobalWarning[];

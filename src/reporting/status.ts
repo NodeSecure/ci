@@ -1,4 +1,4 @@
-import type { ValueOf } from "../lib/types";
+import type { ValueOf } from "../types";
 
 export const status = {
   SUCCESS: "success",

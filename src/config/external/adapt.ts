@@ -1,7 +1,7 @@
 import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
-import { ValueOf } from "../../lib/types/index.js";
+import { ValueOf } from "../../types/index.js";
 import { Nsci } from "../standard/index.js";
 
 import {

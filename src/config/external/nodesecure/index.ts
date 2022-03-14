@@ -1,6 +1,6 @@
 import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
 
-import { Maybe } from "../../../lib/types/index.js";
+import { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
   ExternalConfigAdapter,

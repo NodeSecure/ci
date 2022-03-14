@@ -1,6 +1,6 @@
 import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 
-import type { DeepPartialRecord } from "../../lib/types";
+import type { DeepPartialRecord } from "../../types";
 import { Nsci } from "../standard/index.js";
 
 import { adaptExternalToStandardConfiguration } from "./adapt.js";

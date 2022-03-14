@@ -4,7 +4,6 @@ import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
 import { Nsci } from "../config/standard/index.js";
-import type { DependencyWarning } from "../lib/types";
 import {
   pipeline,
   convertBooleanAsCheckResult,
@@ -13,6 +12,7 @@ import {
   PipelineCheckFunctions,
   FAILING_CHECK
 } from "../reporting/index.js";
+import type { DependencyWarning } from "../types";
 
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 
