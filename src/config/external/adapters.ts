@@ -1,9 +1,10 @@
 import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
+import { ValueOf } from "../../lib/types/index.js";
 import { Nsci } from "../standard/index.js";
 
-function isValidRootDirectory(directory: string): string {
+export function adaptDirectory(directory: string): string {
   try {
     accessSync(directory, constants.F_OK);
 
@@ -11,10 +12,6 @@ function isValidRootDirectory(directory: string): string {
   } catch {
     return Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION.rootDir;
   }
-}
-
-export function adaptDirectory(directory: string): string {
-  return isValidRootDirectory(directory);
 }
 
 function isValidReporter(
@@ -39,24 +36,27 @@ export function adaptReporters(
   return [...new Set(reportersAsArray)].filter(isValidReporter);
 }
 
-function areValidWarnings(inputWarnings: Nsci.Warnings): boolean {
-  if (typeof inputWarnings === "string") {
-    return Object.values(Nsci.warnings).includes(inputWarnings);
-  }
-
-  /**
-   * Only one warning mode is supported for CLI/API. Records definitions are
-   * supported in the NodeSecure runtime config file.
-   */
-  return false;
+function isValidWarning(inputWarning: ValueOf<typeof Nsci.warnings>): boolean {
+  return Object.values(Nsci.warnings).includes(inputWarning);
 }
 
 export function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
-  if (areValidWarnings(warnings)) {
+  if (typeof warnings === "string" && isValidWarning(warnings)) {
     return warnings;
   }
 
-  return Nsci.warnings.ERROR;
+  const warningsRecord = Object.fromEntries(
+    Object.entries(warnings).filter(([_warningType, warningValue]) =>
+      isValidWarning(warningValue as ValueOf<typeof Nsci.warnings>)
+    )
+  ) as Nsci.Warnings;
+
+  const hasAtleastOneValidWarningInRecord =
+    Object.keys(warningsRecord).length > 0;
+
+  return hasAtleastOneValidWarningInRecord
+    ? warningsRecord
+    : Nsci.warnings.ERROR;
 }
 
 function isValidStrategy(strategy: Nsci.InputStrategy): boolean {

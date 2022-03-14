@@ -26,7 +26,7 @@ function isNodeSecureRuntimeConfig(
  * On the other hand NodeSecure config is different by nature and has its own
  * adapter.
  */
-function standardizeAllApisOptions(
+export function standardizeAllApisOptions(
   options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
 ): ExternalRuntimeConfiguration {
   if (isNodeSecureRuntimeConfig(options)) {
@@ -36,7 +36,7 @@ function standardizeAllApisOptions(
   return CliConfigAdapter.adaptToExternalConfig(options);
 }
 
-async function standardizeRuntimeConfig(
+export async function standardizeRuntimeConfig(
   options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
 ): Promise<Nsci.Configuration> {
   const externalConfiguration = standardizeAllApisOptions(options);

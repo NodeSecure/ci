@@ -1,16 +1,11 @@
-import { unlinkSync } from "fs";
-import path from "path";
-
+import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 import { expect } from "chai";
 
+import { standardizeAllApisOptions } from "../manage.js";
 import { Nsci } from "../standard/index.js";
 
 import { ExternalRuntimeConfiguration } from "./common.js";
-import * as NodeSecureRC from "./nodesecure/index.js";
-import {
-  defaultExternalConfigOptions,
-  standardizeExternalConfiguration
-} from "./standardize.js";
+import { standardizeExternalConfiguration } from "./standardize.js";
 
 describe("Standardize CLI/API configuration to Nsci runtime configuration", () => {
   describe("When providing a complete configuration with valid options", () => {
@@ -73,6 +68,17 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
         vulnerabilities: "unknown",
         warnings: "all",
         reporters: ["invalidReporter1", "invalidReporter2", "console"]
+      },
+      {
+        directory: "../NonExistingDirectory",
+        strategy: "unknown",
+        vulnerabilities: "unknown",
+        warnings: {
+          "invalid-warning": "unknown",
+          "other-invalid-warning": undefined,
+          "last-invalid-warning": []
+        },
+        reporters: ["invalidReporter1", "invalidReporter2", "console"]
       }
     ];
 
@@ -91,26 +97,36 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
   });
 });
 
-describe("Standardize NodeSecure runtime configuration to Nsci runtime configuration", () => {
-  afterEach(() => {
-    unlinkSync(path.join(process.cwd(), ".nodesecurerc"));
-  });
-  describe("When generating the NodeSecure runtime config file", () => {
-    it("should retrieve the config after generation", async () => {
-      const cfg = await NodeSecureRC.generateDefaultNodeSecureConfig();
-      expect(cfg).not.to.equal(undefined);
+it("should standardize NodeSecure runtime configuration to Nsci runtime configuration", async () => {
+  const partialCfg: NodeSecureRuntimeConfig = {
+    version: "1.0",
+    strategy: "snyk",
+    ci: {
+      // @ts-expect-error - we voluntarily provide partial warnings
+      warnings: {
+        "encoded-literal": "off",
+        "unsafe-regex": "error",
+        "short-identifiers": "warning"
+      },
+      vulnerabilities: {
+        severity: "critical"
+      }
+    }
+  };
 
-      const currentCfg = await NodeSecureRC.getNodeSecureConfig();
-      expect(cfg).to.deep.equal(currentCfg);
-    });
-  });
+  const standardizedCfg = standardizeExternalConfiguration(
+    standardizeAllApisOptions(partialCfg)
+  );
 
-  it("should convert the NodeSecure runtime config as an External config", async () => {
-    const cfg = await NodeSecureRC.generateDefaultNodeSecureConfig();
-
-    const adaptedConfig =
-      NodeSecureRC.NodeSecureConfigAdapter.adaptToExternalConfig(cfg);
-
-    expect(adaptedConfig).to.deep.equal(defaultExternalConfigOptions);
+  expect(standardizedCfg).to.deep.equal({
+    reporters: ["console"],
+    rootDir: process.cwd(),
+    strategy: "SNYK",
+    vulnerabilitySeverity: "critical",
+    warnings: {
+      "encoded-literal": "off",
+      "unsafe-regex": "error",
+      "short-identifiers": "warning"
+    }
   });
 });

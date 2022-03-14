@@ -51,10 +51,7 @@ describe("When managing the runtime configuration", () => {
     });
   });
 
-  describe("When there is an .nodesecurerc file", () => {
-    afterEach(() => {
-      unlinkSync(path.join(process.cwd(), ".nodesecurerc"));
-    });
+  describe("When there is a .nodesecurerc file", () => {
     it("should use the configuration provided from the file and ignore function arguments (i.e: coming from either API or CLI)", async () => {
       /**
        * We voluntarily provide Api and Cli options to be sure that they
@@ -97,6 +94,8 @@ describe("When managing the runtime configuration", () => {
         reporters: ["html"],
         warnings: "warning"
       });
+
+      unlinkSync(path.join(process.cwd(), ".nodesecurerc"));
     });
   });
 });
