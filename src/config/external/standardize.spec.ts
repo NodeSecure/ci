@@ -110,7 +110,7 @@ describe("Standardize NodeSecure runtime configuration to Nsci runtime configura
     const cfg = await NodeSecureRC.generateDefaultNodeSecureConfig();
 
     const adaptedConfig =
-      NodeSecureRC.nodesecureConfigAdapter.adaptToExternalConfig(cfg);
+      NodeSecureRC.NodeSecureConfigAdapter.adaptToExternalConfig(cfg);
 
     expect(adaptedConfig).to.deep.equal(defaultExternalConfigOptions);
   });

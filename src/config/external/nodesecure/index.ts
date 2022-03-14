@@ -15,8 +15,12 @@ export async function generateDefaultNodeSecureConfig(): Promise<RC> {
   ).unwrap();
 }
 
-export async function getNodeSecureConfig(): Promise<RC> {
-  return (await read(process.cwd())).unwrap();
+export async function getNodeSecureConfig() {
+  try {
+    return await (await read(process.cwd())).unwrap();
+  } catch {
+    return undefined;
+  }
 }
 
 function adaptNodeSecureConfigToExternalConfig(
@@ -35,6 +39,6 @@ function adaptNodeSecureConfigToExternalConfig(
   };
 }
 
-export const nodesecureConfigAdapter: ExternalConfigAdapter<RC> = {
+export const NodeSecureConfigAdapter: ExternalConfigAdapter<RC> = {
   adaptToExternalConfig: adaptNodeSecureConfigToExternalConfig
 };

@@ -1,7 +1,7 @@
 import { Nsci } from "../../standard/index.js";
 import { ExternalConfigAdapter } from "../common.js";
 
-type CliConfig = {
+export type CliConfig = {
   directory: string;
   strategy: Nsci.InputStrategy;
   vulnerabilities: Nsci.Severity;
@@ -9,6 +9,6 @@ type CliConfig = {
   reporters: string | Nsci.ReporterTarget[];
 };
 
-export const cliConfigAdapter: ExternalConfigAdapter<CliConfig> = {
+export const CliConfigAdapter: ExternalConfigAdapter<CliConfig> = {
   adaptToExternalConfig: (config) => config
 };
