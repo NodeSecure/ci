@@ -1,5 +1,5 @@
+import { OutcomePayloadFromPipelineChecks } from "../analysis/index.js";
 import { ReporterTarget } from "../config/standard/nsci.js";
-import { OutcomePayloadFromPipelineChecks } from "../payload/index.js";
 
 export type Reporter<T = OutcomePayloadFromPipelineChecks, R = void> = {
   type: ReporterTarget;

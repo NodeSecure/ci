@@ -1,5 +1,5 @@
+import type { OutcomePayloadFromPipelineChecks } from "../analysis";
 import { Nsci } from "../config/standard/index.js";
-import type { OutcomePayloadFromPipelineChecks } from "../payload";
 
 import * as postPipelineReporting from "./post-pipeline/index.js";
 

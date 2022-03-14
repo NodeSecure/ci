@@ -1,11 +1,11 @@
 import { Strategy } from "@nodesecure/vuln";
 import pluralize from "pluralize";
 
+import type { WorkableVulnerability } from "../../../analysis";
 import {
   ConsoleMessage,
   consolePrinter
 } from "../../../lib/console-printer/index.js";
-import type { WorkableVulnerability } from "../../../payload";
 
 function getColorBySeverity(severity: Strategy.Severity): ConsoleMessage {
   switch (severity) {

@@ -3,8 +3,8 @@ import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
+import { runPayloadInterpreter } from "../analysis/interpret.js";
 import { Nsci } from "../config/standard/index.js";
-import { runPayloadInterpreter } from "../payload/interpret.js";
 
 import * as pipeline from "./status.js";
 
