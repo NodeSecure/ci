@@ -1,66 +1,13 @@
-import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
+import { analyzeEnvironmentContext } from "../environment/index.js";
+import { environmentContextReporter } from "../reporters/index.js";
 
-import { analyzeEnvironmentContext } from "../environment";
-import { environmentContextReporter } from "../reporters";
-
-import { ApiConfig } from "./external/api";
-import { CliConfig, CliConfigAdapter } from "./external/cli";
-import { ExternalRuntimeConfiguration } from "./external/common";
 import {
   getNodeSecureConfig,
-  NodeSecureConfigAdapter
-} from "./external/nodesecure";
-import { standardizeExternalConfiguration } from "./external/standardize.js";
+  standardizeRuntimeConfig,
+  ApiConfig,
+  CliConfig
+} from "./external/index.js";
 import { Nsci } from "./standard";
-
-function isNodeSecureRuntimeConfig(
-  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
-): options is NodeSecureRuntimeConfig {
-  return "ci" in options;
-}
-
-/**
- * For now, ApiConfig and CliConfig use the same config interface but its
- * a coincidence so we must be sure to create two types and two adapters if they
- * even diverge.
- * On the other hand NodeSecure config is different by nature and has its own
- * adapter.
- */
-export function standardizeAllApisOptions(
-  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
-): ExternalRuntimeConfiguration {
-  if (isNodeSecureRuntimeConfig(options)) {
-    return NodeSecureConfigAdapter.adaptToExternalConfig(options);
-  }
-
-  return CliConfigAdapter.adaptToExternalConfig(options);
-}
-
-export async function standardizeRuntimeConfig(
-  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
-): Promise<Nsci.Configuration> {
-  const externalConfiguration = standardizeAllApisOptions(options);
-  const standardizedNsciConfig = standardizeExternalConfiguration(
-    externalConfiguration
-  );
-
-  return {
-    /**
-     * The default @nodesecure/ci runtime configuration comes from a constant
-     * and should be used as a fallback when no external config or a partial one
-     * is provided.
-     * The external config can be coming from three distincts sources:
-     * - NodeSecure runtime config (.nodesecurerc file)
-     * - CLI config when running the script through the CLI
-     * - API config when using the module API
-     *
-     * This ensure that we have a consistent representation of the @nodesecure/ci
-     * runtime configuration wherever the options are coming from.
-     */
-    ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
-    ...standardizedNsciConfig
-  } as Nsci.Configuration;
-}
 
 /**
  * Given that the user can potentially provide two runtime settings at the same time

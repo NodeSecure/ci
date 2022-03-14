@@ -4,9 +4,11 @@ import path from "path";
 import { write } from "@nodesecure/rc";
 import { expect } from "chai";
 
-import { ApiConfig } from "./external/api";
-import { CliConfig } from "./external/cli";
-import { generateDefaultNodeSecureConfig } from "./external/nodesecure";
+import {
+  ApiConfig,
+  generateDefaultNodeSecureConfig,
+  CliConfig
+} from "./external/index.js";
 import { selectRuntimeConfig } from "./manage";
 import { Nsci } from "./standard";
 

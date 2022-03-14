@@ -2,10 +2,10 @@ import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
 
 import { Maybe } from "../../../lib/types/index.js";
 import {
+  defaultExternalConfigOptions,
   ExternalConfigAdapter,
   ExternalRuntimeConfiguration
 } from "../common.js";
-import { defaultExternalConfigOptions } from "../standardize.js";
 
 export async function generateDefaultNodeSecureConfig(): Promise<NodeSecureRuntimeConfig> {
   return (

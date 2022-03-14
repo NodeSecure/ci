@@ -1,11 +1,13 @@
 import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 import { expect } from "chai";
 
-import { standardizeAllApisOptions } from "../manage.js";
 import { Nsci } from "../standard/index.js";
 
 import { ExternalRuntimeConfiguration } from "./common.js";
-import { standardizeExternalConfiguration } from "./standardize.js";
+import {
+  standardizeAllApisOptions,
+  standardizeExternalConfiguration
+} from "./standardize.js";
 
 describe("Standardize CLI/API configuration to Nsci runtime configuration", () => {
   describe("When providing a complete configuration with valid options", () => {

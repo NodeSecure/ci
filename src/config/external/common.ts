@@ -22,3 +22,11 @@ export type ExternalRuntimeConfiguration = {
 export type ExternalConfigAdapter<T> = {
   adaptToExternalConfig: (config: T) => ExternalRuntimeConfiguration;
 };
+
+export const defaultExternalConfigOptions: ExternalRuntimeConfiguration = {
+  vulnerabilities: Nsci.vulnSeverity.MEDIUM,
+  directory: process.cwd(),
+  strategy: "npm",
+  warnings: Nsci.warnings.ERROR,
+  reporters: [Nsci.reporterTarget.CONSOLE]
+};

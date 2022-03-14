@@ -4,7 +4,12 @@ import { resolve } from "path";
 import { ValueOf } from "../../lib/types/index.js";
 import { Nsci } from "../standard/index.js";
 
-export function adaptDirectory(directory: string): string {
+import {
+  defaultExternalConfigOptions,
+  ExternalRuntimeConfiguration
+} from "./common.js";
+
+function adaptDirectory(directory: string): string {
   try {
     accessSync(directory, constants.F_OK);
 
@@ -22,7 +27,7 @@ function isValidReporter(
   );
 }
 
-export function adaptReporters(
+function adaptReporters(
   reporters: string | Nsci.ReporterTarget[]
 ): Nsci.ReporterTarget[] {
   if (Array.isArray(reporters)) {
@@ -40,7 +45,7 @@ function isValidWarning(inputWarning: ValueOf<typeof Nsci.warnings>): boolean {
   return Object.values(Nsci.warnings).includes(inputWarning);
 }
 
-export function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
+function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
   if (typeof warnings === "string" && isValidWarning(warnings)) {
     return warnings;
   }
@@ -65,9 +70,7 @@ function isValidStrategy(strategy: Nsci.InputStrategy): boolean {
   return validStrategies.includes(strategy);
 }
 
-export function adaptStrategy(
-  strategy: Nsci.InputStrategy
-): Nsci.OutputStrategy {
+function adaptStrategy(strategy: Nsci.InputStrategy): Nsci.OutputStrategy {
   if (isValidStrategy(strategy)) {
     return Nsci.vulnStrategy[strategy];
   }
@@ -79,12 +82,35 @@ function isValidSeverity(threshold: Nsci.Severity): boolean {
   return Object.values(Nsci.vulnSeverity).includes(threshold);
 }
 
-export function adaptSeverity(
-  vulnerabilityThreshold: Nsci.Severity
-): Nsci.Severity {
+function adaptSeverity(vulnerabilityThreshold: Nsci.Severity): Nsci.Severity {
   if (isValidSeverity(vulnerabilityThreshold)) {
     return vulnerabilityThreshold;
   }
 
   return Nsci.vulnSeverity.MEDIUM;
+}
+
+/**
+ * In the first place, we need to adapt options from either the CLI, the API or
+ * the NodeSecure runtime config file in order to be used as a Nsci.Configuration
+ * acting as a standard runtime config format.
+ * This adapt takes into account name bindings but also checks validity of values
+ * that were supplied from the external world (NodeSecure RC, API, CLI)
+ * (e.g: validate severity threshold supplied)
+ */
+export function adaptExternalToStandardConfiguration(
+  sanitizedOptions: Partial<ExternalRuntimeConfiguration>
+): Nsci.Configuration {
+  const { vulnerabilities, directory, strategy, warnings, reporters } = {
+    ...defaultExternalConfigOptions,
+    ...sanitizedOptions
+  };
+
+  return {
+    rootDir: adaptDirectory(directory),
+    reporters: adaptReporters(reporters),
+    strategy: adaptStrategy(strategy),
+    vulnerabilitySeverity: adaptSeverity(vulnerabilities),
+    warnings: adaptWarnings(warnings)
+  };
 }

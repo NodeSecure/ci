@@ -2,11 +2,13 @@ import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
-import { ApiConfig } from "../config/external/api/index.js";
-import { CliConfig } from "../config/external/cli/index.js";
-import { defaultExternalConfigOptions } from "../config/external/standardize.js";
-import { useRuntimeConfig } from "../config/manage.js";
-import { Nsci } from "../config/standard/index.js";
+import {
+  ApiConfig,
+  CliConfig,
+  defaultExternalConfigOptions,
+  useRuntimeConfig,
+  Nsci
+} from "../config/index.js";
 import { consolePrinter } from "../lib/console-printer/index.js";
 import { Maybe } from "../lib/types/index.js";
 import {

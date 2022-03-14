@@ -1,8 +1,13 @@
+import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
+
 import type { DeepPartialRecord } from "../../lib/types";
 import { Nsci } from "../standard/index.js";
 
-import * as ExternalConfigAdapters from "./adapters.js";
+import { adaptExternalToStandardConfiguration } from "./adapt.js";
+import { ApiConfig } from "./api/index.js";
+import { CliConfig, CliConfigAdapter } from "./cli/index.js";
 import { ExternalRuntimeConfiguration } from "./common.js";
+import { NodeSecureConfigAdapter } from "./nodesecure/index.js";
 
 function isInvalidConfigOption<T>(value: T): boolean {
   const isEmptyString =
@@ -42,40 +47,6 @@ function mergeConfigs(adaptedConfig: Nsci.Configuration): Nsci.Configuration {
   } as Nsci.Configuration;
 }
 
-export const defaultExternalConfigOptions: ExternalRuntimeConfiguration = {
-  vulnerabilities: Nsci.vulnSeverity.MEDIUM,
-  directory: process.cwd(),
-  strategy: "npm",
-  warnings: Nsci.warnings.ERROR,
-  reporters: [Nsci.reporterTarget.CONSOLE]
-};
-
-/**
- * In the first place, we need to adapt options from either the CLI, the API or
- * the NodeSecure runtime config file in order to be used as a Nsci.Configuration
- * acting as a standard runtime config format.
- * This adapt takes into account name bindings but also checks validity of values
- * that were supplied from the external world (NodeSecure RC, API, CLI)
- * (e.g: validate severity threshold supplied)
- */
-function adaptExternalToStandardConfiguration(
-  sanitizedOptions: Partial<ExternalRuntimeConfiguration>
-): Nsci.Configuration {
-  const { vulnerabilities, directory, strategy, warnings, reporters } = {
-    ...defaultExternalConfigOptions,
-    ...sanitizedOptions
-  };
-
-  return {
-    rootDir: ExternalConfigAdapters.adaptDirectory(directory),
-    reporters: ExternalConfigAdapters.adaptReporters(reporters),
-    strategy: ExternalConfigAdapters.adaptStrategy(strategy),
-    vulnerabilitySeverity:
-      ExternalConfigAdapters.adaptSeverity(vulnerabilities),
-    warnings: ExternalConfigAdapters.adaptWarnings(warnings)
-  };
-}
-
 export function standardizeExternalConfiguration(
   externalConfig: ExternalRuntimeConfiguration
 ): DeepPartialRecord<Nsci.Configuration> {
@@ -84,4 +55,53 @@ export function standardizeExternalConfiguration(
       extractOnlyValidPropsFromExternalConfig(externalConfig)
     )
   );
+}
+
+function isNodeSecureRuntimeConfig(
+  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
+): options is NodeSecureRuntimeConfig {
+  return "ci" in options;
+}
+
+/**
+ * For now, ApiConfig and CliConfig use the same config interface but its
+ * a coincidence so we must be sure to create two types and two adapters if they
+ * even diverge.
+ * On the other hand NodeSecure config is different by nature and has its own
+ * adapter.
+ */
+export function standardizeAllApisOptions(
+  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
+): ExternalRuntimeConfiguration {
+  if (isNodeSecureRuntimeConfig(options)) {
+    return NodeSecureConfigAdapter.adaptToExternalConfig(options);
+  }
+
+  return CliConfigAdapter.adaptToExternalConfig(options);
+}
+
+export async function standardizeRuntimeConfig(
+  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
+): Promise<Nsci.Configuration> {
+  const externalConfiguration = standardizeAllApisOptions(options);
+  const standardizedNsciConfig = standardizeExternalConfiguration(
+    externalConfiguration
+  );
+
+  return {
+    /**
+     * The default @nodesecure/ci runtime configuration comes from a constant
+     * and should be used as a fallback when no external config or a partial one
+     * is provided.
+     * The external config can be coming from three distincts sources:
+     * - NodeSecure runtime config (.nodesecurerc file)
+     * - CLI config when running the script through the CLI
+     * - API config when using the module API
+     *
+     * This ensure that we have a consistent representation of the @nodesecure/ci
+     * runtime configuration wherever the options are coming from.
+     */
+    ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+    ...standardizedNsciConfig
+  } as Nsci.Configuration;
 }
