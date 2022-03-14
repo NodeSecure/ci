@@ -1,6 +1,6 @@
-import { analyzeEnvironmentContext } from "../environment/index.js";
 import { environmentContextReporter } from "../reporters/index.js";
 
+import { analyzeEnvironmentContext } from "./environment/index.js";
 import {
   getNodeSecureConfig,
   standardizeRuntimeConfig,

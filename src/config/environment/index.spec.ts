@@ -5,7 +5,7 @@ import path from "path";
 
 import { expect } from "chai";
 
-import { Nsci } from "../config/standard/index.js";
+import { Nsci } from "../standard/index.js";
 
 import { analyzeEnvironmentContext } from "./index.js";
 

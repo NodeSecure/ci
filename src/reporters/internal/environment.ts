@@ -1,5 +1,5 @@
+import { EnvironmentContext } from "../../config/environment";
 import { Nsci } from "../../config/standard/index.js";
-import { EnvironmentContext } from "../../environment";
 import {
   consolePrinter,
   removeWhiteSpaces
