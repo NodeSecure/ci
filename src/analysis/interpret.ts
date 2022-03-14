@@ -12,7 +12,7 @@ import {
   CheckResult,
   PipelineCheckFunctions,
   FAILING_CHECK
-} from "../pipeline/index.js";
+} from "../reporting/index.js";
 
 import { CompactedScannerPayload, extractScannerPayload } from "./extract.js";
 

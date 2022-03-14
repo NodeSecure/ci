@@ -3,7 +3,7 @@
 import sade from "sade";
 
 import { Nsci } from "../src/config/standard/index.js";
-import { runPipeline } from "../src/pipeline/run.js";
+import { runPipeline } from "../src/reporting/run.js";
 
 function joinExclusiveList<T>(items: T) {
   return Object.values(items).join(" | ");

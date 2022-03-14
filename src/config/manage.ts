@@ -1,4 +1,4 @@
-import { environmentContextReporter } from "../reporters/index.js";
+import { environmentContextReporter } from "../reporting/reporters/index.js";
 
 import { analyzeEnvironmentContext } from "./environment/index.js";
 import {

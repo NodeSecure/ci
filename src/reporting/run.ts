@@ -15,8 +15,8 @@ import {
 } from "../config/index.js";
 import { consolePrinter } from "../lib/console-printer/index.js";
 import { Maybe } from "../lib/types/index.js";
-import { scannerReporter, runReporting } from "../reporters/index.js";
 
+import { scannerReporter, runReporting } from "./reporters/index.js";
 import { status } from "./status.js";
 
 async function runScannerAnalysis(

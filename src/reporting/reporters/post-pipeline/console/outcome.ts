@@ -1,12 +1,12 @@
 import pluralize from "pluralize";
 
-import type { CompactedScannerPayload } from "../../../analysis";
-import { Warnings } from "../../../config/standard/nsci.js";
+import type { CompactedScannerPayload } from "../../../../analysis";
+import { Warnings } from "../../../../config/standard/nsci.js";
 import {
   ConsoleMessage,
   consolePrinter
-} from "../../../lib/console-printer/index.js";
-import { pipeline } from "../../../pipeline/index.js";
+} from "../../../../lib/console-printer/index.js";
+import { pipeline } from "../../../index.js";
 
 import { printWarnOrError } from "./util.js";
 

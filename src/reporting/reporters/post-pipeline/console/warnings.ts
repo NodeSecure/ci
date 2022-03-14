@@ -1,8 +1,8 @@
 import pluralize from "pluralize";
 
-import { Warnings } from "../../../config/standard/nsci.js";
-import { consolePrinter } from "../../../lib/console-printer/index.js";
-import type { DependencyWarning } from "../../../lib/types";
+import { Warnings } from "../../../../config/standard/nsci.js";
+import { consolePrinter } from "../../../../lib/console-printer/index.js";
+import type { DependencyWarning } from "../../../../lib/types";
 
 import { printWarnOrError } from "./util.js";
 
