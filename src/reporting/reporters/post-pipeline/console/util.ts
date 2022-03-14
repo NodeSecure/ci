@@ -1,5 +1,5 @@
 import { consolePrinter } from "../../../../../lib/console-printer/index.js";
-import { Warnings } from "../../../../config/standard/nsci";
+import { Warnings } from "../../../../configuration/standard/nsci";
 
 export function printWarnOrError(warningsMode: Warnings) {
   /**

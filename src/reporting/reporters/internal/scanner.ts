@@ -4,7 +4,7 @@ import pluralize from "pluralize";
 import ms from "pretty-ms";
 
 import { consolePrinter } from "../../../../lib/console-printer/index.js";
-import { Nsci } from "../../../config/standard/index.js";
+import { Nsci } from "../../../configuration/standard/index.js";
 import { Reporter } from "../reporter.js";
 
 /**

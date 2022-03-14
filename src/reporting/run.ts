@@ -13,7 +13,7 @@ import {
   defaultExternalConfigOptions,
   useRuntimeConfig,
   Nsci
-} from "../config/index.js";
+} from "../configuration/index.js";
 import { Maybe } from "../types/index.js";
 
 import { scannerReporter, runReporting } from "./reporters/index.js";

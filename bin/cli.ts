@@ -2,7 +2,7 @@
 
 import sade from "sade";
 
-import { Nsci } from "../src/config/standard/index.js";
+import { Nsci } from "../src/configuration/standard/index.js";
 import { runPipeline } from "../src/reporting/run.js";
 
 function joinExclusiveList<T>(items: T) {

@@ -1,4 +1,4 @@
-import { reporterTarget } from "../../../../config/standard/nsci.js";
+import { reporterTarget } from "../../../../configuration/standard/nsci.js";
 import { Reporter } from "../../reporter.js";
 
 export const htmlReporter: Reporter = {

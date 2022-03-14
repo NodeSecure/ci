@@ -3,7 +3,7 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import set from "lodash.set";
 
-import { Nsci } from "../config/standard/index.js";
+import { Nsci } from "../configuration/standard/index.js";
 import {
   pipeline,
   convertBooleanAsCheckResult,

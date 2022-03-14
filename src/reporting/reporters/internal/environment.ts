@@ -2,8 +2,8 @@ import {
   consolePrinter,
   removeWhiteSpaces
 } from "../../../../lib/console-printer/index.js";
-import { EnvironmentContext } from "../../../config/environment";
-import { Nsci } from "../../../config/standard/index.js";
+import { EnvironmentContext } from "../../../configuration/environment";
+import { Nsci } from "../../../configuration/standard/index.js";
 import { Reporter } from "../reporter.js";
 
 function invertRecord(obj: Record<string, string>): Record<string, string> {

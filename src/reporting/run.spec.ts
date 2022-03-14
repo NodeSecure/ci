@@ -4,7 +4,7 @@ import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
 import { runPayloadInterpreter } from "../analysis/interpret.js";
-import { Nsci } from "../config/standard/index.js";
+import { Nsci } from "../configuration/standard/index.js";
 
 import * as pipeline from "./status.js";
 
