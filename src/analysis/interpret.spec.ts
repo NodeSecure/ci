@@ -3,9 +3,10 @@ import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
-import { runPayloadInterpreter } from "../analysis/interpret.js";
 import { Nsci } from "../configuration/standard/index.js";
 import * as pipeline from "../reporting/status.js";
+
+import { runPayloadInterpreter } from "./interpret.js";
 
 const DEFAULT_RUNTIME_CONFIGURATION: Nsci.Configuration = {
   rootDir: process.cwd(),
@@ -296,7 +297,7 @@ describe("Pipeline check workflow", () => {
             });
           });
 
-          describe("Whenever warnings configured on 'warning' or 'off' are met", () => {
+          describe("Whenever a warning configured on 'warning' or 'off' is met", () => {
             it("should make the pipeline succeed with the 'warning' warnings", () => {
               const scannerPayload: Scanner.Payload = {
                 ...DEFAULT_SCANNER_PAYLOAD,

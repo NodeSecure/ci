@@ -63,12 +63,12 @@ function extractDependenciesVulnsAndWarnings(
 export function extractScannerPayload(
   payload: Scanner.Payload
 ): CompactedScannerPayload {
-  const { warnings: globalWarnings, dependencies } = payload;
-  const { warnings, vulnerabilities } =
-    extractDependenciesVulnsAndWarnings(dependencies);
+  const { warnings, vulnerabilities } = extractDependenciesVulnsAndWarnings(
+    payload.dependencies
+  );
 
   return {
-    warnings: globalWarnings,
+    warnings: payload.warnings,
     dependencies: {
       warnings,
       vulnerabilities
