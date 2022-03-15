@@ -1,6 +1,7 @@
 import type JSXRay from "@nodesecure/js-x-ray";
 
 import { ValueOf } from "../../types";
+
 export const vulnStrategy = {
   npm: "NPM_AUDIT",
   node: "SECURITY_WG",
@@ -26,6 +27,8 @@ export const warnings = {
   WARNING: "warning"
 } as const;
 
+export type WarningMode = ValueOf<typeof warnings>;
+
 // These warnings types should probably come from JSXRay but are hosted here for now
 
 export const warningKinds: Readonly<
@@ -42,11 +45,9 @@ export const warningKinds: Readonly<
   "unsafe-import"
 ] as const;
 
-export type WarningKinds = JSXRay.kindWithValue | "unsafe-import";
+export type WarningKind = JSXRay.kindWithValue | "unsafe-import";
 
-export type Warnings =
-  | ValueOf<typeof warnings>
-  | Record<string, ValueOf<typeof warnings>>;
+export type Warnings = WarningMode | Record<WarningKind, WarningMode>;
 
 export const reporterTarget = {
   CONSOLE: "console",
@@ -60,7 +61,7 @@ export type Configuration = {
   strategy: ValueOf<typeof vulnStrategy>;
   reporters: ReporterTarget[];
   vulnerabilitySeverity: ValueOf<typeof vulnSeverity>;
-  warnings: Warnings | Record<WarningKinds, Warnings>;
+  warnings: Warnings;
 };
 
 function generateDefaultRC(): Configuration {

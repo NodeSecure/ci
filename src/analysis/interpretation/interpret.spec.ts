@@ -3,8 +3,8 @@ import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
-import { Nsci } from "../configuration/standard/index.js";
-import * as pipeline from "../reporting/status.js";
+import { Nsci } from "../../configuration/standard/index.js";
+import * as pipeline from "../../reporting/status.js";
 
 import { runPayloadInterpreter } from "./interpret.js";
 
@@ -60,6 +60,18 @@ describe("Pipeline check workflow", () => {
           const scannerPayload: Scanner.Payload = {
             ...DEFAULT_SCANNER_PAYLOAD,
             dependencies: {
+              "ts-pattern": {
+                // @ts-expect-error - we are not interested in providing metadata here
+                metadata: {},
+                versions: {
+                  "2.1.0": {
+                    warnings: [],
+                    // @ts-expect-error - we are not interested in providing composition
+                    composition: {}
+                  }
+                },
+                vulnerabilities: []
+              },
               express: {
                 // @ts-expect-error - we are not interested in providing metadata here
                 metadata: {},
@@ -110,12 +122,54 @@ describe("Pipeline check workflow", () => {
             }
           };
 
-          const { status } = runPayloadInterpreter(
+          const { status, data } = runPayloadInterpreter(
             scannerPayload,
             DEFAULT_RUNTIME_CONFIGURATION
           );
 
           expect(status).equals(pipeline.status.FAILURE);
+          expect(data).to.deep.equal({
+            warnings: [],
+            dependencies: {
+              vulnerabilities: [],
+              warnings: [
+                {
+                  package: "express",
+                  warnings: [
+                    {
+                      mode: "error",
+                      kind: "obfuscated-code",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    },
+                    {
+                      mode: "error",
+                      kind: "obfuscated-code",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    }
+                  ]
+                },
+                {
+                  package: "marker",
+                  warnings: [
+                    {
+                      mode: "error",
+                      kind: "encoded-literal",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          });
         });
       });
 
@@ -254,9 +308,11 @@ describe("Pipeline check workflow", () => {
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
                 ...DEFAULT_RUNTIME_CONFIGURATION,
+                // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.ERROR,
-                  "obfuscated-code": Nsci.warnings.ERROR
+                  "obfuscated-code": Nsci.warnings.ERROR,
+                  "unsafe-assign": Nsci.warnings.WARNING
                 }
               });
 
@@ -266,6 +322,15 @@ describe("Pipeline check workflow", () => {
                   package: "express",
                   warnings: [
                     {
+                      mode: "warning",
+                      kind: "unsafe-assign",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    },
+                    {
+                      mode: "error",
                       kind: "obfuscated-code",
                       location: [
                         [0, 1],
@@ -278,6 +343,7 @@ describe("Pipeline check workflow", () => {
                   package: "marker",
                   warnings: [
                     {
+                      mode: "error",
                       kind: "encoded-literal",
                       location: [
                         [0, 1],
@@ -285,6 +351,7 @@ describe("Pipeline check workflow", () => {
                       ]
                     },
                     {
+                      mode: "error",
                       kind: "obfuscated-code",
                       location: [
                         [0, 1],
@@ -361,6 +428,7 @@ describe("Pipeline check workflow", () => {
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
                 ...DEFAULT_RUNTIME_CONFIGURATION,
+                // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.OFF,
                   "unsafe-assign": Nsci.warnings.WARNING,
@@ -374,6 +442,7 @@ describe("Pipeline check workflow", () => {
                   package: "express",
                   warnings: [
                     {
+                      mode: "warning",
                       kind: "unsafe-assign",
                       location: [
                         [0, 1],
@@ -381,6 +450,7 @@ describe("Pipeline check workflow", () => {
                       ]
                     },
                     {
+                      mode: "warning",
                       kind: "obfuscated-code",
                       location: [
                         [0, 1],
@@ -393,6 +463,7 @@ describe("Pipeline check workflow", () => {
                   package: "marker",
                   warnings: [
                     {
+                      mode: "warning",
                       kind: "obfuscated-code",
                       location: [
                         [0, 1],

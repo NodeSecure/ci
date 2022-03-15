@@ -1,7 +1,6 @@
 import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
-import { ValueOf } from "../../types/index.js";
 import { Nsci } from "../standard/index.js";
 
 import {
@@ -41,31 +40,29 @@ function adaptReporters(
   return [...new Set(reportersAsArray)].filter(isValidReporter);
 }
 
-function isValidWarningValue(
-  warningValue: string
-): warningValue is ValueOf<typeof Nsci.warnings> {
-  return Object.values(Nsci.warnings).includes(
-    warningValue as ValueOf<typeof Nsci.warnings>
-  );
+function isValidWarningMode(
+  warningMode: string
+): warningMode is Nsci.WarningMode {
+  return Object.values(Nsci.warnings).includes(warningMode as Nsci.WarningMode);
 }
 
 function isValidWarningKind(
   warningKind: string
-): warningKind is Nsci.WarningKinds {
-  return Nsci.warningKinds.includes(warningKind as Nsci.WarningKinds);
+): warningKind is Nsci.WarningKind {
+  return Nsci.warningKinds.includes(warningKind as Nsci.WarningKind);
 }
 
 function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
-  if (typeof warnings === "string" && isValidWarningValue(warnings)) {
+  if (typeof warnings === "string" && isValidWarningMode(warnings)) {
     return warnings;
   }
 
   const warningsRecord = Object.fromEntries(
     Object.entries(warnings).filter(
       ([warningType, warningValue]) =>
-        isValidWarningKind(warningType) && isValidWarningValue(warningValue)
+        isValidWarningKind(warningType) && isValidWarningMode(warningValue)
     )
-  );
+  ) as Nsci.Warnings;
 
   const hasAtleastOneValidWarningInRecord =
     Object.keys(warningsRecord).length > 0;

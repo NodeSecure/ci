@@ -3,7 +3,7 @@ import { performance } from "perf_hooks";
 import ms from "pretty-ms";
 
 import { consolePrinter } from "../../../../../lib/console-printer/index.js";
-import { OutcomePayloadFromPipelineChecks } from "../../../../analysis/interpret.js";
+import { OutcomePayloadFromPipelineChecks } from "../../../../analysis/interpretation/interpret.js";
 import { Nsci } from "../../../../configuration/standard/index.js";
 import { Reporter } from "../../reporter.js";
 

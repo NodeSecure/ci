@@ -1,4 +1,5 @@
 import { environmentContextReporter } from "../reporting/reporters/index.js";
+import { runtimeConfigurationReporter } from "../reporting/reporters/internal/configuration.js";
 
 import { analyzeEnvironmentContext } from "./environment/index.js";
 import {
@@ -7,8 +8,12 @@ import {
   ApiConfig,
   CliConfig
 } from "./external/index.js";
-import { Nsci } from "./standard";
+import { Nsci } from "./standard/index.js";
 
+export type SelectedRuntimeConfig = {
+  configMode: "raw" | "file";
+  runtimeConfig: Nsci.Configuration;
+};
 /**
  * Given that the user can potentially provide two runtime settings at the same time
  * (cli options + .nodesecurerc) or (api options + .nodesecurerc) we must be sure
@@ -21,30 +26,39 @@ import { Nsci } from "./standard";
  */
 export async function selectRuntimeConfig(
   options: ApiConfig | CliConfig
-): Promise<Nsci.Configuration> {
+): Promise<SelectedRuntimeConfig> {
   const nodesecureConfig = await getNodeSecureConfig();
 
   if (nodesecureConfig) {
-    return standardizeRuntimeConfig(nodesecureConfig);
+    return {
+      configMode: "file",
+      runtimeConfig: await standardizeRuntimeConfig(nodesecureConfig)
+    };
   }
 
-  return standardizeRuntimeConfig(options);
+  return {
+    configMode: "raw",
+    runtimeConfig: await standardizeRuntimeConfig(options)
+  };
 }
 
 export async function useRuntimeConfig(
   options: ApiConfig | CliConfig
 ): Promise<Nsci.Configuration> {
-  const runtimeConfig = await selectRuntimeConfig(options);
+  const selectedConfig = await selectRuntimeConfig(options);
+  runtimeConfigurationReporter.report(selectedConfig);
   /**
    * Now that we have our runtime config, we can analyze the user workspace
    * to determine if some options of the config should be changed (sort of autofix).
    * TODO: Maybe provide a way to enable or not this autofix?
    */
-  const environment = await analyzeEnvironmentContext(runtimeConfig);
-  environmentContextReporter.report(runtimeConfig)(environment);
+  const environment = await analyzeEnvironmentContext(
+    selectedConfig.runtimeConfig
+  );
+  environmentContextReporter.report(selectedConfig.runtimeConfig)(environment);
 
   return {
-    ...runtimeConfig,
+    ...selectedConfig.runtimeConfig,
     /**
      * Strategy may have been changed depending on the lockfile compatibility.
      * Now that we reported the environment context, we can only keep the most

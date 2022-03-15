@@ -1,2 +1,2 @@
-export * from "./extract.js";
-export * from "./interpret.js";
+export * from "./extraction/index.js";
+export * from "./interpretation/index.js";

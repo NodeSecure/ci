@@ -20,7 +20,12 @@ describe("When managing the runtime configuration", () => {
         const optionsFromCliOrApi: ApiConfig | CliConfig =
           {} as unknown as ApiConfig;
 
-        expect(await selectRuntimeConfig(optionsFromCliOrApi)).to.deep.equal(
+        const { configMode, runtimeConfig } = await selectRuntimeConfig(
+          optionsFromCliOrApi
+        );
+
+        expect(configMode).to.deep.equal("raw");
+        expect(runtimeConfig).to.deep.equal(
           Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION
         );
       });
@@ -35,7 +40,12 @@ describe("When managing the runtime configuration", () => {
           reporters: ["html"]
         };
 
-        expect(await selectRuntimeConfig(optionsFromCliOrApi)).to.deep.equal({
+        const { configMode, runtimeConfig } = await selectRuntimeConfig(
+          optionsFromCliOrApi
+        );
+
+        expect(configMode).to.deep.equal("raw");
+        expect(runtimeConfig).to.deep.equal({
           /**
            * Spreading default Nsci config just for being explicit with the
            * expected behavior which is starting from the default Nsci config
@@ -84,7 +94,12 @@ describe("When managing the runtime configuration", () => {
         partialUpdate: true
       });
 
-      expect(await selectRuntimeConfig(optionsFromCliOrApi)).to.deep.equal({
+      const { configMode, runtimeConfig } = await selectRuntimeConfig(
+        optionsFromCliOrApi
+      );
+
+      expect(configMode).to.deep.equal("file");
+      expect(runtimeConfig).to.deep.equal({
         // Starting from the default config
         ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
         /**

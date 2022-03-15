@@ -1,7 +1,7 @@
 import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 
-import type { DependencyWarning } from "../types";
+import type { DependencyWarning } from "../../types";
 
 export type CheckResult = "failed" | "passed";
 
