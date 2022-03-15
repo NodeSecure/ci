@@ -63,7 +63,24 @@ function checkDependenciesWarnings(
   }
 
   const causingErrorWarnings = new Set(
-    Object.keys(runtimeConfiguration.warnings)
+    Object.keys(
+      Object.fromEntries(
+        Object.entries(runtimeConfiguration.warnings).filter(
+          ([_warningKind, warningValue]) => warningValue === Nsci.warnings.ERROR
+        )
+      )
+    )
+  );
+
+  const causingWarningWarnings = new Set(
+    Object.keys(
+      Object.fromEntries(
+        Object.entries(runtimeConfiguration.warnings).filter(
+          ([_warningKind, warningValue]) =>
+            warningValue === Nsci.warnings.WARNING
+        )
+      )
+    )
   );
 
   const errorOnlyWarnings = warnings
@@ -79,11 +96,24 @@ function checkDependenciesWarnings(
     })
     .filter((collectedWarnings) => collectedWarnings.warnings.length > 0);
 
+  const warningOnlyWarnings = warnings
+    .map((dependency) => {
+      const warningWarnings = dependency.warnings.filter((dependencyWarning) =>
+        causingWarningWarnings.has(dependencyWarning.kind)
+      );
+
+      return {
+        ...dependency,
+        warnings: warningWarnings
+      };
+    })
+    .filter((collectedWarnings) => collectedWarnings.warnings.length > 0);
+
   return {
     result: convertBooleanAsCheckResult(errorOnlyWarnings.length > 0),
     data: {
       key: "dependencies.warnings",
-      value: errorOnlyWarnings
+      value: errorOnlyWarnings.concat(warningOnlyWarnings)
     }
   };
 }

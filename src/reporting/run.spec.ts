@@ -5,8 +5,7 @@ import { expect } from "chai";
 
 import { runPayloadInterpreter } from "../analysis/interpret.js";
 import { Nsci } from "../configuration/standard/index.js";
-
-import * as pipeline from "./status.js";
+import * as pipeline from "../reporting/status.js";
 
 const DEFAULT_RUNTIME_CONFIGURATION: Nsci.Configuration = {
   rootDir: process.cwd(),
@@ -65,11 +64,6 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "2.1.0": {
-                    id: 1,
-                    usedBy: {},
-                    size: 0,
-                    description: "",
-                    author: "noone",
                     warnings: [
                       {
                         kind: "obfuscated-code",
@@ -86,9 +80,6 @@ describe("Pipeline check workflow", () => {
                         ]
                       }
                     ],
-                    license: [],
-                    flags: [],
-                    gitUrl: null,
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -100,11 +91,6 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "1.0.5": {
-                    id: 1,
-                    usedBy: {},
-                    size: 0,
-                    description: "",
-                    author: "noone",
                     warnings: [
                       {
                         kind: "encoded-literal",
@@ -114,9 +100,6 @@ describe("Pipeline check workflow", () => {
                         ]
                       }
                     ],
-                    license: [],
-                    flags: [],
-                    gitUrl: null,
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -145,11 +128,6 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "2.1.0": {
-                    id: 1,
-                    usedBy: {},
-                    size: 0,
-                    description: "",
-                    author: "noone",
                     warnings: [
                       {
                         kind: "obfuscated-code",
@@ -166,9 +144,6 @@ describe("Pipeline check workflow", () => {
                         ]
                       }
                     ],
-                    license: [],
-                    flags: [],
-                    gitUrl: null,
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -180,11 +155,6 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "1.0.5": {
-                    id: 1,
-                    usedBy: {},
-                    size: 0,
-                    description: "",
-                    author: "noone",
                     warnings: [
                       {
                         kind: "encoded-literal",
@@ -194,9 +164,6 @@ describe("Pipeline check workflow", () => {
                         ]
                       }
                     ],
-                    license: [],
-                    flags: [],
-                    gitUrl: null,
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -221,106 +188,220 @@ describe("Pipeline check workflow", () => {
           });
         });
 
-        describe("When atleast one warning configured on 'error' is met", () => {
-          it("should make the pipeline fail", () => {
-            const scannerPayload: Scanner.Payload = {
-              ...DEFAULT_SCANNER_PAYLOAD,
-              dependencies: {
-                express: {
-                  // @ts-expect-error - we are not interested in providing metadata here
-                  metadata: {},
-                  versions: {
-                    "2.1.0": {
-                      id: 1,
-                      usedBy: {},
-                      size: 0,
-                      description: "",
-                      author: "noone",
-                      warnings: [
-                        {
-                          kind: "obfuscated-code",
-                          location: [
-                            [0, 1],
-                            [5, 0]
-                          ]
-                        },
-                        {
-                          kind: "obfuscated-code",
-                          location: [
-                            [0, 1],
-                            [5, 0]
-                          ]
-                        }
-                      ],
-                      license: [],
-                      flags: [],
-                      gitUrl: null,
-                      // @ts-expect-error - we are not interested in providing composition
-                      composition: {}
-                    }
+        describe("When atleast one warning is met", () => {
+          describe("When one warning configured on 'error' is met", () => {
+            it("should make the pipeline fail with the 'error' warnings", () => {
+              const scannerPayload: Scanner.Payload = {
+                ...DEFAULT_SCANNER_PAYLOAD,
+                dependencies: {
+                  express: {
+                    // @ts-expect-error - we are not interested in providing metadata here
+                    metadata: {},
+                    versions: {
+                      "2.1.0": {
+                        warnings: [
+                          {
+                            kind: "unsafe-assign",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          },
+                          {
+                            kind: "obfuscated-code",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          }
+                        ],
+                        // @ts-expect-error - we are not interested in providing composition
+                        composition: {}
+                      }
+                    },
+                    vulnerabilities: []
                   },
-                  vulnerabilities: []
-                },
-                marker: {
-                  // @ts-expect-error - we are not interested in providing metadata here
-                  metadata: {},
-                  versions: {
-                    "1.0.5": {
-                      id: 1,
-                      usedBy: {},
-                      size: 0,
-                      description: "",
-                      author: "noone",
-                      warnings: [
-                        {
-                          kind: "encoded-literal",
-                          location: [
-                            [0, 1],
-                            [5, 0]
-                          ]
-                        },
-                        {
-                          kind: "obfuscated-code",
-                          location: [
-                            [0, 1],
-                            [5, 0]
-                          ]
-                        }
-                      ],
-                      license: [],
-                      flags: [],
-                      gitUrl: null,
-                      // @ts-expect-error - we are not interested in providing composition
-                      composition: {}
-                    }
-                  },
-                  vulnerabilities: []
-                }
-              }
-            };
-
-            const { status, data } = runPayloadInterpreter(scannerPayload, {
-              ...DEFAULT_RUNTIME_CONFIGURATION,
-              warnings: {
-                "encoded-literal": Nsci.warnings.ERROR
-              }
-            });
-
-            expect(status).equals(pipeline.status.FAILURE);
-            expect(data.dependencies.warnings).to.deep.equal([
-              {
-                package: "marker",
-                warnings: [
-                  {
-                    kind: "encoded-literal",
-                    location: [
-                      [0, 1],
-                      [5, 0]
-                    ]
+                  marker: {
+                    // @ts-expect-error - we are not interested in providing metadata here
+                    metadata: {},
+                    versions: {
+                      "1.0.5": {
+                        warnings: [
+                          {
+                            kind: "encoded-literal",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          },
+                          {
+                            kind: "obfuscated-code",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          }
+                        ],
+                        // @ts-expect-error - we are not interested in providing composition
+                        composition: {}
+                      }
+                    },
+                    vulnerabilities: []
                   }
-                ]
-              }
-            ]);
+                }
+              };
+
+              const { status, data } = runPayloadInterpreter(scannerPayload, {
+                ...DEFAULT_RUNTIME_CONFIGURATION,
+                warnings: {
+                  "encoded-literal": Nsci.warnings.ERROR,
+                  "obfuscated-code": Nsci.warnings.ERROR
+                }
+              });
+
+              expect(status).equals(pipeline.status.FAILURE);
+              expect(data.dependencies.warnings).to.deep.equal([
+                {
+                  package: "express",
+                  warnings: [
+                    {
+                      kind: "obfuscated-code",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    }
+                  ]
+                },
+                {
+                  package: "marker",
+                  warnings: [
+                    {
+                      kind: "encoded-literal",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    },
+                    {
+                      kind: "obfuscated-code",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    }
+                  ]
+                }
+              ]);
+            });
+          });
+
+          describe("Whenever warnings configured on 'warning' or 'off' are met", () => {
+            it("should make the pipeline succeed with the 'warning' warnings", () => {
+              const scannerPayload: Scanner.Payload = {
+                ...DEFAULT_SCANNER_PAYLOAD,
+                dependencies: {
+                  express: {
+                    // @ts-expect-error - we are not interested in providing metadata here
+                    metadata: {},
+                    versions: {
+                      "2.1.0": {
+                        warnings: [
+                          {
+                            kind: "unsafe-assign",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          },
+                          {
+                            kind: "obfuscated-code",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          }
+                        ],
+                        // @ts-expect-error - we are not interested in providing composition
+                        composition: {}
+                      }
+                    },
+                    vulnerabilities: []
+                  },
+                  marker: {
+                    // @ts-expect-error - we are not interested in providing metadata here
+                    metadata: {},
+                    versions: {
+                      "1.0.5": {
+                        warnings: [
+                          {
+                            kind: "encoded-literal",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          },
+                          {
+                            kind: "obfuscated-code",
+                            location: [
+                              [0, 1],
+                              [5, 0]
+                            ]
+                          }
+                        ],
+                        // @ts-expect-error - we are not interested in providing composition
+                        composition: {}
+                      }
+                    },
+                    vulnerabilities: []
+                  }
+                }
+              };
+
+              const { status, data } = runPayloadInterpreter(scannerPayload, {
+                ...DEFAULT_RUNTIME_CONFIGURATION,
+                warnings: {
+                  "encoded-literal": Nsci.warnings.OFF,
+                  "unsafe-assign": Nsci.warnings.WARNING,
+                  "obfuscated-code": Nsci.warnings.WARNING
+                }
+              });
+
+              expect(status).equals(pipeline.status.SUCCESS);
+              expect(data.dependencies.warnings).to.deep.equal([
+                {
+                  package: "express",
+                  warnings: [
+                    {
+                      kind: "unsafe-assign",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    },
+                    {
+                      kind: "obfuscated-code",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    }
+                  ]
+                },
+                {
+                  package: "marker",
+                  warnings: [
+                    {
+                      kind: "obfuscated-code",
+                      location: [
+                        [0, 1],
+                        [5, 0]
+                      ]
+                    }
+                  ]
+                }
+              ]);
+            });
           });
         });
       });

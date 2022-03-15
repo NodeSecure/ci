@@ -60,7 +60,7 @@ export type Configuration = {
   strategy: ValueOf<typeof vulnStrategy>;
   reporters: ReporterTarget[];
   vulnerabilitySeverity: ValueOf<typeof vulnSeverity>;
-  warnings: Warnings | Record<string, Warnings>;
+  warnings: Warnings | Record<WarningKinds, Warnings>;
 };
 
 function generateDefaultRC(): Configuration {
