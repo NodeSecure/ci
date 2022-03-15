@@ -41,20 +41,31 @@ function adaptReporters(
   return [...new Set(reportersAsArray)].filter(isValidReporter);
 }
 
-function isValidWarning(inputWarning: ValueOf<typeof Nsci.warnings>): boolean {
-  return Object.values(Nsci.warnings).includes(inputWarning);
+function isValidWarningValue(
+  warningValue: string
+): warningValue is ValueOf<typeof Nsci.warnings> {
+  return Object.values(Nsci.warnings).includes(
+    warningValue as ValueOf<typeof Nsci.warnings>
+  );
+}
+
+function isValidWarningKind(
+  warningKind: string
+): warningKind is Nsci.WarningKinds {
+  return Nsci.warningKinds.includes(warningKind as Nsci.WarningKinds);
 }
 
 function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
-  if (typeof warnings === "string" && isValidWarning(warnings)) {
+  if (typeof warnings === "string" && isValidWarningValue(warnings)) {
     return warnings;
   }
 
   const warningsRecord = Object.fromEntries(
-    Object.entries(warnings).filter(([_warningType, warningValue]) =>
-      isValidWarning(warningValue as ValueOf<typeof Nsci.warnings>)
+    Object.entries(warnings).filter(
+      ([warningType, warningValue]) =>
+        isValidWarningKind(warningType) && isValidWarningValue(warningValue)
     )
-  ) as Nsci.Warnings;
+  );
 
   const hasAtleastOneValidWarningInRecord =
     Object.keys(warningsRecord).length > 0;

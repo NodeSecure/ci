@@ -1,5 +1,6 @@
-import { ValueOf } from "../../types";
+import type JSXRay from "@nodesecure/js-x-ray";
 
+import { ValueOf } from "../../types";
 export const vulnStrategy = {
   npm: "NPM_AUDIT",
   node: "SECURITY_WG",
@@ -24,6 +25,24 @@ export const warnings = {
   OFF: "off",
   WARNING: "warning"
 } as const;
+
+// These warnings types should probably come from JSXRay but are hosted here for now
+
+export const warningKinds: Readonly<
+  (JSXRay.kindWithValue | "unsafe-import")[]
+> = [
+  "parsing-error",
+  "encoded-literal",
+  "unsafe-regex",
+  "unsafe-stmt",
+  "unsafe-assign",
+  "short-identifiers",
+  "suspicious-literal",
+  "obfuscated-code",
+  "unsafe-import"
+] as const;
+
+export type WarningKinds = JSXRay.kindWithValue | "unsafe-import";
 
 export type Warnings =
   | ValueOf<typeof warnings>

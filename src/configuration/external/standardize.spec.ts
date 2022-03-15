@@ -76,9 +76,9 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
         strategy: "unknown",
         vulnerabilities: "unknown",
         warnings: {
-          "invalid-warning": "unknown",
-          "other-invalid-warning": undefined,
-          "last-invalid-warning": []
+          "invalid-warning-kind-with-valid-value": "off",
+          "invalid-warning-kind-with-invalid-value": undefined,
+          "other-invalid-warning-kind-with-invalid-value": []
         },
         reporters: ["invalidReporter1", "invalidReporter2", "console"]
       }
