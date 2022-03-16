@@ -87,6 +87,7 @@
     "lodash.set": "^4.3.2",
     "pluralize": "^8.0.0",
     "pretty-ms": "^7.0.1",
-    "sade": "^1.7.4"
+    "sade": "^1.7.4",
+    "ts-pattern": "^3.3.5"
   }
 }
