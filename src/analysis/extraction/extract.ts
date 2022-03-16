@@ -4,13 +4,13 @@ import { Strategy } from "@nodesecure/vuln";
 
 import type { DependencyWarning } from "../../types";
 
-export type CompactedScannerPayload = {
+export interface CompactedScannerPayload {
   warnings: GlobalWarning[];
   dependencies: {
     warnings: DependencyWarning[];
     vulnerabilities: WorkableVulnerability[];
   };
-};
+}
 
 export type WorkableVulnerability = Strategy.StandardVulnerability & {
   severity: Strategy.Severity;

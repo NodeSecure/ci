@@ -18,7 +18,7 @@ function reportLockFileContext(
     consolePrinter.font
       .standard(`No lockfile could be found in ${rc.rootDir}`)
       .prefix(consolePrinter.font.info("info").message)
-      .print();
+      .printWithEmptyLine();
   } else {
     consolePrinter.util
       .concatOutputs([
@@ -26,7 +26,7 @@ function reportLockFileContext(
         consolePrinter.font.standard("will be used during the analysis").message
       ])
       .prefix(consolePrinter.font.info("info").message)
-      .print();
+      .printWithEmptyLine();
   }
 
   if (env.lockFile.multiple) {
@@ -40,7 +40,7 @@ function reportLockFileContext(
         )
       )
       .prefix(consolePrinter.font.info("info").message)
-      .print();
+      .printWithEmptyLine();
   }
 
   const rcStrategy = vulnStrategiesLabels[rc.strategy];
@@ -57,7 +57,7 @@ function reportLockFileContext(
           env.lockFile.current === "none" ? "no lockfile" : env.lockFile.current
         ).message
       ])
-      .print();
+      .printWithEmptyLine();
 
     consolePrinter.util
       .concatOutputs([
@@ -67,7 +67,7 @@ function reportLockFileContext(
         consolePrinter.font.standard("==>").message,
         consolePrinter.font.highlight(compatibleStrategy).message
       ])
-      .print();
+      .printWithEmptyLine();
   }
 
   consolePrinter.util
@@ -77,7 +77,7 @@ function reportLockFileContext(
       consolePrinter.font.highlight(compatibleStrategy).message,
       consolePrinter.font.standard("vulnerability strategy").message
     ])
-    .print();
+    .printWithEmptyLine();
 }
 
 function reportEnvironmentContext(

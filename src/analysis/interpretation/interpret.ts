@@ -21,13 +21,13 @@ import {
   DependencyWarningWithMode
 } from "./warnings.js";
 
-export type InterpretedScannerPayload = {
-  warnings: GlobalWarning[];
+export interface InterpretedScannerPayload {
+  warnings: GlobalWarning;
   dependencies: {
     warnings: DependencyWarningWithMode[];
     vulnerabilities: WorkableVulnerability[];
   };
-};
+}
 
 export type OutcomePayloadFromPipelineChecks = {
   status: pipeline.Status;

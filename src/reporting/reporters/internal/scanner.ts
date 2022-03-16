@@ -37,7 +37,7 @@ export function reportScannerLoggerEvents(logger: Logger): void {
   logger.once("start", () => {
     consolePrinter.util.emptyLine();
     if (!spinner) {
-      startMessage.print();
+      startMessage.printWithEmptyLine();
 
       return;
     }
@@ -52,7 +52,7 @@ export function reportScannerLoggerEvents(logger: Logger): void {
     ]);
 
     if (!spinner) {
-      endMessage.print();
+      endMessage.printWithEmptyLine();
 
       return;
     }
@@ -81,7 +81,7 @@ function reportScannerDependencies(payload: Scanner.Payload) {
       consolePrinter.font.standard(`analyzed from`).message,
       consolePrinter.font.info(payload.rootDependencyName ?? "unknown").message
     ])
-    .print();
+    .printWithEmptyLine();
 }
 
 function reportScannerAnalysis(_payload: unknown): (log: Logger) => Generator {

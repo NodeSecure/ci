@@ -52,7 +52,7 @@ function printDependencyWarnings(
             ? `${warningPath}:${warningLocation}`
             : ""
         ])
-        .print();
+        .printWithEmptyLine();
     }
   }
 
@@ -72,7 +72,10 @@ export function reportDependencyWarnings(
   const { warningsWithErrorMode } = printDependencyWarnings(warnings);
 
   if (numberOfDependencyWarnings === 0) {
-    consolePrinter.font.success(`✓ 0 dependency warnings`).bold().print();
+    consolePrinter.font
+      .success(`✓ 0 dependency warnings`)
+      .bold()
+      .printWithEmptyLine();
 
     return;
   }
@@ -81,7 +84,7 @@ export function reportDependencyWarnings(
     consolePrinter.font
       .info(`⚠ dependency warnings were skipped`)
       .bold()
-      .print();
+      .printWithEmptyLine();
 
     return;
   }
@@ -97,7 +100,9 @@ export function reportDependencyWarnings(
       )}`
     )
       .bold()
-      .print();
+      .printWithEmptyLine();
+
+    return;
   }
 
   /**
@@ -117,7 +122,7 @@ export function reportDependencyWarnings(
     )}`
   )
     .bold()
-    .print();
+    .printWithEmptyLine();
 }
 
 function collectNumberOfWarningsWithError(
@@ -158,32 +163,18 @@ export function buildDependenciesWarningsOutcomeMessage(
   const { allWarnings, warningsWithError } =
     collectDependencyWarningsStats(warnings);
 
-  const dependencyWarningsMessage = `dependency ${pluralize(
-    "warning",
-    allWarnings
-  )}`;
-
   return match(warningsMode)
     .with(Nsci.warnings.OFF, () =>
       consolePrinter.font.info("⚠ dependency warnings skipped")
     )
     .with(Nsci.warnings.ERROR, () =>
-      buildOutcomeStatsConsoleMessage(
-        dependencyWarningsMessage,
-        allWarnings,
-        Nsci.warnings.ERROR
-      )
+      buildOutcomeStatsConsoleMessage(allWarnings, Nsci.warnings.ERROR)
     )
     .with(Nsci.warnings.WARNING, () =>
-      buildOutcomeStatsConsoleMessage(
-        dependencyWarningsMessage,
-        allWarnings,
-        Nsci.warnings.WARNING
-      )
+      buildOutcomeStatsConsoleMessage(allWarnings, Nsci.warnings.WARNING)
     )
     .otherwise(() =>
       buildOutcomeStatsConsoleMessage(
-        dependencyWarningsMessage,
         allWarnings,
         warningsWithError > 0 ? Nsci.warnings.ERROR : Nsci.warnings.OFF
       )

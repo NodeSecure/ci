@@ -17,19 +17,16 @@ export function printWarnOrError(warningsMode: Warnings) {
 }
 
 export function buildOutcomeStatsConsoleMessage(
-  message: string,
   statsLength: number,
   warningsMode: Warnings
 ): ConsoleMessage {
   if (statsLength > 0) {
     const printWarnOrErr = printWarnOrError(warningsMode);
 
-    return printWarnOrErr(`${statsLength} ${message}`).prefix(
-      printWarnOrErr("✖").message
-    );
+    return printWarnOrErr(`${statsLength}`).prefix(printWarnOrErr("✖").message);
   }
 
   return consolePrinter.font
-    .success(`${statsLength} ${message}`)
+    .success(`${statsLength}`)
     .prefix(consolePrinter.font.success("✓").message);
 }

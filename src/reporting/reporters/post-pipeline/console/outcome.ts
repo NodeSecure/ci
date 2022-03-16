@@ -45,9 +45,11 @@ export function printPipelineOutcome(
     consolePrinter.font
       .highlightedSuccess("✓ [SUCCESS] Pipeline successful ")
       .bold()
-      .print();
+      .printWithEmptyLine();
   } else {
-    consolePrinter.font.highlightedError("✖ [FAILURE] Pipeline failed").print();
+    consolePrinter.font
+      .highlightedError("✖ [FAILURE] Pipeline failed")
+      .printWithEmptyLine();
   }
 
   consolePrinter.util.emptyLine();

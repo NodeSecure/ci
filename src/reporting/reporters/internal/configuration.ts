@@ -23,7 +23,7 @@ function dumpInputCommand(rc: Nsci.Configuration): void {
         .message
     ])
     .prefix(consolePrinter.font.info("$ node_modules/.bin/nsci").message)
-    .print();
+    .printWithEmptyLine();
 }
 
 function printSelectedRuntimeConfiguration({
@@ -39,7 +39,7 @@ function printSelectedRuntimeConfiguration({
         ).message
       )
       .prefix(consolePrinter.font.info("info").message)
-      .print();
+      .printWithEmptyLine();
 
     dumpInputCommand(runtimeConfig);
   } else {
@@ -47,7 +47,7 @@ function printSelectedRuntimeConfiguration({
       .standard("was found")
       .prefix(consolePrinter.font.highlight(".nodesecurerc").message)
       .prefix(consolePrinter.font.info("info").message)
-      .print();
+      .printWithEmptyLine();
   }
 }
 

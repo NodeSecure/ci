@@ -41,7 +41,7 @@ export function reportDependencyVulns(
           consolePrinter.font.standard(vuln.title).italic().message,
           consolePrinter.font.info(vulnRanges).bold().message
         ])
-        .print();
+        .printWithEmptyLine();
     }
     consolePrinter.util
       .concatOutputs([
@@ -49,21 +49,17 @@ export function reportDependencyVulns(
         consolePrinter.font.error(`${pluralize("vulnerability", vulnsLength)}`)
           .message
       ])
-      .print();
+      .printWithEmptyLine();
   } else {
     consolePrinter.font
       .success("✓ 0 vulnerabilities detected in the dependency tree")
       .bold()
-      .print();
+      .printWithEmptyLine();
   }
 }
 
 export function buildVulnerabilitiesOutcomeMessage(
   numberOfVulnerabilities: number
 ): ConsoleMessage {
-  return buildOutcomeStatsConsoleMessage(
-    pluralize("vulnerability", numberOfVulnerabilities),
-    numberOfVulnerabilities,
-    "error"
-  );
+  return buildOutcomeStatsConsoleMessage(numberOfVulnerabilities, "error");
 }

@@ -8,6 +8,7 @@ export type ConsoleMessage = {
   prefix: (message: string) => ConsoleMessage;
   suffix: (message: string) => ConsoleMessage;
   print: () => void;
+  printWithEmptyLine: () => void;
 };
 
 type ConsoleOutput<Output = string, Input = string> = (
@@ -64,6 +65,9 @@ function createConsoleMessage(message: string): ConsoleMessage {
       return this;
     },
     print() {
+      console.log(`${this.message}`);
+    },
+    printWithEmptyLine() {
       console.log(`\n ${this.message}`);
     }
   };

@@ -1,3 +1,4 @@
+import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import pluralize from "pluralize";
 
 import {
@@ -8,26 +9,37 @@ import { Nsci } from "../../../../configuration/index.js";
 
 import { buildOutcomeStatsConsoleMessage } from "./util.js";
 
-export function reportGlobalWarnings(warnings: Array<unknown>): void {
+export function reportGlobalWarnings(warnings: GlobalWarning): void {
   if (warnings.length > 0) {
+    warnings.forEach((warning) => {
+      consolePrinter.font
+        .standard(`${warning}`)
+        .prefix(
+          consolePrinter.font.error("global warning:").underline().message
+        )
+        .bold()
+        .printWithEmptyLine();
+    });
+
     consolePrinter.font
       .error(
         `✖ ${warnings.length} global ${pluralize("warning", warnings.length)}`
       )
       .bold()
-      .print();
-  } else {
-    consolePrinter.font.success("✓ 0 global warnings").bold().print();
+      .printWithEmptyLine();
+
+    return;
   }
+
+  consolePrinter.font
+    .success("✓ 0 global warnings")
+    .bold()
+    .printWithEmptyLine();
 }
 
 export function buildGlobalWarningsOutcomeMessage(
   numberOfGlobalWarnings: number,
   warningsMode: Nsci.Warnings
 ): ConsoleMessage {
-  return buildOutcomeStatsConsoleMessage(
-    "global warnings",
-    numberOfGlobalWarnings,
-    warningsMode
-  );
+  return buildOutcomeStatsConsoleMessage(numberOfGlobalWarnings, warningsMode);
 }

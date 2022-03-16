@@ -108,7 +108,7 @@ export async function runPipeline(
     consolePrinter.font
       .standard(uncaughtError.message)
       .prefix(consolePrinter.font.highlightedError("error").message)
-      .print();
+      .printWithEmptyLine();
 
     provideErrorCodeToProcess();
 

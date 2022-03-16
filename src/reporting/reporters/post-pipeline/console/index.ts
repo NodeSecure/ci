@@ -19,7 +19,7 @@ function printPipelineStart(): void {
         .message,
       consolePrinter.font.standard("Pipeline checks started").bold().message
     ])
-    .print();
+    .printWithEmptyLine();
 }
 
 function printEndPipeline(endedAt: number): void {
@@ -33,7 +33,7 @@ function printEndPipeline(endedAt: number): void {
         .italic()
         .bold().message
     ])
-    .print();
+    .printWithEmptyLine();
 }
 
 export const consoleReporter: Reporter<
