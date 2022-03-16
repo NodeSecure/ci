@@ -88,6 +88,7 @@
     "pluralize": "^8.0.0",
     "pretty-ms": "^7.0.1",
     "sade": "^1.7.4",
+    "table": "^6.8.0",
     "ts-pattern": "^3.3.5"
   }
 }
