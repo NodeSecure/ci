@@ -1,35 +1,14 @@
-import pluralize from "pluralize";
-
-import {
-  ConsoleMessage,
-  consolePrinter
-} from "../../../../../lib/console-printer/index.js";
-import type { CompactedScannerPayload } from "../../../../analysis";
+import { consolePrinter } from "../../../../../lib/console-printer/index.js";
+import type { InterpretedScannerPayload } from "../../../../analysis";
 import { Warnings } from "../../../../configuration/standard/nsci.js";
 import { pipeline } from "../../../index.js";
 
-import { printWarnOrError } from "./util.js";
-
-function getStatsConsoleMessage(
-  message: string,
-  statsLength: number,
-  warningsMode: Warnings
-): ConsoleMessage {
-  if (statsLength > 0) {
-    const printWarnOrErr = printWarnOrError(warningsMode);
-
-    return printWarnOrErr(`${statsLength} ${message}`).prefix(
-      printWarnOrErr("✖").message
-    );
-  }
-
-  return consolePrinter.font
-    .success(`${statsLength} ${message}`)
-    .prefix(consolePrinter.font.success("✓").message);
-}
+import { buildDependenciesWarningsOutcomeMessage } from "./dependency-warnings.js";
+import { buildGlobalWarningsOutcomeMessage } from "./global-warnings.js";
+import { buildVulnerabilitiesOutcomeMessage } from "./vulnerabilities.js";
 
 export function printPipelineOutcome(
-  payload: CompactedScannerPayload,
+  payload: InterpretedScannerPayload,
   status: pipeline.Status,
   warningsMode: Warnings
 ): void {
@@ -38,50 +17,37 @@ export function printPipelineOutcome(
     dependencies: { warnings, vulnerabilities }
   } = payload;
 
-  const globalWarningsConsoleMsg = getStatsConsoleMessage(
-    "global warnings",
+  const globalWarningsOutcomeMsg = buildGlobalWarningsOutcomeMessage(
     globalWarnings.length,
     warningsMode
   );
 
-  const numberOfDependencyWarnings = warnings.reduce(
-    (accumulatedNumberOfWarnings, dependencyWarning) =>
-      accumulatedNumberOfWarnings + dependencyWarning.warnings.length,
-    0
+  const depsWarningsOutcomeMsg = buildDependenciesWarningsOutcomeMessage(
+    warnings,
+    warningsMode
   );
 
-  const depsWarningsConsoleMsg =
-    warningsMode === "off"
-      ? consolePrinter.font.info("⚠ dependency warnings skipped")
-      : getStatsConsoleMessage(
-          `dependency ${pluralize("warning", numberOfDependencyWarnings)}`,
-          numberOfDependencyWarnings,
-          warningsMode
-        );
-
-  const vulnConsoleMsg = getStatsConsoleMessage(
-    pluralize("vulnerability", vulnerabilities.length),
-    vulnerabilities.length,
-    "error"
+  const vulnsConsoleOutcomeMsg = buildVulnerabilitiesOutcomeMessage(
+    vulnerabilities.length
   );
 
   consolePrinter.util
     .concatOutputs([
-      globalWarningsConsoleMsg.bold().message,
+      globalWarningsOutcomeMsg.bold().message,
       consolePrinter.font.standard("|").message,
-      depsWarningsConsoleMsg.bold().message,
+      depsWarningsOutcomeMsg.bold().message,
       consolePrinter.font.standard("|").message,
-      vulnConsoleMsg.bold().message
+      vulnsConsoleOutcomeMsg.bold().message
     ])
     .print();
 
   if (status === pipeline.status.SUCCESS) {
     consolePrinter.font
-      .highlightedSuccess("[SUCCESS] Pipeline successful")
+      .highlightedSuccess("✓ [SUCCESS] Pipeline successful ")
       .bold()
       .print();
   } else {
-    consolePrinter.font.highlightedError("[FAILURE] Pipeline failed").print();
+    consolePrinter.font.highlightedError("✖ [FAILURE] Pipeline failed").print();
   }
 
   consolePrinter.util.emptyLine();

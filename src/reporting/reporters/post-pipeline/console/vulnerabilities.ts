@@ -7,6 +7,8 @@ import {
 } from "../../../../../lib/console-printer/index.js";
 import type { WorkableVulnerability } from "../../../../analysis";
 
+import { buildOutcomeStatsConsoleMessage } from "./util.js";
+
 function getColorBySeverity(severity: Strategy.Severity): ConsoleMessage {
   switch (severity) {
     case "critical":
@@ -54,4 +56,14 @@ export function reportDependencyVulns(
       .bold()
       .print();
   }
+}
+
+export function buildVulnerabilitiesOutcomeMessage(
+  numberOfVulnerabilities: number
+): ConsoleMessage {
+  return buildOutcomeStatsConsoleMessage(
+    pluralize("vulnerability", numberOfVulnerabilities),
+    numberOfVulnerabilities,
+    "error"
+  );
 }

@@ -79,7 +79,7 @@ function reportScannerDependencies(payload: Scanner.Payload) {
         .highlight(`${numberOfDeps} ${pluralize("dependencies", numberOfDeps)}`)
         .bold().message,
       consolePrinter.font.standard(`analyzed from`).message,
-      consolePrinter.font.info(payload.rootDependencyName).message
+      consolePrinter.font.info(payload.rootDependencyName ?? "unknown").message
     ])
     .print();
 }

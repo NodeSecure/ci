@@ -7,9 +7,10 @@ import { OutcomePayloadFromPipelineChecks } from "../../../../analysis/interpret
 import { Nsci } from "../../../../configuration/standard/index.js";
 import { Reporter } from "../../reporter.js";
 
+import { reportDependencyWarnings } from "./dependency-warnings.js";
+import { reportGlobalWarnings } from "./global-warnings.js";
 import { printPipelineOutcome } from "./outcome.js";
 import { reportDependencyVulns } from "./vulnerabilities.js";
-import { reportGlobalWarnings, reportDependencyWarnings } from "./warnings.js";
 
 function printPipelineStart(): void {
   consolePrinter.util
