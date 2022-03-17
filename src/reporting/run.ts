@@ -57,7 +57,7 @@ async function runScannerAnalysis(
   return payload;
 }
 
-function provideErrorCodeToProcess() {
+function provideErrorCodeToProcess(): void {
   /**
    * Rather than exiting manually with process.exit() which could result in
    * async operations being aborted, we set the exitCode to 1 (native error code).

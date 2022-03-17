@@ -1,16 +1,14 @@
 import {
   ConsoleMessage,
+  ConsoleOutput,
   consolePrinter
 } from "../../../../../lib/console-printer/index.js";
 import { Nsci } from "../../../../configuration/index.js";
 import { Warnings } from "../../../../configuration/standard/nsci";
 
-export function printWarnOrError(warningsMode: Warnings) {
-  /**
-   * warningsMode is only a string for now. In the future, a Record could be provided
-   * in a ESLint manneer. Consequently, this function would need more context
-   * to know whether if the warnings should be printed as an error or a warning.
-   */
+export function printWarnOrError(
+  warningsMode: Warnings
+): ConsoleOutput<ConsoleMessage, string> {
   return warningsMode === Nsci.warnings.ERROR
     ? consolePrinter.font.error
     : consolePrinter.font.info;

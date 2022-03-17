@@ -70,7 +70,7 @@ export function reportScannerLoggerEvents(logger: Logger): void {
   });
 }
 
-function reportScannerDependencies(payload: Scanner.Payload) {
+function reportScannerDependencies(payload: Scanner.Payload): void {
   const { dependencies } = payload;
   const numberOfDeps = Object.keys(dependencies).length;
   consolePrinter.util
@@ -85,7 +85,9 @@ function reportScannerDependencies(payload: Scanner.Payload) {
 }
 
 function reportScannerAnalysis(_payload: unknown): (log: Logger) => Generator {
-  return function* report(logger: Logger) {
+  return function* report(
+    logger: Logger
+  ): Generator<undefined, never, Scanner.Payload> {
     while (true) {
       reportScannerLoggerEvents(logger);
       reportScannerDependencies((yield) as Scanner.Payload);

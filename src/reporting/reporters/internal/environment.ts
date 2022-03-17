@@ -83,7 +83,7 @@ function reportLockFileContext(
 function reportEnvironmentContext(
   rc: Nsci.Configuration
 ): (env: EnvironmentContext) => void {
-  return (env) => {
+  return (env): void => {
     reportLockFileContext(env, rc);
   };
 }

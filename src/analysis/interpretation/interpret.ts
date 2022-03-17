@@ -88,6 +88,7 @@ export function runPayloadInterpreter(
 ): OutcomePayloadFromPipelineChecks {
   const { warnings, dependencies } = extractScannerPayload(payload);
 
+  /* eslint-disable @typescript-eslint/explicit-function-return-type */
   return interpretPayloadChecks([
     () => checkGlobalWarnings(warnings),
     () => checkDependenciesWarnings(dependencies.warnings, rc),

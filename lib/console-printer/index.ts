@@ -11,7 +11,7 @@ export type ConsoleMessage = {
   printWithEmptyLine: () => void;
 };
 
-type ConsoleOutput<Output = string, Input = string> = (
+export type ConsoleOutput<Output = string, Input = string> = (
   message: Input
 ) => Output;
 
@@ -39,35 +39,35 @@ type ConsolePrinter = {
 function createConsoleMessage(message: string): ConsoleMessage {
   return {
     message,
-    bold() {
+    bold(): ConsoleMessage {
       this.message = consolePrinter.decoration.bold(this.message);
 
       return this;
     },
-    italic() {
+    italic(): ConsoleMessage {
       this.message = consolePrinter.decoration.italic(this.message);
 
       return this;
     },
-    underline() {
+    underline(): ConsoleMessage {
       this.message = consolePrinter.decoration.underline(this.message);
 
       return this;
     },
-    prefix(msg?: string) {
+    prefix(msg?: string): ConsoleMessage {
       this.message = `${msg} ${this.message}`;
 
       return this;
     },
-    suffix(msg?: string) {
+    suffix(msg?: string): ConsoleMessage {
       this.message = `${this.message} ${msg}`;
 
       return this;
     },
-    print() {
+    print(): void {
       console.log(`${this.message}`);
     },
-    printWithEmptyLine() {
+    printWithEmptyLine(): void {
       console.log(`\n ${this.message}`);
     }
   };
@@ -98,6 +98,6 @@ export const consolePrinter: ConsolePrinter = {
   }
 };
 
-export function removeWhiteSpaces(msg: string) {
+export function removeWhiteSpaces(msg: string): string {
   return msg.replace(/\s\s+/g, " ");
 }

@@ -6,7 +6,7 @@ import { generateDefaultNodeSecureConfig } from "../src/configuration/index.js";
 import { Nsci } from "../src/configuration/standard/index.js";
 import { runPipeline } from "../src/reporting/run.js";
 
-function joinExclusiveList<T>(items: T) {
+function joinExclusiveList<T>(items: T): string {
   return Object.values(items).join(" | ");
 }
 
