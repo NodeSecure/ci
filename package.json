@@ -5,12 +5,12 @@
   "bin": {
     "nsci": "./dist/bin/cli.js"
   },
-  "main": "./dist/src/pipeline/run.js",
-  "exports": "./dist/src/pipeline/run.js",
+  "main": "./dist/src/reporting/run.js",
+  "exports": "./dist/src/reporting/run.js",
   "typesVersions": {
     "*": {
       "run.d.ts": [
-        "dist/src/pipeline/run.d.ts"
+        "dist/src/reporting/run.d.ts"
       ]
     }
   },
