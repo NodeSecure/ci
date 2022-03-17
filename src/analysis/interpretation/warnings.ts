@@ -24,13 +24,13 @@ export type DependencyWarningWithMode = Omit<DependencyWarning, "warnings"> & {
   })[];
 };
 
-function retrieveAllWarningsWithUniqueMode(
+function retrieveAllWarningsWithSharedMode(
   warnings: DependencyWarning[],
   warningMode: Nsci.WarningMode
 ): CheckableFunction<DependencyWarningWithMode> {
-  const allDependencyWarnings = warnings
+  const allDependencyWarningsWithMode = warnings
     .filter((dependency) => dependency.warnings.length > 0)
-    .flatMap((dependencyWarning) => {
+    .map((dependencyWarning) => {
       return {
         ...dependencyWarning,
         warnings: dependencyWarning.warnings.map((warning) => {
@@ -45,11 +45,11 @@ function retrieveAllWarningsWithUniqueMode(
   return {
     result:
       warningMode === Nsci.warnings.ERROR
-        ? fromBooleanToCheckResult(allDependencyWarnings.length > 0)
+        ? fromBooleanToCheckResult(allDependencyWarningsWithMode.length > 0)
         : fromBooleanToCheckResult(false),
     data: {
       key: "dependencies.warnings",
-      value: allDependencyWarnings
+      value: allDependencyWarningsWithMode
     }
   };
 }
@@ -63,13 +63,13 @@ function groupWarningKindsByWarningMode(
   const warningKindsGroupedByWarningMode = Object.entries(
     warningsWithSpecificMode
   ).reduce(
-    (acc, [warningKind, warningValue]) => {
-      acc[warningValue] = [
-        ...acc[warningValue],
+    (warningsGroupedByMode, [warningKind, warningValue]) => {
+      warningsGroupedByMode[warningValue] = [
+        ...warningsGroupedByMode[warningValue],
         warningKind as Nsci.WarningKind
       ];
 
-      return acc;
+      return warningsGroupedByMode;
     },
     {
       off: [],
@@ -94,7 +94,7 @@ function groupWarningKindsByWarningMode(
   };
 }
 
-function retrieveAllWarningsWithTheirOwnSpecificMode(
+function retrieveAllWarningsWithSpecificMode(
   warnings: DependencyWarning[],
   warningsWithSpecificMode: Record<Nsci.WarningKind, Nsci.WarningMode>
 ): CheckableFunction<DependencyWarningWithMode> {
@@ -163,19 +163,19 @@ export function checkDependenciesWarnings(
       };
     })
     .with(Nsci.warnings.ERROR, () =>
-      retrieveAllWarningsWithUniqueMode(
+      retrieveAllWarningsWithSharedMode(
         warnings,
         runtimeConfiguration.warnings as Nsci.WarningMode
       )
     )
     .with(Nsci.warnings.WARNING, () =>
-      retrieveAllWarningsWithUniqueMode(
+      retrieveAllWarningsWithSharedMode(
         warnings,
         runtimeConfiguration.warnings as Nsci.WarningMode
       )
     )
     .otherwise(() =>
-      retrieveAllWarningsWithTheirOwnSpecificMode(
+      retrieveAllWarningsWithSpecificMode(
         warnings,
         runtimeConfiguration.warnings as Record<
           Nsci.WarningKind,

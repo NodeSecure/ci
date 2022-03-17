@@ -5,7 +5,7 @@ import { Maybe } from "../../types/index.js";
 
 import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
 
-function convertSeverityAsNumber(
+function fromSeverityToNumber(
   severity: Maybe<Strategy.Severity | "all">
 ): number {
   const severities = {
@@ -30,18 +30,26 @@ function convertSeverityAsNumber(
   return DEFAULT_SEVERITY;
 }
 
+function isVulnExceedingSeverityThreshold(
+  vulnSeverity: Strategy.StandardVulnerability["severity"],
+  severityThreshold: Strategy.Severity | "all"
+): boolean {
+  return (
+    fromSeverityToNumber(vulnSeverity) >=
+    fromSeverityToNumber(severityThreshold)
+  );
+}
+
 /**
  * We must ensure that each vulnerability with equal or higher severity than
  * the one defined in the runtime configuration is caught.
  */
-function findAllVulnsWithEqualOrHigherSeverity(
+function findAllVulnsExceedingSeverityThreshold(
   vulnerabilities: Strategy.StandardVulnerability[],
-  severity: Strategy.Severity | "all"
+  severityThreshold: Strategy.Severity | "all"
 ): Strategy.StandardVulnerability[] {
-  return vulnerabilities.filter(
-    (vuln) =>
-      convertSeverityAsNumber(vuln.severity) >=
-      convertSeverityAsNumber(severity)
+  return vulnerabilities.filter((vuln) =>
+    isVulnExceedingSeverityThreshold(vuln.severity, severityThreshold)
   );
 }
 
@@ -51,7 +59,7 @@ export function checkDependenciesVulns(
 ): CheckableFunction<Strategy.StandardVulnerability> {
   const { vulnerabilitySeverity } = runtimeConfiguration;
 
-  const vulnsClassifiedBySeverity = findAllVulnsWithEqualOrHigherSeverity(
+  const vulnsClassifiedBySeverity = findAllVulnsExceedingSeverityThreshold(
     vulnerabilities,
     vulnerabilitySeverity
   );

@@ -57,18 +57,18 @@ function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
     return warnings;
   }
 
-  const warningsRecord = Object.fromEntries(
+  const warningsWithValidKindAndMode = Object.fromEntries(
     Object.entries(warnings).filter(
-      ([warningType, warningValue]) =>
-        isValidWarningKind(warningType) && isValidWarningMode(warningValue)
+      ([warningType, warningMode]) =>
+        isValidWarningKind(warningType) && isValidWarningMode(warningMode)
     )
   ) as Nsci.Warnings;
 
   const hasAtleastOneValidWarningInRecord =
-    Object.keys(warningsRecord).length > 0;
+    Object.keys(warningsWithValidKindAndMode).length > 0;
 
   return hasAtleastOneValidWarningInRecord
-    ? warningsRecord
+    ? warningsWithValidKindAndMode
     : Nsci.warnings.ERROR;
 }
 
