@@ -4,13 +4,13 @@ import { match } from "ts-pattern";
 import { Nsci } from "../../configuration/standard/index.js";
 import type { DependencyWarning } from "../../types";
 
-import { convertBooleanAsCheckResult, CheckableFunction } from "./checkable.js";
+import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
 
 export function checkGlobalWarnings(
   warnings: GlobalWarning[]
 ): CheckableFunction<GlobalWarning> {
   return {
-    result: convertBooleanAsCheckResult(warnings.length > 0),
+    result: fromBooleanToCheckResult(warnings.length > 0),
     data: {
       key: "warnings",
       value: warnings
@@ -45,8 +45,8 @@ function retrieveAllWarningsWithUniqueMode(
   return {
     result:
       warningMode === Nsci.warnings.ERROR
-        ? convertBooleanAsCheckResult(allDependencyWarnings.length > 0)
-        : convertBooleanAsCheckResult(false),
+        ? fromBooleanToCheckResult(allDependencyWarnings.length > 0)
+        : fromBooleanToCheckResult(false),
     data: {
       key: "dependencies.warnings",
       value: allDependencyWarnings
@@ -140,7 +140,7 @@ function retrieveAllWarningsWithTheirOwnSpecificMode(
   );
 
   return {
-    result: convertBooleanAsCheckResult(numberOfWarningsWithErrorMode > 0),
+    result: fromBooleanToCheckResult(numberOfWarningsWithErrorMode > 0),
     data: {
       key: "dependencies.warnings",
       value: dependencyWarningsWithErrorOrWarningModes
@@ -155,7 +155,7 @@ export function checkDependenciesWarnings(
   return match(runtimeConfiguration.warnings)
     .with(Nsci.warnings.OFF, () => {
       return {
-        result: convertBooleanAsCheckResult(false),
+        result: fromBooleanToCheckResult(false),
         data: {
           key: "dependencies.warnings",
           value: []

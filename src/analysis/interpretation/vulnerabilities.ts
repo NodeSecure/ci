@@ -3,7 +3,7 @@ import { Strategy } from "@nodesecure/vuln";
 import { Nsci } from "../../configuration/standard/index.js";
 import { Maybe } from "../../types/index.js";
 
-import { convertBooleanAsCheckResult, CheckableFunction } from "./checkable.js";
+import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
 
 function convertSeverityAsNumber(
   severity: Maybe<Strategy.Severity | "all">
@@ -57,7 +57,7 @@ export function checkDependenciesVulns(
   );
 
   return {
-    result: convertBooleanAsCheckResult(vulnsClassifiedBySeverity.length > 0),
+    result: fromBooleanToCheckResult(vulnsClassifiedBySeverity.length > 0),
     data: {
       key: "dependencies.vulnerabilities",
       value: vulnsClassifiedBySeverity
