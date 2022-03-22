@@ -74,4 +74,4 @@ function generateDefaultRC(): Configuration {
   };
 }
 
-export const DEFAULT_NSCI_RUNTIME_CONFIGURATION = generateDefaultRC();
+export const defaultNsciRuntimeConfiguration = generateDefaultRC();

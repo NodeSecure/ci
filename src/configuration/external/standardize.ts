@@ -38,7 +38,7 @@ function extractOnlyValidPropsFromExternalConfig(
 
 function mergeConfigs(adaptedConfig: Nsci.Configuration): Nsci.Configuration {
   return {
-    ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+    ...Nsci.defaultNsciRuntimeConfiguration,
     /**
      * We override default config with the one provided from the cli or the api
      * which has just been sanitized and adapted to fit the RC format.
@@ -101,7 +101,7 @@ export async function standardizeRuntimeConfig(
      * This ensure that we have a consistent representation of the @nodesecure/ci
      * runtime configuration wherever the options are coming from.
      */
-    ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+    ...Nsci.defaultNsciRuntimeConfiguration,
     ...standardizedNsciConfig
   } as Nsci.Configuration;
 }

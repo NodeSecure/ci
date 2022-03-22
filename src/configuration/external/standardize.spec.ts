@@ -92,7 +92,7 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
             standardizeExternalConfiguration(
               partialConfig as ExternalRuntimeConfiguration
             )
-          ).to.deep.equal(Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION);
+          ).to.deep.equal(Nsci.defaultNsciRuntimeConfiguration);
         }
       );
     });

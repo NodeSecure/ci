@@ -8,7 +8,8 @@ import * as pipeline from "../../reporting/status.js";
 
 import { runPayloadInterpreter } from "./interpret.js";
 
-const DEFAULT_RUNTIME_CONFIGURATION: Nsci.Configuration = {
+// CONSTANTS
+const kDefaultRuntimeConfiguration: Nsci.Configuration = {
   rootDir: process.cwd(),
   strategy: Nsci.vulnStrategy.npm,
   reporters: [Nsci.reporterTarget.CONSOLE],
@@ -16,7 +17,7 @@ const DEFAULT_RUNTIME_CONFIGURATION: Nsci.Configuration = {
   warnings: Nsci.warnings.ERROR
 };
 
-const DEFAULT_SCANNER_PAYLOAD: Scanner.Payload = {
+const kDefaultScannerPayload: Scanner.Payload = {
   id: "1",
   rootDependencyName: "pkg",
   warnings: [],
@@ -30,8 +31,8 @@ describe("Pipeline check workflow", () => {
     describe("When providing an empty payload", () => {
       it("should make the pipeline succeed", () => {
         const { status } = runPayloadInterpreter(
-          DEFAULT_SCANNER_PAYLOAD,
-          DEFAULT_RUNTIME_CONFIGURATION
+          kDefaultScannerPayload,
+          kDefaultRuntimeConfiguration
         );
 
         expect(status).equals(pipeline.status.SUCCESS);
@@ -41,13 +42,13 @@ describe("Pipeline check workflow", () => {
     describe("When providing a payload with global warnings", () => {
       it("should make the pipeline fail", () => {
         const scannerPayload: Scanner.Payload = {
-          ...DEFAULT_SCANNER_PAYLOAD,
+          ...kDefaultScannerPayload,
           warnings: [["warning1"], ["warning2"]]
         };
 
         const { status } = runPayloadInterpreter(
           scannerPayload,
-          DEFAULT_RUNTIME_CONFIGURATION
+          kDefaultRuntimeConfiguration
         );
 
         expect(status).equals(pipeline.status.FAILURE);
@@ -58,7 +59,7 @@ describe("Pipeline check workflow", () => {
       describe("When using default runtime configuration", () => {
         it("should make the pipeline fail when atleast one warning is found", () => {
           const scannerPayload: Scanner.Payload = {
-            ...DEFAULT_SCANNER_PAYLOAD,
+            ...kDefaultScannerPayload,
             dependencies: {
               "ts-pattern": {
                 // @ts-expect-error - we are not interested in providing metadata here
@@ -124,7 +125,7 @@ describe("Pipeline check workflow", () => {
 
           const { status, data } = runPayloadInterpreter(
             scannerPayload,
-            DEFAULT_RUNTIME_CONFIGURATION
+            kDefaultRuntimeConfiguration
           );
 
           expect(status).equals(pipeline.status.FAILURE);
@@ -176,7 +177,7 @@ describe("Pipeline check workflow", () => {
       describe("When providing a customized runtime configuration", () => {
         it("should make the pipeline pass when warnings are ignored", () => {
           const scannerPayload: Scanner.Payload = {
-            ...DEFAULT_SCANNER_PAYLOAD,
+            ...kDefaultScannerPayload,
             dependencies: {
               express: {
                 // @ts-expect-error - we are not interested in providing metadata here
@@ -229,7 +230,7 @@ describe("Pipeline check workflow", () => {
           };
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
-            ...DEFAULT_RUNTIME_CONFIGURATION,
+            ...kDefaultRuntimeConfiguration,
             warnings: Nsci.warnings.OFF
           });
 
@@ -247,7 +248,7 @@ describe("Pipeline check workflow", () => {
           describe("When one warning configured on 'error' is met", () => {
             it("should make the pipeline fail with the 'error' warnings", () => {
               const scannerPayload: Scanner.Payload = {
-                ...DEFAULT_SCANNER_PAYLOAD,
+                ...kDefaultScannerPayload,
                 dependencies: {
                   express: {
                     // @ts-expect-error - we are not interested in providing metadata here
@@ -307,7 +308,7 @@ describe("Pipeline check workflow", () => {
               };
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
-                ...DEFAULT_RUNTIME_CONFIGURATION,
+                ...kDefaultRuntimeConfiguration,
                 // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.ERROR,
@@ -367,7 +368,7 @@ describe("Pipeline check workflow", () => {
           describe("Whenever a warning configured on 'warning' or 'off' is met", () => {
             it("should make the pipeline succeed with the 'warning' warnings", () => {
               const scannerPayload: Scanner.Payload = {
-                ...DEFAULT_SCANNER_PAYLOAD,
+                ...kDefaultScannerPayload,
                 dependencies: {
                   express: {
                     // @ts-expect-error - we are not interested in providing metadata here
@@ -427,7 +428,7 @@ describe("Pipeline check workflow", () => {
               };
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
-                ...DEFAULT_RUNTIME_CONFIGURATION,
+                ...kDefaultRuntimeConfiguration,
                 // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.OFF,
@@ -493,7 +494,7 @@ describe("Pipeline check workflow", () => {
         } as unknown as StandardVulnerability;
 
         const scannerPayload: Scanner.Payload = {
-          ...DEFAULT_SCANNER_PAYLOAD,
+          ...kDefaultScannerPayload,
           dependencies: {
             express: {
               // @ts-expect-error - we are not interested in metadata
@@ -506,7 +507,7 @@ describe("Pipeline check workflow", () => {
 
         const { data } = runPayloadInterpreter(
           scannerPayload,
-          DEFAULT_RUNTIME_CONFIGURATION
+          kDefaultRuntimeConfiguration
         );
 
         expect(data.dependencies.vulnerabilities.length).eq(0);
@@ -516,7 +517,7 @@ describe("Pipeline check workflow", () => {
         describe("When there is atleast one vulnerability found regardless of its severity", () => {
           it("should make the pipeline fail", () => {
             const scannerPayload: Scanner.Payload = {
-              ...DEFAULT_SCANNER_PAYLOAD,
+              ...kDefaultScannerPayload,
               dependencies: {
                 express: {
                   // @ts-expect-error - we are not interested in metadata
@@ -538,7 +539,7 @@ describe("Pipeline check workflow", () => {
 
             const { status } = runPayloadInterpreter(
               scannerPayload,
-              DEFAULT_RUNTIME_CONFIGURATION
+              kDefaultRuntimeConfiguration
             );
 
             expect(status).equals(pipeline.status.FAILURE);
@@ -550,7 +551,7 @@ describe("Pipeline check workflow", () => {
         describe("When dealing with vulnerabilities with lower severities than the configured threshold", () => {
           it("should make the pipeline succeed with no returned data", () => {
             const scannerPayload: Scanner.Payload = {
-              ...DEFAULT_SCANNER_PAYLOAD,
+              ...kDefaultScannerPayload,
               dependencies: {
                 express: {
                   // @ts-expect-error - we are not interested in metadata
@@ -571,7 +572,7 @@ describe("Pipeline check workflow", () => {
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
-              ...DEFAULT_RUNTIME_CONFIGURATION,
+              ...kDefaultRuntimeConfiguration,
               vulnerabilitySeverity: "high"
             });
 
@@ -589,7 +590,7 @@ describe("Pipeline check workflow", () => {
         describe("When dealing with vulnerabilities with higher severities than the configured threshold", () => {
           it("should make the pipeline fail for any given vulnerability found", () => {
             const scannerPayload: Scanner.Payload = {
-              ...DEFAULT_SCANNER_PAYLOAD,
+              ...kDefaultScannerPayload,
               dependencies: {
                 express: {
                   // @ts-expect-error - we are not interested in metadata
@@ -611,7 +612,7 @@ describe("Pipeline check workflow", () => {
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
-              ...DEFAULT_RUNTIME_CONFIGURATION,
+              ...kDefaultRuntimeConfiguration,
               vulnerabilitySeverity: "all"
             });
 
@@ -629,7 +630,7 @@ describe("Pipeline check workflow", () => {
 
           it("should make the pipeline fail with severities higher than configured threshold", () => {
             const scannerPayload: Scanner.Payload = {
-              ...DEFAULT_SCANNER_PAYLOAD,
+              ...kDefaultScannerPayload,
               dependencies: {
                 express: {
                   // @ts-expect-error - we are not interested in metadata
@@ -660,7 +661,7 @@ describe("Pipeline check workflow", () => {
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
-              ...DEFAULT_RUNTIME_CONFIGURATION,
+              ...kDefaultRuntimeConfiguration,
               vulnerabilitySeverity: "high"
             });
 

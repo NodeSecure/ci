@@ -14,7 +14,7 @@ function adaptDirectory(directory: string): string {
 
     return resolve(directory);
   } catch {
-    return Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION.rootDir;
+    return Nsci.defaultNsciRuntimeConfiguration.rootDir;
   }
 }
 

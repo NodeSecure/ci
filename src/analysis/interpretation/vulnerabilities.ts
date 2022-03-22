@@ -5,29 +5,29 @@ import { Maybe } from "../../types/index.js";
 
 import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
 
+const kSeverities = {
+  critical: 4,
+  high: 3,
+  medium: 2,
+  low: 1,
+  info: 0,
+  all: 0
+};
+
+const kDefaultSeverity = 0;
+
 function fromSeverityToNumber(
   severity: Maybe<Strategy.Severity | "all">
 ): number {
-  const severities = {
-    critical: 4,
-    high: 3,
-    medium: 2,
-    low: 1,
-    info: 0,
-    all: 0
-  };
-
   if (severity !== undefined) {
-    return severities[severity];
+    return kSeverities[severity];
   }
-
-  const DEFAULT_SEVERITY = 0;
 
   /**
    * When no severity is available on the dependency, which severity should
    * we affect as a default value?
    */
-  return DEFAULT_SEVERITY;
+  return kDefaultSeverity;
 }
 
 function isVulnExceedingSeverityThreshold(

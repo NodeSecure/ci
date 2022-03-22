@@ -4,7 +4,7 @@ import path from "path";
 import { ValueOf } from "../../types";
 import { Nsci } from "../standard/index.js";
 
-type LockFile = ValueOf<typeof lockFiles>;
+type LockFile = ValueOf<typeof kLockFiles>;
 
 export type EnvironmentContext = {
   lockFile: {
@@ -14,7 +14,7 @@ export type EnvironmentContext = {
   compatibleStrategy: Nsci.OutputStrategy;
 };
 
-const lockFiles = {
+const kLockFiles = {
   packageLock: "package-lock.json",
   yarnLock: "yarn.lock",
   shrinkwrap: "npm-shrinkwrap.json",
@@ -27,7 +27,7 @@ function isLockFile(name: string, collection: string[]): name is LockFile {
 
 async function collectLockFiles(rootDir: string): Promise<Set<LockFile>> {
   const lockFilesFound: LockFile[] = [];
-  const allLockFiles = Object.values(lockFiles);
+  const allLockFiles = Object.values(kLockFiles);
   const rootDirFiles = await fs.opendir(path.join(rootDir));
 
   for await (const { name } of rootDirFiles) {
@@ -39,9 +39,9 @@ async function collectLockFiles(rootDir: string): Promise<Set<LockFile>> {
   return new Set([...lockFilesFound]);
 }
 
-const fallbackEnvironmentContext = {
+const kFallbackEnvironmentContext = {
   lockFile: {
-    current: lockFiles.none,
+    current: kLockFiles.none,
     multiple: false
   },
   compatibleStrategy: Nsci.vulnStrategy.none
@@ -67,13 +67,13 @@ export async function analyzeEnvironmentContext({
     const multipleLockFiles = collectedLockFiles.size > 1 ?? false;
     const [lockFile] = collectedLockFiles;
     // package-lock.json is the lockfile with the best compatibility
-    const hasPackageLock = collectedLockFiles.has(lockFiles.packageLock);
-    const hasShrinkwrap = collectedLockFiles.has(lockFiles.shrinkwrap);
+    const hasPackageLock = collectedLockFiles.has(kLockFiles.packageLock);
+    const hasShrinkwrap = collectedLockFiles.has(kLockFiles.shrinkwrap);
 
     if (hasPackageLock || hasShrinkwrap) {
       return {
         lockFile: {
-          current: hasPackageLock ? lockFiles.packageLock : lockFile,
+          current: hasPackageLock ? kLockFiles.packageLock : lockFile,
           multiple: multipleLockFiles
         },
         /**
@@ -86,12 +86,12 @@ export async function analyzeEnvironmentContext({
 
     return {
       lockFile: {
-        current: lockFile ?? lockFiles.none,
+        current: lockFile ?? kLockFiles.none,
         multiple: multipleLockFiles
       },
       compatibleStrategy: getFallbackStrategy(strategy)
     };
   } catch {
-    return fallbackEnvironmentContext;
+    return kFallbackEnvironmentContext;
   }
 }

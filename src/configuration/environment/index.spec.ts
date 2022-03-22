@@ -9,7 +9,8 @@ import { Nsci } from "../standard/index.js";
 
 import { analyzeEnvironmentContext } from "./index.js";
 
-const fixtureEnvironment = {
+// CONSTANTS
+const kFixtureEnvironment = {
   yarn: {
     folderName: "project-using-yarn",
     files: ["yarn.lock"]
@@ -32,16 +33,19 @@ const fixtureEnvironment = {
   }
 };
 
-const fixturesFolder = "fixtures";
+const kFixturesFolder = "fixtures";
 
 function getFixtureFolderPath(folderName: string): string {
-  return path.join(fixturesFolder, folderName);
+  return path.join(kFixturesFolder, folderName);
 }
 
 function createFixturesFolder(): void {
-  fs.mkdirSync(fixturesFolder);
-  Object.entries(fixtureEnvironment).forEach(([, fixtureEnvironment]) => {
-    const folderName = path.join(fixturesFolder, fixtureEnvironment.folderName);
+  fs.mkdirSync(kFixturesFolder);
+  Object.entries(kFixtureEnvironment).forEach(([, fixtureEnvironment]) => {
+    const folderName = path.join(
+      kFixturesFolder,
+      fixtureEnvironment.folderName
+    );
     fs.mkdirSync(folderName);
     fixtureEnvironment.files.forEach((file) =>
       fs.writeFileSync(path.join(folderName, file), JSON.stringify({}))
@@ -50,7 +54,7 @@ function createFixturesFolder(): void {
 }
 
 function deleteFixturesFolder(): void {
-  fs.rmdirSync(fixturesFolder, { recursive: true });
+  fs.rmdirSync(kFixturesFolder, { recursive: true });
 }
 
 before(() => createFixturesFolder());
@@ -63,8 +67,8 @@ describe("Environment data collection", () => {
         expect(
           (
             await analyzeEnvironmentContext({
-              ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
-              rootDir: getFixtureFolderPath(fixtureEnvironment.yarn.folderName)
+              ...Nsci.defaultNsciRuntimeConfiguration,
+              rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
             })
           ).lockFile
         ).to.deep.equal({
@@ -76,9 +80,9 @@ describe("Environment data collection", () => {
       it("should find the shrinkwrap at the given location", async () => {
         expect(
           await analyzeEnvironmentContext({
-            ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+            ...Nsci.defaultNsciRuntimeConfiguration,
             rootDir: getFixtureFolderPath(
-              fixtureEnvironment.shrinkwrap.folderName
+              kFixtureEnvironment.shrinkwrap.folderName
             )
           })
         ).to.deep.equal({
@@ -94,9 +98,9 @@ describe("Environment data collection", () => {
         expect(
           (
             await analyzeEnvironmentContext({
-              ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+              ...Nsci.defaultNsciRuntimeConfiguration,
               rootDir: getFixtureFolderPath(
-                fixtureEnvironment.packageLock.folderName
+                kFixtureEnvironment.packageLock.folderName
               )
             })
           ).lockFile
@@ -110,9 +114,9 @@ describe("Environment data collection", () => {
         expect(
           (
             await analyzeEnvironmentContext({
-              ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+              ...Nsci.defaultNsciRuntimeConfiguration,
               rootDir: getFixtureFolderPath(
-                fixtureEnvironment.noLockFile.folderName
+                kFixtureEnvironment.noLockFile.folderName
               )
             })
           ).lockFile
@@ -127,9 +131,9 @@ describe("Environment data collection", () => {
       it("should keep the package-lock file", async () => {
         expect(
           await analyzeEnvironmentContext({
-            ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+            ...Nsci.defaultNsciRuntimeConfiguration,
             rootDir: getFixtureFolderPath(
-              fixtureEnvironment.multipleLockFiles.folderName
+              kFixtureEnvironment.multipleLockFiles.folderName
             )
           })
         ).to.deep.equal({
@@ -147,9 +151,9 @@ describe("Environment data collection", () => {
         it("should fallback to 'NODE' strategy", async () => {
           expect(
             await analyzeEnvironmentContext({
-              ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+              ...Nsci.defaultNsciRuntimeConfiguration,
               strategy: "NPM_AUDIT",
-              rootDir: getFixtureFolderPath(fixtureEnvironment.yarn.folderName)
+              rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
             })
           ).to.deep.equal({
             lockFile: {
@@ -161,10 +165,10 @@ describe("Environment data collection", () => {
 
           expect(
             await analyzeEnvironmentContext({
-              ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+              ...Nsci.defaultNsciRuntimeConfiguration,
               strategy: "NPM_AUDIT",
               rootDir: getFixtureFolderPath(
-                fixtureEnvironment.noLockFile.folderName
+                kFixtureEnvironment.noLockFile.folderName
               )
             })
           ).to.deep.equal({
@@ -183,10 +187,10 @@ describe("Environment data collection", () => {
         const SAME_NODE_STRATEGY = "SECURITY_WG";
         expect(
           await analyzeEnvironmentContext({
-            ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+            ...Nsci.defaultNsciRuntimeConfiguration,
             strategy: SAME_NODE_STRATEGY,
             rootDir: getFixtureFolderPath(
-              fixtureEnvironment.shrinkwrap.folderName
+              kFixtureEnvironment.shrinkwrap.folderName
             )
           })
         ).to.deep.equal({
@@ -201,9 +205,9 @@ describe("Environment data collection", () => {
 
         expect(
           await analyzeEnvironmentContext({
-            ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+            ...Nsci.defaultNsciRuntimeConfiguration,
             strategy: SAME_NONE_STRATEGY,
-            rootDir: getFixtureFolderPath(fixtureEnvironment.yarn.folderName)
+            rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
           })
         ).to.deep.equal({
           lockFile: {

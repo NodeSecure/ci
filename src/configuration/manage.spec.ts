@@ -26,7 +26,7 @@ describe("When managing the runtime configuration", () => {
 
         expect(configMode).to.deep.equal("raw");
         expect(runtimeConfig).to.deep.equal(
-          Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION
+          Nsci.defaultNsciRuntimeConfiguration
         );
       });
     });
@@ -52,7 +52,7 @@ describe("When managing the runtime configuration", () => {
            * and overriding each valid property supplied either from the CLI
            * or the API.
            */
-          ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+          ...Nsci.defaultNsciRuntimeConfiguration,
           rootDir: process.cwd(),
           strategy: "SNYK",
           reporters: ["html"],
@@ -101,7 +101,7 @@ describe("When managing the runtime configuration", () => {
       expect(configMode).to.deep.equal("file");
       expect(runtimeConfig).to.deep.equal({
         // Starting from the default config
-        ...Nsci.DEFAULT_NSCI_RUNTIME_CONFIGURATION,
+        ...Nsci.defaultNsciRuntimeConfiguration,
         /**
          * But then we expect custom config defined in the RC file to be reflected
          * in the runtime config which will be used during the analysis
