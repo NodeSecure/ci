@@ -259,6 +259,19 @@ await runPipeline(optionsExample);
 // or no error code (0), depending on the pipeline checks status.
 ```
 
+#### Mixing configurations when providing options from multiple sources
+
+Given that it's possible to mix configurations between the one defined in **.nodesecurerc** and the one
+defined either through the API or CLI, it is important to understand the order in which the options will be chosen.
+
+| Priority | Type of configuration                       |
+| -------- | ------------------------------------------- |
+| 1️⃣       | .nodesecurerc                               |
+| 2️⃣       | CLI or API (can't be both at the same time) |
+
+Anything **valid and defined** in the .nodesecurerc file will be used no matter what options are defined in the CLI or the API.
+However if anything is missing in the .nodesecurerc file, options provided from the CLI or API can naturally complete the runtime configuration.
+
 ## Reporters
 
 Two reporters are targeted to work with the @nodesecure/ci. For now,
