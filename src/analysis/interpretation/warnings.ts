@@ -2,6 +2,7 @@ import type { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { match } from "ts-pattern";
 
 import { Nsci } from "../../configuration/standard/index.js";
+import { WarningMode } from "../../configuration/standard/nsci.js";
 import type { DependencyWarning } from "../../types";
 
 import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
@@ -24,23 +25,32 @@ export type DependencyWarningWithMode = Omit<DependencyWarning, "warnings"> & {
   })[];
 };
 
+function hasAtleastOneWarning(dependencyWarning: DependencyWarning): boolean {
+  return dependencyWarning.warnings.length > 0;
+}
+
+function addModeForEachDependencyWarning(warningMode: WarningMode) {
+  return (dependencyWarning: DependencyWarning): DependencyWarningWithMode => {
+    return {
+      ...dependencyWarning,
+      warnings: dependencyWarning.warnings.map((warningWithoutMode) => {
+        return {
+          ...warningWithoutMode,
+          mode: warningMode
+        };
+      })
+    };
+  };
+}
+
 function retrieveAllWarningsWithSharedMode(
   warnings: DependencyWarning[],
   warningMode: Nsci.WarningMode
 ): CheckableFunction<DependencyWarningWithMode> {
+  const addModeToWarning = addModeForEachDependencyWarning(warningMode);
   const allDependencyWarningsWithMode = warnings
-    .filter((dependency) => dependency.warnings.length > 0)
-    .map((dependencyWarning) => {
-      return {
-        ...dependencyWarning,
-        warnings: dependencyWarning.warnings.map((warning) => {
-          return {
-            ...warning,
-            mode: warningMode
-          };
-        })
-      };
-    });
+    .filter(hasAtleastOneWarning)
+    .map(addModeToWarning);
 
   return {
     result:

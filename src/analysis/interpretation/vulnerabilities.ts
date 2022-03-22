@@ -30,14 +30,12 @@ function fromSeverityToNumber(
   return kDefaultSeverity;
 }
 
-function isVulnExceedingSeverityThreshold(
-  vulnSeverity: Strategy.StandardVulnerability["severity"],
+function compareVulnSeverityWithThreshold(
   severityThreshold: Strategy.Severity | "all"
-): boolean {
-  return (
-    fromSeverityToNumber(vulnSeverity) >=
-    fromSeverityToNumber(severityThreshold)
-  );
+) {
+  return (vulnerability: Strategy.StandardVulnerability): boolean =>
+    fromSeverityToNumber(vulnerability.severity) >=
+    fromSeverityToNumber(severityThreshold);
 }
 
 /**
@@ -48,9 +46,10 @@ function findAllVulnsExceedingSeverityThreshold(
   vulnerabilities: Strategy.StandardVulnerability[],
   severityThreshold: Strategy.Severity | "all"
 ): Strategy.StandardVulnerability[] {
-  return vulnerabilities.filter((vuln) =>
-    isVulnExceedingSeverityThreshold(vuln.severity, severityThreshold)
-  );
+  const isVulnExceedingSeverityThreshold =
+    compareVulnSeverityWithThreshold(severityThreshold);
+
+  return vulnerabilities.filter(isVulnExceedingSeverityThreshold);
 }
 
 export function checkDependenciesVulns(
