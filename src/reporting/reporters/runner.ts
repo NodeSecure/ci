@@ -1,3 +1,5 @@
+import { match } from "ts-pattern";
+
 import type { OutcomePayloadFromPipelineChecks } from "../../analysis";
 import { Nsci } from "../../configuration/standard/index.js";
 
@@ -7,9 +9,13 @@ import { Reporter } from "./reporter";
 function initializeReporter(
   reporter: Nsci.ReporterTarget
 ): Reporter<OutcomePayloadFromPipelineChecks & Nsci.Configuration, void> {
-  return reporter === Nsci.reporterTarget.CONSOLE
-    ? postPipelineReporting.consoleReporter
-    : postPipelineReporting.htmlReporter;
+  return match(reporter)
+    .with(
+      Nsci.reporterTarget.CONSOLE,
+      () => postPipelineReporting.consoleReporter
+    )
+    .with(Nsci.reporterTarget.HTML, () => postPipelineReporting.htmlReporter)
+    .exhaustive();
 }
 
 export async function runReporting(
