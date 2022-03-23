@@ -1,3 +1,4 @@
+// Import Internal Dependencies
 import {
   ConsoleMessage,
   ConsoleOutput,

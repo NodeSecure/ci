@@ -1,7 +1,9 @@
+// Import Third-party Dependencies
 import { Scanner } from "@nodesecure/scanner";
 import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import set from "lodash.set";
 
+// Import Internal Dependencies
 import { Nsci } from "../../configuration/standard/index.js";
 import { pipeline } from "../../reporting/index.js";
 import {

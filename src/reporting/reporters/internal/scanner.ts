@@ -1,8 +1,10 @@
+// Import Third-party Dependencies
 import { Logger, Scanner, ScannerLoggerEvents } from "@nodesecure/scanner";
 import Spinner from "@slimio/async-cli-spinner";
 import pluralize from "pluralize";
 import ms from "pretty-ms";
 
+// Import Internal Dependencies
 import { consolePrinter } from "../../../../lib/console-printer/index.js";
 import { Nsci } from "../../../configuration/standard/index.js";
 import { Reporter } from "../reporter.js";

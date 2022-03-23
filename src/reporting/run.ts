@@ -1,7 +1,9 @@
+// Import Third-party Dependencies
 import * as scanner from "@nodesecure/scanner";
 import type { Scanner } from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
+// Import Internal Dependencies
 import { consolePrinter } from "../../lib/console-printer/index.js";
 import {
   OutcomePayloadFromPipelineChecks,

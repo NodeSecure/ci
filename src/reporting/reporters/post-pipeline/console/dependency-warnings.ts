@@ -1,6 +1,8 @@
+// Import Third-party Dependencies
 import pluralize from "pluralize";
 import { match } from "ts-pattern";
 
+// Import Internal Dependencies
 import {
   ConsoleMessage,
   consolePrinter

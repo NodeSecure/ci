@@ -1,10 +1,14 @@
 /* eslint-disable no-sync */
 /* eslint-disable max-nested-callbacks */
+
+// Import Node.js Dependencies
 import fs from "fs";
 import path from "path";
 
+// Import Third-party Dependencies
 import { expect } from "chai";
 
+// Import Internal Dependencies
 import { Nsci } from "../standard/index.js";
 
 import { analyzeEnvironmentContext } from "./index.js";

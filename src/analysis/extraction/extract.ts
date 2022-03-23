@@ -1,7 +1,9 @@
+// Import Third-party Dependencies
 import { Scanner } from "@nodesecure/scanner";
 import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { Strategy } from "@nodesecure/vuln";
 
+// Import Internal Dependencies
 import type { DependencyWarning } from "../../types";
 
 export interface CompactedScannerPayload {

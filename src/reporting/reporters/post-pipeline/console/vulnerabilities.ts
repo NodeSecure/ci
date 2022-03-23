@@ -1,6 +1,8 @@
+// Import Third-party Dependencies
 import { Strategy } from "@nodesecure/vuln";
 import pluralize from "pluralize";
 
+// Import Internal Dependencies
 import {
   ConsoleMessage,
   consolePrinter

@@ -1,8 +1,9 @@
-/* eslint-disable max-nested-callbacks */
+// Import Third-party Dependencies
 import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
+// Import Internal Dependencies
 import { Nsci } from "../../configuration/standard/index.js";
 import * as pipeline from "../../reporting/status.js";
 
@@ -26,6 +27,7 @@ const kDefaultScannerPayload: Scanner.Payload = {
   vulnerabilityStrategy: "npm"
 };
 
+/* eslint-disable max-nested-callbacks */
 describe("Pipeline check workflow", () => {
   describe("When running the payload interpreter", () => {
     describe("When providing an empty payload", () => {

@@ -1,5 +1,7 @@
+// Import Third-party Dependencies
 import { Strategy } from "@nodesecure/vuln";
 
+// Import Internal Dependencies
 import { Nsci } from "../../configuration/standard/index.js";
 import { Maybe } from "../../types/index.js";
 

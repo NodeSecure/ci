@@ -1,7 +1,10 @@
+// Import Node.js Dependencies
 import { performance } from "perf_hooks";
 
+// Import Third-party Dependencies
 import ms from "pretty-ms";
 
+// Import Internal Dependencies
 import { consolePrinter } from "../../../../../lib/console-printer/index.js";
 import { OutcomePayloadFromPipelineChecks } from "../../../../analysis/interpretation/interpret.js";
 import { Nsci } from "../../../../configuration/standard/index.js";

@@ -1,5 +1,7 @@
+// Import Third-party Dependencies
 import type JSXRay from "@nodesecure/js-x-ray";
 
+// Import Internal Dependencies
 import { ValueOf } from "../../types";
 
 export const vulnStrategy = {

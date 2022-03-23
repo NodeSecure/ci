@@ -1,6 +1,8 @@
+// Import Third-party Dependencies
 import type { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import { match } from "ts-pattern";
 
+// Import Internal Dependencies
 import { Nsci } from "../../configuration/standard/index.js";
 import { WarningMode } from "../../configuration/standard/nsci.js";
 import type { DependencyWarning } from "../../types";

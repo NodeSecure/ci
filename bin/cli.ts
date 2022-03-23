@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
+// Import Third-party Dependencies
 import sade from "sade";
 
+// Import Internal Dependencies
 import { generateDefaultNodeSecureConfig } from "../src/configuration/index.js";
 import { Nsci } from "../src/configuration/standard/index.js";
 import { runPipeline } from "../src/reporting/run.js";

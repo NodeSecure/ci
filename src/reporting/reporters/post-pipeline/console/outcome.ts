@@ -1,5 +1,7 @@
+// Import Third-party Dependencies
 import { table, TableUserConfig } from "table";
 
+// Import Internal Dependencies
 import { consolePrinter } from "../../../../../lib/console-printer/index.js";
 import type { InterpretedScannerPayload } from "../../../../analysis";
 import { Warnings } from "../../../../configuration/standard/nsci.js";

@@ -1,5 +1,7 @@
+// Import Third-party Dependencies
 import { match } from "ts-pattern";
 
+// Import Internal Dependencies
 import type { OutcomePayloadFromPipelineChecks } from "../../analysis";
 import { Nsci } from "../../configuration/standard/index.js";
 

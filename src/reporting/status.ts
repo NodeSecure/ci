@@ -1,3 +1,4 @@
+// Import Internal Dependencies
 import type { ValueOf } from "../types";
 
 export const status = {

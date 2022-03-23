@@ -1,6 +1,8 @@
+// Import Third-party Dependencies
 import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import pluralize from "pluralize";
 
+// Import Internal Dependencies
 import {
   ConsoleMessage,
   consolePrinter
