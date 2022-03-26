@@ -27,6 +27,7 @@
   "rules": {
     "indent": "off",
     "brace-style": "off",
+    "id-length": "off",
     "no-empty": ["error", { "allowEmptyCatch": true }],
     "import/order": [
       "error",
@@ -37,6 +38,7 @@
         }
       }
     ],
+    "@typescript-eslint/explicit-function-return-type": ["error"],
     "@typescript-eslint/no-unused-vars": [
       "error",
       { "varsIgnorePattern": "^_", "argsIgnorePattern": "^_" }

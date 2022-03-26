@@ -1,56 +1,65 @@
 #!/usr/bin/env node
 
+// Import Third-party Dependencies
 import sade from "sade";
 
-import * as RC from "../src/nodesecurerc.js";
-import { runPipeline } from "../src/pipeline/run.js";
+// Import Internal Dependencies
+import { generateDefaultNodeSecureConfig } from "../src/configuration/index.js";
+import { Nsci } from "../src/configuration/standard/index.js";
+import { runPipeline } from "../src/reporting/run.js";
 
-function joinExclusiveList<T>(items: T) {
+function joinExclusiveList<T>(items: T): string {
   return Object.values(items).join(" | ");
 }
 
-const availableVulnThresholds = joinExclusiveList(RC.vulnSeverity);
-const availableWarnings = joinExclusiveList(RC.warnings);
-const availableStrategies = joinExclusiveList(RC.vulnStrategy);
-const availableReporters = joinExclusiveList(RC.reporterTarget);
+const availableVulnThresholds = joinExclusiveList(Nsci.vulnSeverity);
+const availableWarnings = joinExclusiveList(Nsci.warnings);
+const availableStrategies = joinExclusiveList(Nsci.vulnStrategy);
+const availableReporters = joinExclusiveList(Nsci.reporterTarget);
 
-const program = sade("nsci", true);
+const program = sade("nsci");
 
 program
+  .command("init")
+  .example("cli.js init")
+  .action(generateDefaultNodeSecureConfig);
+
+program
+  .command("run")
   .option(
     "-d, --directory",
     "Root directory from which the analyses will be run.",
     process.cwd()
   )
-  .example("cli.js --directory=/Users/user1/myproject")
+  .example("cli.js run --directory=/Users/user1/myproject")
 
   .option(
     "-s, --strategy",
     `@nodesecure/vuln vulnerability strategy. Can be '${availableStrategies}'`,
-    RC.vulnStrategy.npm
+    Nsci.vulnStrategy.npm
   )
-  .example("cli.js --strategy=npm")
+  .example("cli.js run --strategy=npm")
 
   .option(
     "-v, --vulnerabilities",
     `Vulnerability severity threshold. Can be '${availableVulnThresholds})'`,
-    RC.vulnSeverity.ALL
+    Nsci.vulnSeverity.MEDIUM
   )
-  .example("cli.js --vulnerabilities=all")
+  .example("cli.js run --vulnerabilities=medium")
 
   .option(
     "-w, --warnings",
     `Action when detecting warnings. Can be '${availableWarnings}'`,
-    RC.warnings.ERROR
+    Nsci.warnings.ERROR
   )
-  .example("cli.js --warnings=off")
+  .example("cli.js run --warnings=off")
 
   .option(
     "-r, --reporters",
     `Pipeline reporters. Can be '${availableReporters}'`,
-    RC.reporterTarget.CONSOLE
+    Nsci.reporterTarget.CONSOLE
   )
-  .example("cli.js --reporters=console,html")
+  .example("cli.js run --reporters=console,html")
 
   .describe(
     "Run @nodesecure pipeline checks to hunt vulnerabilities for both source code and dependencies"
