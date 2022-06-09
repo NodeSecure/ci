@@ -1,9 +1,15 @@
+// Node.Js Dependencies
+import { readFile } from "fs/promises";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
 // Import Third-party Dependencies
 import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
 import { match } from "ts-pattern";
 import type { Result } from "ts-results";
 
 // Import Internal Dependencies
+import { validateIgnoreFile, IgnoreFile } from "./ignore-file";
 import { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
@@ -53,6 +59,24 @@ export async function getNodeSecureConfig(): Promise<
   const config = await read(process.cwd());
 
   return interpretNodeSecureConfigResult(config);
+}
+
+// Note: ctx object is used for testing purposes
+export async function getIgnoreFile(ctx: { readFile?: any } = { readFile }): Promise<IgnoreFile> {
+  try {
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const ignoreFile = await ctx.readFile(join(__dirname, ".nsci-ignore"), "utf8");
+    const ignoreObject = JSON.parse(ignoreFile);
+    const isValid = validateIgnoreFile(ignoreObject);
+    if (!isValid) {
+      return {};
+    }
+    return JSON.parse(ignoreFile) as IgnoreFile;
+
+  }
+  catch (error) {
+    return {};
+  }
 }
 
 function adaptNodeSecureConfigToExternalConfig(
