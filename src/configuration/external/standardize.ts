@@ -2,7 +2,7 @@
 import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 
 // Import Internal Dependencies
-import type { DeepPartialRecord } from "../../types";
+import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../standard/index.js";
 
 import { adaptExternalToStandardConfiguration } from "./adapt.js";
@@ -38,7 +38,9 @@ function extractOnlyValidPropsFromExternalConfig(
   return Object.fromEntries(filteredEntries);
 }
 
-function mergeConfigs(adaptedConfig: Nsci.Configuration): Nsci.Configuration {
+function mergeConfigs(
+  adaptedConfig: Partial<Nsci.Configuration>
+): Nsci.Configuration {
   return {
     ...Nsci.defaultNsciRuntimeConfiguration,
     /**
@@ -51,7 +53,7 @@ function mergeConfigs(adaptedConfig: Nsci.Configuration): Nsci.Configuration {
 
 export function standardizeExternalConfiguration(
   externalConfig: ExternalRuntimeConfiguration
-): DeepPartialRecord<Nsci.Configuration> {
+): Nsci.Configuration {
   return mergeConfigs(
     adaptExternalToStandardConfiguration(
       extractOnlyValidPropsFromExternalConfig(externalConfig)
@@ -83,7 +85,8 @@ export function standardizeAllApisOptions(
 }
 
 export async function standardizeRuntimeConfig(
-  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
+  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig,
+  ignorePatterns: IgnorePatterns
 ): Promise<Nsci.Configuration> {
   const externalConfiguration = standardizeAllApisOptions(options);
   const standardizedNsciConfig = standardizeExternalConfiguration(
@@ -104,6 +107,7 @@ export async function standardizeRuntimeConfig(
      * runtime configuration wherever the options are coming from.
      */
     ...Nsci.defaultNsciRuntimeConfiguration,
-    ...standardizedNsciConfig
+    ...standardizedNsciConfig,
+    ignorePatterns
   } as Nsci.Configuration;
 }

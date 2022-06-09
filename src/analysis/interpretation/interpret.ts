@@ -4,8 +4,13 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import set from "lodash.set";
 
 // Import Internal Dependencies
+import {
+  IgnorePatterns,
+  IgnoreWarningsPatterns
+} from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../../configuration/standard/index.js";
 import { pipeline } from "../../reporting/index.js";
+import { DependencyWarning, Warning } from "../../types/index.js";
 import {
   extractScannerPayload,
   WorkableVulnerability
@@ -76,6 +81,29 @@ function interpretPayloadChecks(
   };
 }
 
+function hasWarningsIgnorePatterns(warnings?: IgnoreWarningsPatterns): boolean {
+  return warnings !== undefined && Object.keys(warnings).length > 0;
+}
+
+function excludeIgnoredDependenciesWarnings(
+  dependenciesWarnings: DependencyWarning[],
+  ignorePatterns: IgnorePatterns
+): DependencyWarning[] {
+  if (!hasWarningsIgnorePatterns(ignorePatterns?.warnings)) {
+    return dependenciesWarnings;
+  }
+
+  return dependenciesWarnings.filter(function excludeIgnorableWarnings(
+    dependencyWarnings
+  ) {
+    function hasWarnings(warn: Warning): boolean {
+      return ignorePatterns.warnings.has(warn.kind, dependencyWarnings.package);
+    }
+
+    return !dependencyWarnings.warnings.find(hasWarnings);
+  });
+}
+
 /**
  * This interpreter accumulates each Check Function output in order to determine
  * a global pipeline status and at the same time compact the original payload to
@@ -89,11 +117,15 @@ export function runPayloadInterpreter(
   rc: Nsci.Configuration
 ): OutcomePayloadFromPipelineChecks {
   const { warnings, dependencies } = extractScannerPayload(payload);
+  const filteredDependencies = excludeIgnoredDependenciesWarnings(
+    dependencies.warnings,
+    rc.ignorePatterns
+  );
 
   /* eslint-disable @typescript-eslint/explicit-function-return-type */
   return interpretPayloadChecks([
     () => checkGlobalWarnings(warnings),
-    () => checkDependenciesWarnings(dependencies.warnings, rc),
+    () => checkDependenciesWarnings(filteredDependencies, rc),
     () => checkDependenciesVulns(dependencies.vulnerabilities, rc)
   ]);
 }
