@@ -1,15 +1,57 @@
+// Node.Js Dependencies
+import { readFile } from "fs/promises";
+import { join } from "path";
+
 // Import Third-party Dependencies
 import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
 import { match } from "ts-pattern";
 import type { Result } from "ts-results";
 
 // Import Internal Dependencies
+import { consolePrinter } from "../../../../lib/console-printer/index.js";
 import { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
   ExternalConfigAdapter,
   ExternalRuntimeConfiguration
 } from "../common.js";
+
+import {
+  validateIgnoreFile,
+  kIgnoreFileName,
+  IgnorePatterns
+} from "./ignore-file.js";
+
+const { font: log } = consolePrinter;
+export const kIgnoreFilePath = join(process.cwd(), kIgnoreFileName);
+
+/**
+ * NOTE: this abstract is temporary
+ *
+ * TODO: create a proper logger abstract
+ */
+const logger = {
+  info: (message: string): void => {
+    const nodeEnv = process.env.NODE_ENV;
+    if (nodeEnv !== "test") {
+      log
+        .info(
+          `x Invalid ignore file: ${message}, empty one will be used instead`
+        )
+        .print();
+    }
+  },
+  error: (message: string): void => {
+    const nodeEnv = process.env.NODE_ENV;
+    if (nodeEnv !== "test") {
+      log
+        .error(
+          `x Invalid ignore file: ${message}, empty one will be used instead`
+        )
+        .print();
+    }
+  }
+};
 
 function interpretNodeSecureConfigResult(
   config: Result<NodeSecureRuntimeConfig, NodeJS.ErrnoException>
@@ -53,6 +95,28 @@ export async function getNodeSecureConfig(): Promise<
   const config = await read(process.cwd());
 
   return interpretNodeSecureConfigResult(config);
+}
+
+export async function getIgnoreFile(): Promise<IgnorePatterns> {
+  try {
+    const ignoreFile = await readFile(kIgnoreFilePath, "utf8");
+    const ignoreObject = JSON.parse(ignoreFile);
+    const { isValid, error } = validateIgnoreFile(ignoreObject);
+    if (!isValid) {
+      logger.error(
+        `x Invalid ignore file: ${error}, empty one will be used instead`
+      );
+
+      return IgnorePatterns.default();
+    }
+    logger.info("✔ Ignore file loaded");
+
+    return new IgnorePatterns(ignoreObject.warnings);
+  } catch (error: any) {
+    logger.error(`x Cannot load ignore file: ${error.message}`);
+
+    return IgnorePatterns.default();
+  }
 }
 
 function adaptNodeSecureConfigToExternalConfig(

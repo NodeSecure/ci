@@ -6,6 +6,7 @@ import { analyzeEnvironmentContext } from "./environment/index.js";
 import {
   getNodeSecureConfig,
   standardizeRuntimeConfig,
+  getIgnoreFile,
   ApiConfig,
   CliConfig
 } from "./external/index.js";
@@ -29,17 +30,21 @@ export async function selectRuntimeConfig(
   options: ApiConfig | CliConfig
 ): Promise<SelectedRuntimeConfig> {
   const nodesecureConfig = await getNodeSecureConfig();
+  const ignorePatterns = await getIgnoreFile();
 
   if (nodesecureConfig) {
     return {
       configMode: "file",
-      runtimeConfig: await standardizeRuntimeConfig(nodesecureConfig)
+      runtimeConfig: await standardizeRuntimeConfig(
+        nodesecureConfig,
+        ignorePatterns
+      )
     };
   }
 
   return {
     configMode: "raw",
-    runtimeConfig: await standardizeRuntimeConfig(options)
+    runtimeConfig: await standardizeRuntimeConfig(options, ignorePatterns)
   };
 }
 

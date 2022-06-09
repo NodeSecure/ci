@@ -183,6 +183,27 @@ If you don't have the possibility to generate a **.nodesecurerc** file, there ar
 
 The idea is to provide same options for all types of configuration. Nevertheless for now, the specific way to set a **warnings** dictionary (other than "error" | "warning" | "off" options) is only available when using the **.nodesecurerc** or **API** configurations.
 
+#### .nodesecureignore (ignore file)
+
+During your NodeSecure journey it's possible that you'll find false positives. The `.nodesecureignore` is the perfect tool to address these cases.
+
+Let's say that you want to exclude `"unsafe-regex"` from `express`:
+
+1. Create your `.nodesecureignore` file at the root of your project
+
+2. Add the following JSON content:
+
+```json
+{
+  "warnings": {
+    "unsafe-regex": ["express"]
+  }
+}
+```
+
+3. Run your analysis as usual: no more `unsafe-regex` for `express` package.
+
+> Found the list of warnings available [here](https://github.com/NodeSecure/js-x-ray#warnings)
 ---
 
 #### CLI

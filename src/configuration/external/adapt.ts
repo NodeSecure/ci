@@ -110,7 +110,7 @@ function adaptSeverity(vulnerabilityThreshold: Nsci.Severity): Nsci.Severity {
  */
 export function adaptExternalToStandardConfiguration(
   sanitizedOptions: Partial<ExternalRuntimeConfiguration>
-): Nsci.Configuration {
+): Partial<Nsci.Configuration> {
   const { vulnerabilities, directory, strategy, warnings, reporters } = {
     ...defaultExternalConfigOptions,
     ...sanitizedOptions
