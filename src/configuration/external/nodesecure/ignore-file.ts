@@ -26,10 +26,14 @@ export const kIgnoreFileName = ".nsci-ignore";
 
 export function validateIgnoreFile(
   ignoreFile: string,
-): boolean {
+): { isValid: boolean; error?: string } {
   const validator = new Validator();
-  const isValid = validator.validate(kIgnoreFileSchema, ignoreFile);
-
-  return isValid;
+  const validate = validator.compile(kIgnoreFileSchema);
+  const isValid = validate(ignoreFile);
+ 
+ return { 
+   isValid, 
+   error: validate.errors ? validate?.errors[0]?.message : undefined 
+ };
 }
 

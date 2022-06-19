@@ -10,13 +10,15 @@ import type { Result } from "ts-results";
 
 // Import Internal Dependencies
 import { validateIgnoreFile, kIgnoreFileName, IgnoreFile } from "./ignore-file";
-import { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
   ExternalConfigAdapter,
   ExternalRuntimeConfiguration
 } from "../common.js";
+import { Maybe } from "../../../types/index.js";
+import { consolePrinter } from "../../../../lib/console-printer";
 
+const { font: log } = consolePrinter;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const kRootPath = join(__dirname, "..", "..", "..");
 export const kIgnoreFilePath = join(kRootPath, kIgnoreFileName);
@@ -65,19 +67,21 @@ export async function getNodeSecureConfig(): Promise<
   return interpretNodeSecureConfigResult(config);
 }
 
-// Note: ctx object is used for testing purposes
 export async function getIgnoreFile(): Promise<IgnoreFile> {
   try {
     const ignoreFile = await readFile(kIgnoreFilePath, "utf8");
     const ignoreObject = JSON.parse(ignoreFile);
-    const isValid = validateIgnoreFile(ignoreObject);
+    const { isValid, error } = validateIgnoreFile(ignoreObject);
     if (!isValid) {
+      log.error(`Invalid ignore file: ${error}, empty one will be used instead`).print();
       return {};
     }
+    log.success("Ignore file loaded").print();
     return JSON.parse(ignoreFile) as IgnoreFile;
 
   }
   catch (error: any) {
+    log.error(`Cannot load ignore file: ${error.message}`).print();
     return {};
   }
 }
