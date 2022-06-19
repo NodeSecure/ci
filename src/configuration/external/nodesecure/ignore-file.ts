@@ -22,6 +22,8 @@ const kIgnoreFileSchema = {
   additionalProperties: false
 } as const;
 
+export const kIgnoreFileName = ".nsci-ignore";
+
 export function validateIgnoreFile(
   ignoreFile: string,
 ): boolean {

@@ -9,13 +9,17 @@ import { match } from "ts-pattern";
 import type { Result } from "ts-results";
 
 // Import Internal Dependencies
-import { validateIgnoreFile, IgnoreFile } from "./ignore-file";
+import { validateIgnoreFile, kIgnoreFileName, IgnoreFile } from "./ignore-file";
 import { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
   ExternalConfigAdapter,
   ExternalRuntimeConfiguration
 } from "../common.js";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const kRootPath = join(__dirname, "..", "..", "..");
+export const kIgnoreFilePath = join(kRootPath, kIgnoreFileName);
 
 function interpretNodeSecureConfigResult(
   config: Result<NodeSecureRuntimeConfig, NodeJS.ErrnoException>
@@ -62,10 +66,9 @@ export async function getNodeSecureConfig(): Promise<
 }
 
 // Note: ctx object is used for testing purposes
-export async function getIgnoreFile(ctx: { readFile?: any } = { readFile }): Promise<IgnoreFile> {
+export async function getIgnoreFile(): Promise<IgnoreFile> {
   try {
-    const __dirname = dirname(fileURLToPath(import.meta.url));
-    const ignoreFile = await ctx.readFile(join(__dirname, ".nsci-ignore"), "utf8");
+    const ignoreFile = await readFile(kIgnoreFilePath, "utf8");
     const ignoreObject = JSON.parse(ignoreFile);
     const isValid = validateIgnoreFile(ignoreObject);
     if (!isValid) {
@@ -74,7 +77,7 @@ export async function getIgnoreFile(ctx: { readFile?: any } = { readFile }): Pr
     return JSON.parse(ignoreFile) as IgnoreFile;
 
   }
-  catch (error) {
+  catch (error: any) {
     return {};
   }
 }

@@ -1,31 +1,45 @@
 // Third-party Dependencies
 import { expect } from "chai";  
+import mock from "mock-fs";
 
 // Internal Dependencies
-import { getIgnoreFile } from "./index";
+import { getIgnoreFile, kIgnoreFilePath } from "./index";
 
 describe('getIgnoreFile', () => {
   it("should return empty object if file doen't exist", async () => {
-    const readFileWillThrow = () => { throw new Error("boom") };
-
-    const result = await getIgnoreFile({ readFile: readFileWillThrow });
+    const result = await getIgnoreFile();
 
     expect(result).to.be.empty;
   });
 
   it("should return empty object if file format is invalid", async () => {
-    const invalidIgnoreFile = JSON.stringify({ foo: "bar" });
+    const invalidIgnoreFile = { foo: "bar" };
+    createFakeIgnoreFile(JSON.stringify(invalidIgnoreFile));
 
-    const result = await getIgnoreFile({ readFile: () => invalidIgnoreFile });
+    const result = await getIgnoreFile();
 
     expect(result).to.be.empty;
+    mock.restore();
   });
 
   it("should return the ignore file if it's valid", async () => {
     const validIgnoreFile = { warnings: {} };
+    createFakeIgnoreFile(JSON.stringify(validIgnoreFile));
 
-    const result = await getIgnoreFile({ readFile: () => JSON.stringify(validIgnoreFile) });
+    const result = await getIgnoreFile();
 
     expect(result).to.be.deep.equal(validIgnoreFile);
+    mock.restore();
   });
-})
+});
+
+/**
+ *  HELPERS
+ */
+
+function createFakeIgnoreFile(fileContent: string) {
+  mock({
+    [kIgnoreFilePath]: Buffer.from(fileContent)
+  }, {} as any);
+}
+
