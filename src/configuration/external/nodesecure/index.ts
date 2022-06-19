@@ -20,7 +20,7 @@ import { consolePrinter } from "../../../../lib/console-printer";
 
 const { font: log } = consolePrinter;
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const kRootPath = join(__dirname, "..", "..", "..");
+const kRootPath = join(__dirname, "..", "..", "..", "..");
 export const kIgnoreFilePath = join(kRootPath, kIgnoreFileName);
 
 function interpretNodeSecureConfigResult(
@@ -73,15 +73,15 @@ export async function getIgnoreFile(): Promise<IgnoreFile> {
     const ignoreObject = JSON.parse(ignoreFile);
     const { isValid, error } = validateIgnoreFile(ignoreObject);
     if (!isValid) {
-      log.error(`Invalid ignore file: ${error}, empty one will be used instead`).print();
+      log.error(`x Invalid ignore file: ${error}, empty one will be used instead`).print();
       return {};
     }
-    log.success("Ignore file loaded").print();
+    log.success("✔ Ignore file loaded").print();
     return JSON.parse(ignoreFile) as IgnoreFile;
 
   }
   catch (error: any) {
-    log.error(`Cannot load ignore file: ${error.message}`).print();
+    log.error(`x Cannot load ignore file: ${error.message}`).print();
     return {};
   }
 }
