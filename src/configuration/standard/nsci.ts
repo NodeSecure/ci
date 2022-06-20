@@ -12,6 +12,7 @@ export const vulnStrategy = {
   npm: "NPM_AUDIT",
   node: "SECURITY_WG",
   snyk: "SNYK",
+  sonatype: "SONATYPE",
   none: "NONE"
 } as const;
 
@@ -38,7 +39,7 @@ export type WarningMode = ValueOf<typeof warnings>;
 // These warnings types should probably come from JSXRay but are hosted here for now
 
 export const warningKinds: Readonly<
-  (JSXRay.kindWithValue | "unsafe-import")[]
+  (JSXRay.WarningName | "unsafe-import")[]
 > = [
   "parsing-error",
   "encoded-literal",
@@ -51,7 +52,7 @@ export const warningKinds: Readonly<
   "unsafe-import"
 ] as const;
 
-export type WarningKind = JSXRay.kindWithValue | "unsafe-import";
+export type WarningKind = JSXRay.WarningName | "unsafe-import";
 
 export type Warnings = WarningMode | Record<WarningKind, WarningMode>;
 
