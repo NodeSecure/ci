@@ -2,6 +2,7 @@
 import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 
 // Import Internal Dependencies
+import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file";
 import type { DeepPartialRecord } from "../../types";
 import { Nsci } from "../standard/index.js";
 
@@ -83,7 +84,8 @@ export function standardizeAllApisOptions(
 }
 
 export async function standardizeRuntimeConfig(
-  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig
+  options: ApiConfig | CliConfig | NodeSecureRuntimeConfig,
+  ignorePatterns: IgnorePatterns
 ): Promise<Nsci.Configuration> {
   const externalConfiguration = standardizeAllApisOptions(options);
   const standardizedNsciConfig = standardizeExternalConfiguration(
@@ -104,6 +106,7 @@ export async function standardizeRuntimeConfig(
      * runtime configuration wherever the options are coming from.
      */
     ...Nsci.defaultNsciRuntimeConfiguration,
-    ...standardizedNsciConfig
+    ...standardizedNsciConfig,
+    ignorePatterns
   } as Nsci.Configuration;
 }

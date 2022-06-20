@@ -3,6 +3,7 @@ import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 import { expect } from "chai";
 
 // Import Internal Dependencies
+import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../standard/index.js";
 
 import { ExternalRuntimeConfiguration } from "./common.js";
@@ -29,7 +30,8 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
         strategy: "NPM_AUDIT",
         reporters: ["console", "html"],
         vulnerabilitySeverity: "all",
-        warnings: "error"
+        warnings: "error",
+        ignorePatterns: IgnorePatterns.default()
       };
 
       expect(
@@ -131,6 +133,7 @@ it("should standardize NodeSecure runtime configuration to Nsci runtime configur
       "encoded-literal": "off",
       "unsafe-regex": "error",
       "short-identifiers": "warning"
-    }
+    },
+    ignorePatterns: IgnorePatterns.default()
   });
 });

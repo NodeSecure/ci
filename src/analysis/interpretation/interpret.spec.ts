@@ -4,10 +4,18 @@ import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
 // Import Internal Dependencies
+import {
+  IgnorePatterns,
+  IgnoreWarningsPatterns
+} from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../../configuration/standard/index.js";
 import * as pipeline from "../../reporting/status.js";
+import { DependencyWarning } from "../../types/index.js";
 
-import { runPayloadInterpreter } from "./interpret.js";
+import {
+  runPayloadInterpreter,
+  filterDependenciesWarnings
+} from "./interpret.js";
 
 // CONSTANTS
 const kDefaultRuntimeConfiguration: Nsci.Configuration = {
@@ -15,7 +23,8 @@ const kDefaultRuntimeConfiguration: Nsci.Configuration = {
   strategy: Nsci.vulnStrategy.npm,
   reporters: [Nsci.reporterTarget.CONSOLE],
   vulnerabilitySeverity: Nsci.vulnSeverity.ALL,
-  warnings: Nsci.warnings.ERROR
+  warnings: Nsci.warnings.ERROR,
+  ignorePatterns: IgnorePatterns.default()
 };
 
 const kDefaultScannerPayload: Scanner.Payload = {
@@ -26,6 +35,41 @@ const kDefaultScannerPayload: Scanner.Payload = {
   scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
+
+describe("filterDependenciesWarnings", () => {
+  it("should not filter warnings if ignorePatterns.warnings is an empty object", () => {
+    const warnings: DependencyWarning[] = [];
+    const emptyIgnorePatterns: IgnorePatterns = IgnorePatterns.default();
+
+    const filteredWarnings = filterDependenciesWarnings(
+      warnings,
+      emptyIgnorePatterns
+    );
+
+    expect(filteredWarnings).to.deep.equal(warnings);
+  });
+
+  it("should filter warnings if ignorePatterns.warnings is not an empty object", () => {
+    const warnings: DependencyWarning[] = [
+      {
+        package: "lodash.difference",
+        warnings: [{ kind: "unsafe-stmt", location: {} as any }]
+      }
+    ];
+    const ignorePatterns: IgnorePatterns = {
+      warnings: new IgnoreWarningsPatterns({
+        "unsafe-stmt": ["lodash.difference"]
+      })
+    };
+
+    const filteredWarnings = filterDependenciesWarnings(
+      warnings,
+      ignorePatterns
+    );
+
+    expect(filteredWarnings).to.deep.equal([]);
+  });
+});
 
 /* eslint-disable max-nested-callbacks */
 describe("Pipeline check workflow", () => {

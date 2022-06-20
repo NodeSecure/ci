@@ -9,14 +9,20 @@ import { match } from "ts-pattern";
 import type { Result } from "ts-results";
 
 // Import Internal Dependencies
-import { validateIgnoreFile, kIgnoreFileName, IgnoreFile } from "./ignore-file";
+import { consolePrinter } from "../../../../lib/console-printer";
+import { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
   ExternalConfigAdapter,
   ExternalRuntimeConfiguration
 } from "../common.js";
-import { Maybe } from "../../../types/index.js";
-import { consolePrinter } from "../../../../lib/console-printer";
+
+import {
+  validateIgnoreFile,
+  kIgnoreFileName,
+  IgnorePatterns,
+  IgnoreWarningsPatterns
+} from "./ignore-file";
 
 const { font: log } = consolePrinter;
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -67,22 +73,27 @@ export async function getNodeSecureConfig(): Promise<
   return interpretNodeSecureConfigResult(config);
 }
 
-export async function getIgnoreFile(): Promise<IgnoreFile> {
+export async function getIgnoreFile(): Promise<IgnorePatterns> {
   try {
     const ignoreFile = await readFile(kIgnoreFilePath, "utf8");
     const ignoreObject = JSON.parse(ignoreFile);
     const { isValid, error } = validateIgnoreFile(ignoreObject);
     if (!isValid) {
-      log.error(`x Invalid ignore file: ${error}, empty one will be used instead`).print();
-      return {};
+      log
+        .error(
+          `x Invalid ignore file: ${error}, empty one will be used instead`
+        )
+        .print();
+
+      return { warnings: new IgnoreWarningsPatterns() };
     }
     log.success("✔ Ignore file loaded").print();
-    return JSON.parse(ignoreFile) as IgnoreFile;
 
-  }
-  catch (error: any) {
+    return JSON.parse(ignoreFile) as IgnorePatterns;
+  } catch (error: any) {
     log.error(`x Cannot load ignore file: ${error.message}`).print();
-    return {};
+
+    return { warnings: new IgnoreWarningsPatterns() };
   }
 }
 

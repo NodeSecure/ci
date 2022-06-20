@@ -1,7 +1,27 @@
 import Validator from "ajv";
 
-export interface IgnoreFile {
-  warnings?: Record<string, string[]>;
+export class IgnorePatterns {
+  public warnings: IgnoreWarningsPatterns;
+
+  constructor(warnings: IgnoreWarningsPatterns = new IgnoreWarningsPatterns()) {
+    this.warnings = warnings;
+  }
+
+  static default(): IgnorePatterns {
+    return new IgnorePatterns();
+  }
+}
+
+export class IgnoreWarningsPatterns {
+  public entries: Record<string, string[]>;
+
+  constructor(entries: Record<string, string[]> = {}) {
+    this.entries = entries;
+  }
+
+  has(warning: string, pkg: string): boolean {
+    return this.entries[warning]?.includes(pkg);
+  }
 }
 
 const kIgnoreFileSchema = {
@@ -24,16 +44,16 @@ const kIgnoreFileSchema = {
 
 export const kIgnoreFileName = ".nsci-ignore";
 
-export function validateIgnoreFile(
-  ignoreFile: string,
-): { isValid: boolean; error?: string } {
+export function validateIgnoreFile(ignoreFile: string): {
+  isValid: boolean;
+  error?: string;
+} {
   const validator = new Validator();
   const validate = validator.compile(kIgnoreFileSchema);
   const isValid = validate(ignoreFile);
- 
- return { 
-   isValid, 
-   error: validate.errors ? validate?.errors[0]?.message : undefined 
- };
-}
 
+  return {
+    isValid,
+    error: validate.errors ? validate?.errors[0]?.message : undefined
+  };
+}

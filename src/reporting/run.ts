@@ -86,10 +86,13 @@ async function runPayloadChecks(
 
 type PipelineOptions = (ApiConfig | CliConfig) & {
   autoExitAfterFailure: boolean;
-}
+};
 
 export async function runPipeline(
-  options: PipelineOptions = { ...defaultExternalConfigOptions, autoExitAfterFailure: true }
+  options: PipelineOptions = {
+    ...defaultExternalConfigOptions,
+    autoExitAfterFailure: true
+  }
 ): Promise<Maybe<OutcomePayloadFromPipelineChecks>> {
   try {
     const defaultAutoExitAfterFailure =
