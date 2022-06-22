@@ -38,19 +38,18 @@ export type WarningMode = ValueOf<typeof warnings>;
 
 // These warnings types should probably come from JSXRay but are hosted here for now
 
-export const warningKinds: Readonly<
-  (JSXRay.WarningName | "unsafe-import")[]
-> = [
-  "parsing-error",
-  "encoded-literal",
-  "unsafe-regex",
-  "unsafe-stmt",
-  "unsafe-assign",
-  "short-identifiers",
-  "suspicious-literal",
-  "obfuscated-code",
-  "unsafe-import"
-] as const;
+export const warningKinds: Readonly<(JSXRay.WarningName | "unsafe-import")[]> =
+  [
+    "parsing-error",
+    "encoded-literal",
+    "unsafe-regex",
+    "unsafe-stmt",
+    "unsafe-assign",
+    "short-identifiers",
+    "suspicious-literal",
+    "obfuscated-code",
+    "unsafe-import"
+  ] as const;
 
 export type WarningKind = JSXRay.WarningName | "unsafe-import";
 
