@@ -4,7 +4,7 @@ import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
 import set from "lodash.set";
 
 // Import Internal Dependencies
-import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file.js";
+import { IgnorePatterns, IgnoreWarningsPatterns } from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../../configuration/standard/index.js";
 import { pipeline } from "../../reporting/index.js";
 import { DependencyWarning } from "../../types/index.js";
@@ -78,14 +78,16 @@ function interpretPayloadChecks(
   };
 }
 
+function hasWarningsIgnorePatterns(warnings?: IgnoreWarningsPatterns): boolean {
+  return warnings !== undefined &&
+    Object.keys(warnings).length > 0;
+}
+
 export function filterDependenciesWarnings(
   dependenciesWarnings: DependencyWarning[],
   ignorePatterns: IgnorePatterns
 ): DependencyWarning[] {
-  const isWarningsEmpty =
-    ignorePatterns.warnings === undefined ||
-    Object.keys(ignorePatterns?.warnings).length === 0;
-  if (isWarningsEmpty) {
+  if (!hasWarningsIgnorePatterns(ignorePatterns?.warnings)) {
     return dependenciesWarnings;
   }
 
