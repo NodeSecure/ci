@@ -3,7 +3,6 @@ import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 
 // Import Internal Dependencies
 import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file";
-import type { DeepPartialRecord } from "../../types";
 import { Nsci } from "../standard/index.js";
 
 import { adaptExternalToStandardConfiguration } from "./adapt.js";
@@ -54,7 +53,7 @@ function mergeConfigs(
 
 export function standardizeExternalConfiguration(
   externalConfig: ExternalRuntimeConfiguration
-): DeepPartialRecord<Nsci.Configuration> {
+): Nsci.Configuration {
   return mergeConfigs(
     adaptExternalToStandardConfiguration(
       extractOnlyValidPropsFromExternalConfig(externalConfig)
