@@ -1,6 +1,6 @@
 // Import Third-party dependencies
-import Validator from "ajv";
 import JSXray from "@nodesecure/js-x-ray";
+import Validator from "ajv";
 
 export class IgnorePatterns {
   public warnings: IgnoreWarningsPatterns;

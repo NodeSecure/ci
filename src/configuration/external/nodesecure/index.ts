@@ -1,7 +1,6 @@
 // Node.Js Dependencies
 import { readFile } from "fs/promises";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { join } from "path";
 
 // Import Third-party Dependencies
 import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
@@ -20,8 +19,7 @@ import {
 import {
   validateIgnoreFile,
   kIgnoreFileName,
-  IgnorePatterns,
-  IgnoreWarningsPatterns
+  IgnorePatterns
 } from "./ignore-file";
 
 const { font: log } = consolePrinter;
@@ -83,7 +81,7 @@ export async function getIgnoreFile(): Promise<IgnorePatterns> {
         )
         .print();
 
-      return { warnings: new IgnoreWarningsPatterns() };
+      return IgnorePatterns.default();
     }
     log.success("✔ Ignore file loaded").print();
 

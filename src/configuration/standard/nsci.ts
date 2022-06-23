@@ -3,10 +3,7 @@ import type JSXRay from "@nodesecure/js-x-ray";
 
 // Import Internal Dependencies
 import { ValueOf } from "../../types";
-import {
-  IgnorePatterns,
-  IgnoreWarningsPatterns
-} from "../external/nodesecure/ignore-file";
+import { IgnorePatterns } from "../external/nodesecure/ignore-file";
 
 export const vulnStrategy = {
   npm: "NPM_AUDIT",
@@ -78,9 +75,7 @@ function generateDefaultRC(): Configuration {
     reporters: [reporterTarget.CONSOLE],
     vulnerabilitySeverity: vulnSeverity.MEDIUM,
     warnings: warnings.ERROR,
-    ignorePatterns: {
-      warnings: new IgnoreWarningsPatterns()
-    }
+    ignorePatterns: IgnorePatterns.default()
   };
 }
 

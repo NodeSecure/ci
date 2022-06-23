@@ -3,7 +3,6 @@ import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
 // Import Internal Dependencies
-import { IgnoreWarningsPatterns } from "../external/nodesecure/ignore-file.js";
 import { Nsci } from "../standard/index.js";
 
 import {
@@ -122,6 +121,6 @@ export function adaptExternalToStandardConfiguration(
     reporters: adaptReporters(reporters),
     strategy: adaptStrategy(strategy),
     vulnerabilitySeverity: adaptSeverity(vulnerabilities),
-    warnings: adaptWarnings(warnings),
+    warnings: adaptWarnings(warnings)
   };
 }

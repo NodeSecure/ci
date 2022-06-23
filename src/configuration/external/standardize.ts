@@ -39,7 +39,9 @@ function extractOnlyValidPropsFromExternalConfig(
   return Object.fromEntries(filteredEntries);
 }
 
-function mergeConfigs(adaptedConfig: Partial<Nsci.Configuration>): Nsci.Configuration {
+function mergeConfigs(
+  adaptedConfig: Partial<Nsci.Configuration>
+): Nsci.Configuration {
   return {
     ...Nsci.defaultNsciRuntimeConfiguration,
     /**
