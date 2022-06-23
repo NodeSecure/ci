@@ -3,7 +3,7 @@ import { constants, accessSync } from "fs";
 import { resolve } from "path";
 
 // Import Internal Dependencies
-import { IgnoreWarningsPatterns } from "../external/nodesecure/ignore-file";
+import { IgnoreWarningsPatterns } from "../external/nodesecure/ignore-file.js";
 import { Nsci } from "../standard/index.js";
 
 import {
