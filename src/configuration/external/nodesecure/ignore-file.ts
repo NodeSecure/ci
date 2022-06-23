@@ -1,4 +1,6 @@
+// Import Third-party dependencies
 import Validator from "ajv";
+import JSXray from "@nodesecure/js-x-ray";
 
 export class IgnorePatterns {
   public warnings: IgnoreWarningsPatterns;
@@ -13,13 +15,13 @@ export class IgnorePatterns {
 }
 
 export class IgnoreWarningsPatterns {
-  public entries: Record<string, string[]>;
+  public entries: Record<JSXray.WarningName, string[]>;
 
   constructor(entries: Record<string, string[]> = {}) {
     this.entries = entries;
   }
 
-  has(warning: string, pkg: string): boolean {
+  has(warning: JSXray.WarningName, pkg: string): boolean {
     return this.entries[warning]?.includes(pkg);
   }
 }
