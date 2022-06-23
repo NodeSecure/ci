@@ -25,9 +25,7 @@ import {
 } from "./ignore-file";
 
 const { font: log } = consolePrinter;
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const kRootPath = join(__dirname, "..", "..", "..", "..");
-export const kIgnoreFilePath = join(kRootPath, kIgnoreFileName);
+export const kIgnoreFilePath = join(process.cwd(), kIgnoreFileName);
 
 function interpretNodeSecureConfigResult(
   config: Result<NodeSecureRuntimeConfig, NodeJS.ErrnoException>
