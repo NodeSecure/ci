@@ -91,7 +91,7 @@ export async function getIgnoreFile(): Promise<IgnorePatterns> {
   } catch (error: any) {
     log.error(`x Cannot load ignore file: ${error.message}`).print();
 
-    return { warnings: new IgnoreWarningsPatterns() };
+    return IgnorePatterns.default();
   }
 }
 
