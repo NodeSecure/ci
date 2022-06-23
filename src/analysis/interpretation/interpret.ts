@@ -85,7 +85,7 @@ function hasWarningsIgnorePatterns(warnings?: IgnoreWarningsPatterns): boolean {
   return warnings !== undefined && Object.keys(warnings).length > 0;
 }
 
-export function filterDependenciesWarnings(
+export function excludeIgnoredDependenciesWarnings(
   dependenciesWarnings: DependencyWarning[],
   ignorePatterns: IgnorePatterns
 ): DependencyWarning[] {
@@ -121,7 +121,7 @@ export function runPayloadInterpreter(
   rc: Nsci.Configuration
 ): OutcomePayloadFromPipelineChecks {
   const { warnings, dependencies } = extractScannerPayload(payload);
-  const filteredDependencies = filterDependenciesWarnings(
+  const filteredDependencies = excludeIgnoredDependenciesWarnings(
     dependencies.warnings,
     rc.ignorePatterns
   );

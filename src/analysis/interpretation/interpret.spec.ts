@@ -14,7 +14,7 @@ import { DependencyWarning } from "../../types/index.js";
 
 import {
   runPayloadInterpreter,
-  filterDependenciesWarnings
+  excludeIgnoredDependenciesWarnings
 } from "./interpret.js";
 
 // CONSTANTS
@@ -36,12 +36,12 @@ const kDefaultScannerPayload: Scanner.Payload = {
   vulnerabilityStrategy: "npm"
 };
 
-describe("filterDependenciesWarnings", () => {
+describe("excludeIgnoredDependenciesWarnings", () => {
   it("should not filter warnings if ignorePatterns.warnings is an empty object", () => {
     const warnings: DependencyWarning[] = [];
     const emptyIgnorePatterns: IgnorePatterns = IgnorePatterns.default();
 
-    const filteredWarnings = filterDependenciesWarnings(
+    const filteredWarnings = excludeIgnoredDependenciesWarnings(
       warnings,
       emptyIgnorePatterns
     );
@@ -62,7 +62,7 @@ describe("filterDependenciesWarnings", () => {
       })
     };
 
-    const filteredWarnings = filterDependenciesWarnings(
+    const filteredWarnings = excludeIgnoredDependenciesWarnings(
       warnings,
       ignorePatterns
     );
