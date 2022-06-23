@@ -111,7 +111,7 @@ function adaptSeverity(vulnerabilityThreshold: Nsci.Severity): Nsci.Severity {
  */
 export function adaptExternalToStandardConfiguration(
   sanitizedOptions: Partial<ExternalRuntimeConfiguration>
-): Nsci.Configuration {
+): Partial<Nsci.Configuration> {
   const { vulnerabilities, directory, strategy, warnings, reporters } = {
     ...defaultExternalConfigOptions,
     ...sanitizedOptions
@@ -123,7 +123,5 @@ export function adaptExternalToStandardConfiguration(
     strategy: adaptStrategy(strategy),
     vulnerabilitySeverity: adaptSeverity(vulnerabilities),
     warnings: adaptWarnings(warnings),
-    // TODO(tony): check where this is call before merging
-    ignorePatterns: { warnings: new IgnoreWarningsPatterns() }
   };
 }
