@@ -10,7 +10,7 @@ import {
 } from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../../configuration/standard/index.js";
 import { pipeline } from "../../reporting/index.js";
-import { DependencyWarning } from "../../types/index.js";
+import { DependencyWarning, Warning } from "../../types/index.js";
 import {
   extractScannerPayload,
   WorkableVulnerability
@@ -93,18 +93,10 @@ export function excludeIgnoredDependenciesWarnings(
     return dependenciesWarnings;
   }
 
-  return dependenciesWarnings.filter(function excludeIgnorableWarnings(
-    dependencyWarnings
-  ) {
-    if (
-      dependencyWarnings.warnings.find((w) =>
-        ignorePatterns.warnings.has(w.kind, dependencyWarnings.package)
-      )
-    ) {
-      return false;
-    }
+  return dependenciesWarnings.filter(function excludeIgnorableWarnings(dependencyWarnings) {
+    const hasWarnings = (warn: Warning) => ignorePatterns.warnings.has(warn.kind, dependencyWarnings.package)
 
-    return true;
+    return !!dependencyWarnings.warnings.find(hasWarnings) ? false : true;
   });
 }
 
