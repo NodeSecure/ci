@@ -14,15 +14,17 @@ export class IgnorePatterns {
   }
 }
 
-export class IgnoreWarningsPatterns {
-  public entries: Record<JSXray.WarningName, string[]>;
+type WarningEntries = Partial<Record<JSXray.WarningName, string[]>>;
 
-  constructor(entries: Record<string, string[]> = {}) {
+export class IgnoreWarningsPatterns {
+  public entries: WarningEntries; 
+
+  constructor(entries: WarningEntries = {} as WarningEntries) {
     this.entries = entries;
   }
 
   has(warning: JSXray.WarningName, pkg: string): boolean {
-    return this.entries[warning]?.includes(pkg);
+    return !!this.entries[warning]?.includes(pkg);
   }
 }
 

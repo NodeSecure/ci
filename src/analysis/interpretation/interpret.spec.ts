@@ -1,4 +1,4 @@
-// Import Third-party Dependencies
+ // Import Third-party Dependencies
 import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
@@ -10,12 +10,8 @@ import {
 } from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../../configuration/standard/index.js";
 import * as pipeline from "../../reporting/status.js";
-import { DependencyWarning } from "../../types/index.js";
 
-import {
-  runPayloadInterpreter,
-  excludeIgnoredDependenciesWarnings
-} from "./interpret.js";
+import { runPayloadInterpreter } from "./interpret.js";
 
 // CONSTANTS
 const kDefaultRuntimeConfiguration: Nsci.Configuration = {
@@ -35,41 +31,6 @@ const kDefaultScannerPayload: Scanner.Payload = {
   scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
-
-describe("excludeIgnoredDependenciesWarnings", () => {
-  it("should not filter warnings if ignorePatterns.warnings is an empty object", () => {
-    const warnings: DependencyWarning[] = [];
-    const emptyIgnorePatterns: IgnorePatterns = IgnorePatterns.default();
-
-    const filteredWarnings = excludeIgnoredDependenciesWarnings(
-      warnings,
-      emptyIgnorePatterns
-    );
-
-    expect(filteredWarnings).to.deep.equal(warnings);
-  });
-
-  it("should filter warnings if ignorePatterns.warnings is not an empty object", () => {
-    const warnings: DependencyWarning[] = [
-      {
-        package: "lodash.difference",
-        warnings: [{ kind: "unsafe-stmt", location: {} as any }]
-      }
-    ];
-    const ignorePatterns: IgnorePatterns = {
-      warnings: new IgnoreWarningsPatterns({
-        "unsafe-stmt": ["lodash.difference"]
-      })
-    };
-
-    const filteredWarnings = excludeIgnoredDependenciesWarnings(
-      warnings,
-      ignorePatterns
-    );
-
-    expect(filteredWarnings).to.deep.equal([]);
-  });
-});
 
 /* eslint-disable max-nested-callbacks */
 describe("Pipeline check workflow", () => {
@@ -590,6 +551,84 @@ describe("Pipeline check workflow", () => {
 
             expect(status).equals(pipeline.status.FAILURE);
           });
+        });
+      });
+
+      describe("When providing an .nsci-ignore file", () => {
+        it("should not return ignored warnings", () => {
+          const warnings = new IgnoreWarningsPatterns({ "unsafe-assign": ["express"] });
+          const ignorePatterns = new IgnorePatterns(warnings);
+          const scannerPayload: Scanner.Payload = {
+            ...kDefaultScannerPayload,
+            dependencies: {
+              express: {
+              // @ts-expect-error - we are not interested in providing metadata here
+                metadata: {},
+                versions: {
+                  "2.1.0": {
+                    warnings: [
+                      {
+                        kind: "unsafe-assign",
+                        location: [
+                          [0, 1],
+                          [5, 0]
+                        ]
+                      }
+                    ],
+                    // @ts-expect-error - we are not interested in providing composition
+                    composition: {}
+                  }
+                },
+                vulnerabilities: []
+              },
+            }
+          };
+
+          const { status, data } = runPayloadInterpreter(scannerPayload, {
+            ...kDefaultRuntimeConfiguration,
+            ignorePatterns
+          });
+
+          expect(data.dependencies.warnings).to.deep.equal([]);
+          expect(status).equals(pipeline.status.SUCCESS);
+        });
+        
+        it("should return not ignored warnings", () => {
+          const warnings = new IgnoreWarningsPatterns({ "weak-crypto": ["express"] });
+          const ignorePatterns = new IgnorePatterns(warnings);
+          const scannerPayload: Scanner.Payload = {
+            ...kDefaultScannerPayload,
+            dependencies: {
+              express: {
+              // @ts-expect-error - we are not interested in providing metadata here
+                metadata: {},
+                versions: {
+                  "2.1.0": {
+                    warnings: [
+                      {
+                        kind: "unsafe-assign",
+                        location: [
+                          [0, 1],
+                          [5, 0]
+                        ]
+                      }
+                    ],
+                    // @ts-expect-error - we are not interested in providing composition
+                    composition: {}
+                  }
+                },
+                vulnerabilities: []
+              },
+            }
+          };
+
+          const { status, data } = runPayloadInterpreter(scannerPayload, {
+            ...kDefaultRuntimeConfiguration,
+            ignorePatterns
+          });
+
+          expect(data.dependencies.warnings.length).to.above(0);
+          expect(status).equals(pipeline.status.FAILURE);
         });
       });
 

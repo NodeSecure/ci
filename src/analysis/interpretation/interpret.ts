@@ -85,7 +85,7 @@ function hasWarningsIgnorePatterns(warnings?: IgnoreWarningsPatterns): boolean {
   return warnings !== undefined && Object.keys(warnings).length > 0;
 }
 
-export function excludeIgnoredDependenciesWarnings(
+function excludeIgnoredDependenciesWarnings(
   dependenciesWarnings: DependencyWarning[],
   ignorePatterns: IgnorePatterns
 ): DependencyWarning[] {
