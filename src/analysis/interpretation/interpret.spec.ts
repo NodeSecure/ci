@@ -1,12 +1,14 @@
 // Import Third-party Dependencies
 import { Scanner } from "@nodesecure/scanner";
+import { Dependency } from "@nodesecure/scanner/types/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
 
 // Import Internal Dependencies
 import {
   IgnorePatterns,
-  IgnoreWarningsPatterns
+  IgnoreWarningsPatterns,
+  WarningEntries
 } from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../../configuration/standard/index.js";
 import * as pipeline from "../../reporting/status.js";
@@ -556,35 +558,12 @@ describe("Pipeline check workflow", () => {
 
       describe("When providing an .nsci-ignore file", () => {
         it("should not return ignored warnings", () => {
-          const warnings = new IgnoreWarningsPatterns({
+          const ignorePatterns = createIgnorePatternsWith({
             "unsafe-assign": ["express"]
           });
-          const ignorePatterns = new IgnorePatterns(warnings);
-          const scannerPayload: Scanner.Payload = {
-            ...kDefaultScannerPayload,
-            dependencies: {
-              express: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
-                versions: {
-                  "2.1.0": {
-                    warnings: [
-                      {
-                        kind: "unsafe-assign",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
-                      }
-                    ],
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
-                  }
-                },
-                vulnerabilities: []
-              }
-            }
-          };
+          const scannerPayload: Scanner.Payload = createScannerPayloadWith({
+            express: ["unsafe-assign"]
+          });
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
             ...kDefaultRuntimeConfiguration,
@@ -596,35 +575,12 @@ describe("Pipeline check workflow", () => {
         });
 
         it("should return not ignored warnings", () => {
-          const warnings = new IgnoreWarningsPatterns({
+          const ignorePatterns = createIgnorePatternsWith({
             "weak-crypto": ["express"]
           });
-          const ignorePatterns = new IgnorePatterns(warnings);
-          const scannerPayload: Scanner.Payload = {
-            ...kDefaultScannerPayload,
-            dependencies: {
-              express: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
-                versions: {
-                  "2.1.0": {
-                    warnings: [
-                      {
-                        kind: "unsafe-assign",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
-                      }
-                    ],
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
-                  }
-                },
-                vulnerabilities: []
-              }
-            }
-          };
+          const scannerPayload: Scanner.Payload = createScannerPayloadWith({
+            express: ["unsafe-assign"]
+          });
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
             ...kDefaultRuntimeConfiguration,
@@ -771,3 +727,55 @@ describe("Pipeline check workflow", () => {
     });
   });
 });
+
+// /////////////////
+// // HELPERS //////
+// /////////////////
+
+function createIgnorePatternsWith(
+  warningsEntries: WarningEntries
+): IgnorePatterns {
+  const warnings = new IgnoreWarningsPatterns(warningsEntries);
+
+  return new IgnorePatterns(warnings);
+}
+
+type SimplifiedWarningEntries = Record<string, string[]>;
+
+function createScannerPayloadWith(
+  warnings: SimplifiedWarningEntries
+): Scanner.Payload {
+  const scannerPayload: Scanner.Payload = {
+    ...kDefaultScannerPayload,
+    dependencies: {
+      ...Object.entries(warnings).reduce(
+        (acc: Record<string, Dependency>, [pkg, warns]: [string, string[]]) => {
+          acc[pkg] = {
+            metadata: {} as any,
+            versions: {
+              "2.1.0": {
+                // @ts-expect-error
+                warnings: warns.map((warn: string) => {
+                  return {
+                    kind: warn,
+                    location: [
+                      [0, 1],
+                      [5, 0]
+                    ]
+                  };
+                }),
+                composition: {} as any
+              }
+            },
+            vulnerabilities: []
+          };
+
+          return acc;
+        },
+        {}
+      )
+    }
+  };
+
+  return scannerPayload;
+}

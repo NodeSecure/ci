@@ -14,7 +14,7 @@ export class IgnorePatterns {
   }
 }
 
-type WarningEntries = Partial<Record<JSXray.WarningName, string[]>>;
+export type WarningEntries = Partial<Record<JSXray.WarningName, string[]>>;
 
 export class IgnoreWarningsPatterns {
   public entries: WarningEntries;
