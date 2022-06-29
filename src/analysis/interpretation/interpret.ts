@@ -93,10 +93,14 @@ function excludeIgnoredDependenciesWarnings(
     return dependenciesWarnings;
   }
 
-  return dependenciesWarnings.filter(function excludeIgnorableWarnings(dependencyWarnings) {
-    const hasWarnings = (warn: Warning) => ignorePatterns.warnings.has(warn.kind, dependencyWarnings.package)
+  return dependenciesWarnings.filter(function excludeIgnorableWarnings(
+    dependencyWarnings
+  ) {
+    function hasWarnings(warn: Warning): boolean {
+      return ignorePatterns.warnings.has(warn.kind, dependencyWarnings.package);
+    }
 
-    return !!dependencyWarnings.warnings.find(hasWarnings) ? false : true;
+    return !dependencyWarnings.warnings.find(hasWarnings);
   });
 }
 

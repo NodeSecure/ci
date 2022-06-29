@@ -6,7 +6,6 @@ export type DeepPartialRecord<T> = {
     : Partial<T[P]>;
 };
 
-
 export type Warning = Omit<JSXRay.BaseWarning, "value">;
 
 export type Warnings = Warning[];
@@ -17,7 +16,7 @@ export type Warnings = Warning[];
  */
 export type DependencyWarning = {
   package: string;
-  warnings: Warnings 
+  warnings: Warnings;
 };
 
 export type Maybe<T> = T | undefined;

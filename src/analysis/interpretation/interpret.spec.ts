@@ -1,4 +1,4 @@
- // Import Third-party Dependencies
+// Import Third-party Dependencies
 import { Scanner } from "@nodesecure/scanner";
 import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
 import { expect } from "chai";
@@ -556,13 +556,15 @@ describe("Pipeline check workflow", () => {
 
       describe("When providing an .nsci-ignore file", () => {
         it("should not return ignored warnings", () => {
-          const warnings = new IgnoreWarningsPatterns({ "unsafe-assign": ["express"] });
+          const warnings = new IgnoreWarningsPatterns({
+            "unsafe-assign": ["express"]
+          });
           const ignorePatterns = new IgnorePatterns(warnings);
           const scannerPayload: Scanner.Payload = {
             ...kDefaultScannerPayload,
             dependencies: {
               express: {
-              // @ts-expect-error - we are not interested in providing metadata here
+                // @ts-expect-error - we are not interested in providing metadata here
                 metadata: {},
                 versions: {
                   "2.1.0": {
@@ -580,7 +582,7 @@ describe("Pipeline check workflow", () => {
                   }
                 },
                 vulnerabilities: []
-              },
+              }
             }
           };
 
@@ -592,15 +594,17 @@ describe("Pipeline check workflow", () => {
           expect(data.dependencies.warnings).to.deep.equal([]);
           expect(status).equals(pipeline.status.SUCCESS);
         });
-        
+
         it("should return not ignored warnings", () => {
-          const warnings = new IgnoreWarningsPatterns({ "weak-crypto": ["express"] });
+          const warnings = new IgnoreWarningsPatterns({
+            "weak-crypto": ["express"]
+          });
           const ignorePatterns = new IgnorePatterns(warnings);
           const scannerPayload: Scanner.Payload = {
             ...kDefaultScannerPayload,
             dependencies: {
               express: {
-              // @ts-expect-error - we are not interested in providing metadata here
+                // @ts-expect-error - we are not interested in providing metadata here
                 metadata: {},
                 versions: {
                   "2.1.0": {
@@ -618,7 +622,7 @@ describe("Pipeline check workflow", () => {
                   }
                 },
                 vulnerabilities: []
-              },
+              }
             }
           };
 
