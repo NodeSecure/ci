@@ -31,8 +31,8 @@ export const kIgnoreFilePath = join(process.cwd(), kIgnoreFileName);
  * TODO: create a proper logger abstract
  */
 const logger = {
-   error: (message: string): void => {
-    const nodeEnv = process.env["NODE_ENV"];
+  error: (message: string): void => {
+    const nodeEnv = process.env.NODE_ENV;
     if (nodeEnv !== "test") {
       log
         .error(
@@ -40,7 +40,7 @@ const logger = {
         )
         .print();
     }
-   }
+  }
 };
 
 function interpretNodeSecureConfigResult(
@@ -93,10 +93,9 @@ export async function getIgnoreFile(): Promise<IgnorePatterns> {
     const ignoreObject = JSON.parse(ignoreFile);
     const { isValid, error } = validateIgnoreFile(ignoreObject);
     if (!isValid) {
-      logger
-        .error(
-          `x Invalid ignore file: ${error}, empty one will be used instead`
-        );
+      logger.error(
+        `x Invalid ignore file: ${error}, empty one will be used instead`
+      );
 
       return IgnorePatterns.default();
     }
