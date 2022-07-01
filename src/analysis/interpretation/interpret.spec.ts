@@ -556,7 +556,7 @@ describe("Pipeline check workflow", () => {
         });
       });
 
-      describe("When providing an .nsci-ignore file", () => {
+      describe("When providing an .nodesecureignore file", () => {
         it("should not return ignored warnings", () => {
           const ignorePatterns = createIgnorePatternsWith({
             "unsafe-assign": ["express"]
