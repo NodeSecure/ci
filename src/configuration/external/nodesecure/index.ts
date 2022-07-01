@@ -25,6 +25,24 @@ import {
 const { font: log } = consolePrinter;
 export const kIgnoreFilePath = join(process.cwd(), kIgnoreFileName);
 
+/**
+ * NOTE: this abstract is temporary
+ *
+ * TODO: create a proper logger abstract
+ */
+const logger = {
+   error: (message: string): void => {
+    const nodeEnv = process.env["NODE_ENV"];
+    if (nodeEnv !== "test") {
+      log
+        .error(
+          `x Invalid ignore file: ${message}, empty one will be used instead`
+        )
+        .print();
+    }
+   }
+};
+
 function interpretNodeSecureConfigResult(
   config: Result<NodeSecureRuntimeConfig, NodeJS.ErrnoException>
 ): NodeSecureRuntimeConfig | undefined {
@@ -75,11 +93,10 @@ export async function getIgnoreFile(): Promise<IgnorePatterns> {
     const ignoreObject = JSON.parse(ignoreFile);
     const { isValid, error } = validateIgnoreFile(ignoreObject);
     if (!isValid) {
-      log
+      logger
         .error(
           `x Invalid ignore file: ${error}, empty one will be used instead`
-        )
-        .print();
+        );
 
       return IgnorePatterns.default();
     }
@@ -87,7 +104,7 @@ export async function getIgnoreFile(): Promise<IgnorePatterns> {
 
     return JSON.parse(ignoreFile) as IgnorePatterns;
   } catch (error: any) {
-    log.error(`x Cannot load ignore file: ${error.message}`).print();
+    logger.error(`x Cannot load ignore file: ${error.message}`);
 
     return IgnorePatterns.default();
   }
