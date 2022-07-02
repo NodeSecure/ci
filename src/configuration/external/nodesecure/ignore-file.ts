@@ -5,8 +5,8 @@ import Validator from "ajv";
 export class IgnorePatterns {
   public warnings: IgnoreWarningsPatterns;
 
-  constructor(warnings: IgnoreWarningsPatterns = new IgnoreWarningsPatterns()) {
-    this.warnings = warnings;
+  constructor(warnings: WarningEntries = {}) {
+    this.warnings = new IgnoreWarningsPatterns(warnings);
   }
 
   static default(): IgnorePatterns {

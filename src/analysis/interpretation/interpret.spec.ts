@@ -7,7 +7,6 @@ import { expect } from "chai";
 // Import Internal Dependencies
 import {
   IgnorePatterns,
-  IgnoreWarningsPatterns,
   WarningEntries
 } from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../../configuration/standard/index.js";
@@ -735,9 +734,7 @@ describe("Pipeline check workflow", () => {
 function createIgnorePatternsWith(
   warningsEntries: WarningEntries
 ): IgnorePatterns {
-  const warnings = new IgnoreWarningsPatterns(warningsEntries);
-
-  return new IgnorePatterns(warnings);
+  return new IgnorePatterns(warningsEntries);
 }
 
 type SimplifiedWarningEntries = Record<string, string[]>;

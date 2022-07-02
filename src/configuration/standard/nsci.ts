@@ -3,7 +3,7 @@ import type JSXRay from "@nodesecure/js-x-ray";
 
 // Import Internal Dependencies
 import { ValueOf } from "../../types";
-import { IgnorePatterns } from "../external/nodesecure/ignore-file";
+import { IgnorePatterns } from "../external/nodesecure/ignore-file.js";
 
 export const vulnStrategy = {
   npm: "NPM_AUDIT",

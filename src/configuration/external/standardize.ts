@@ -2,7 +2,7 @@
 import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 
 // Import Internal Dependencies
-import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file";
+import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../standard/index.js";
 
 import { adaptExternalToStandardConfiguration } from "./adapt.js";

@@ -3,7 +3,7 @@ import { expect } from "chai";
 import mock from "mock-fs";
 
 // Internal Dependencies
-import { IgnorePatterns } from "./ignore-file";
+import { IgnorePatterns, IgnoreWarningsPatterns } from "./ignore-file";
 
 import { getIgnoreFile, kIgnoreFilePath } from "./index";
 
@@ -27,12 +27,46 @@ describe("getIgnoreFile", () => {
   });
 
   it("should return the ignore file if it's valid", async () => {
-    const validIgnoreFile = { warnings: {} };
+    const validIgnoreFile = {
+      warnings: {
+        "unsafe-regex": ["negotiator"]
+      }
+    };
     createFakeIgnoreFile(JSON.stringify(validIgnoreFile));
 
     const result = await getIgnoreFile();
 
-    expect(result).to.be.deep.equal(validIgnoreFile);
+    expect(result).to.be.an.instanceof(IgnorePatterns);
+    expect(result).not.to.deep.equal({});
+    mock.restore();
+  });
+
+  it("should return an IgnorePatterns warnings property", async () => {
+    const validIgnoreFile = {
+      warnings: {
+        "unsafe-regex": ["negotiator"]
+      }
+    };
+    createFakeIgnoreFile(JSON.stringify(validIgnoreFile));
+
+    const { warnings } = await getIgnoreFile();
+
+    expect(warnings).to.be.an.instanceof(IgnoreWarningsPatterns);
+    mock.restore();
+  });
+
+  it("should return an helper to check if a warning exist for a given pkg", async () => {
+    const validIgnoreFile = {
+      warnings: {
+        "unsafe-regex": ["negotiator"]
+      }
+    };
+    createFakeIgnoreFile(JSON.stringify(validIgnoreFile));
+
+    const result = await getIgnoreFile();
+
+    expect(result.warnings.has("unsafe-regex", "negotiator")).to.equal(true);
+    expect(result.warnings.has("unsafe-regex", "express")).to.equal(false);
     mock.restore();
   });
 });

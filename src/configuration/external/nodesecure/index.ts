@@ -8,7 +8,7 @@ import { match } from "ts-pattern";
 import type { Result } from "ts-results";
 
 // Import Internal Dependencies
-import { consolePrinter } from "../../../../lib/console-printer";
+import { consolePrinter } from "../../../../lib/console-printer/index.js";
 import { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
@@ -20,7 +20,7 @@ import {
   validateIgnoreFile,
   kIgnoreFileName,
   IgnorePatterns
-} from "./ignore-file";
+} from "./ignore-file.js";
 
 const { font: log } = consolePrinter;
 export const kIgnoreFilePath = join(process.cwd(), kIgnoreFileName);
@@ -31,6 +31,16 @@ export const kIgnoreFilePath = join(process.cwd(), kIgnoreFileName);
  * TODO: create a proper logger abstract
  */
 const logger = {
+  info: (message: string): void => {
+    const nodeEnv = process.env.NODE_ENV;
+    if (nodeEnv !== "test") {
+      log
+        .info(
+          `x Invalid ignore file: ${message}, empty one will be used instead`
+        )
+        .print();
+    }
+  },
   error: (message: string): void => {
     const nodeEnv = process.env.NODE_ENV;
     if (nodeEnv !== "test") {
@@ -99,9 +109,9 @@ export async function getIgnoreFile(): Promise<IgnorePatterns> {
 
       return IgnorePatterns.default();
     }
-    log.success("✔ Ignore file loaded").print();
+    logger.info("✔ Ignore file loaded");
 
-    return JSON.parse(ignoreFile) as IgnorePatterns;
+    return new IgnorePatterns(ignoreObject.warnings);
   } catch (error: any) {
     logger.error(`x Cannot load ignore file: ${error.message}`);
 
