@@ -48,8 +48,9 @@ export function reportDependencyVulns(
     consolePrinter.util
       .concatOutputs([
         consolePrinter.font.error(`✖ ${vulnsLength}`).bold().message,
-        consolePrinter.font.error(`${pluralize("vulnerability", vulnsLength)}`)
-          .message
+        consolePrinter.font
+          .error(`${pluralize("vulnerability", vulnsLength)}`)
+          .bold().message
       ])
       .printWithEmptyLine();
   } else {

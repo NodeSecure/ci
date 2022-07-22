@@ -22,10 +22,13 @@ export function buildOutcomeStatsConsoleMessage(
   if (statsLength > 0) {
     const printWarnOrErr = printWarnOrError(warningsMode);
 
-    return printWarnOrErr(`${statsLength}`).prefix(printWarnOrErr("✖").message);
+    return printWarnOrErr(`${statsLength}`)
+      .prefix(printWarnOrErr("✖").message)
+      .bold();
   }
 
   return consolePrinter.font
     .success(`${statsLength}`)
-    .prefix(consolePrinter.font.success("✓").message);
+    .prefix(consolePrinter.font.success("✓").message)
+    .bold();
 }
