@@ -1,4 +1,6 @@
-// Import Internal Dependencies
+// Import Third-party Dependencies
+import { match } from "ts-pattern";
+
 import {
   ConsoleMessage,
   ConsoleOutput,
@@ -6,6 +8,14 @@ import {
 } from "../../../../../lib/console-printer/index.js";
 import { Nsci } from "../../../../configuration/index.js";
 import { Warnings } from "../../../../configuration/standard/nsci";
+
+export function getOutcomeEmoji(warningsMode: Warnings): string {
+  return match(warningsMode)
+    .with("error", () => "✖")
+    .with("off", () => "✓")
+    .with("warning", () => "⚠")
+    .otherwise(() => "⚠");
+}
 
 export function printWarnOrError(
   warningsMode: Warnings
@@ -20,10 +30,11 @@ export function buildOutcomeStatsConsoleMessage(
   warningsMode: Warnings
 ): ConsoleMessage {
   if (statsLength > 0) {
+    const outcomeEmoji = getOutcomeEmoji(warningsMode);
     const printWarnOrErr = printWarnOrError(warningsMode);
 
     return printWarnOrErr(`${statsLength}`)
-      .prefix(printWarnOrErr("✖").message)
+      .prefix(printWarnOrErr(outcomeEmoji).message)
       .bold();
   }
 
