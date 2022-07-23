@@ -53,11 +53,11 @@ function getFallbackStrategy(
   strategy: Nsci.OutputStrategy
 ): Nsci.OutputStrategy {
   /**
-   * "node" and "none" are strategies compatible with all environments.
+   * "sonatype" and "none" are strategies compatible with all environments.
    * Consequently at this point, if anything else different of "none" is provided,
-   * we must fallback to "node".
+   * we must fallback to "sonatype".
    */
-  return strategy === "NONE" ? strategy : Nsci.vulnStrategy.node;
+  return strategy === "NONE" ? strategy : Nsci.vulnStrategy.sonatype;
 }
 
 export async function analyzeEnvironmentContext({
