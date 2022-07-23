@@ -10,16 +10,24 @@ import {
 import { DependencyWarningWithMode } from "../../../../analysis/interpretation/warnings.js";
 import { Nsci } from "../../../../configuration/index.js";
 
-import { buildOutcomeStatsConsoleMessage, printWarnOrError } from "./util.js";
+import {
+  buildOutcomeStatsConsoleMessage,
+  getOutcomeEmoji,
+  printWarnOrError
+} from "./util.js";
 
-function printDependencyWarnings(
-  dependenciesWarnings: DependencyWarningWithMode[]
-): {
+type CollectedDependencyWarningsStats = {
   warningsWithWarningMode: DependencyWarningWithMode[];
   warningsWithErrorMode: DependencyWarningWithMode[];
-} {
-  const warningsWithErrorMode = [];
-  const warningsWithWarningMode = [];
+  printAllWarnings: () => void;
+};
+
+function collectDependencyWarningsConsoleMessages(
+  dependenciesWarnings: DependencyWarningWithMode[]
+): CollectedDependencyWarningsStats {
+  const warningsWithErrorMode: DependencyWarningWithMode[] = [];
+  const warningsWithWarningMode: DependencyWarningWithMode[] = [];
+  const warningsToPrint: ConsoleMessage[] = [];
 
   for (const dependencyWarning of dependenciesWarnings) {
     for (const warning of dependencyWarning.warnings) {
@@ -46,19 +54,29 @@ function printDependencyWarnings(
         ).message;
       }
 
-      consolePrinter.util
-        .concatOutputs([
+      // Don't directly print messages to defer the console rendering at
+      // another point in time
+      warningsToPrint.push(
+        consolePrinter.util.concatOutputs([
           printWarnOrError(warning.mode)(warning.kind).bold().underline()
             .message,
           warningLocation && warningPath
             ? `${warningPath}:${warningLocation}`
             : ""
         ])
-        .printWithEmptyLine();
+      );
     }
   }
 
-  return { warningsWithErrorMode, warningsWithWarningMode };
+  function printAllWarnings(): void {
+    warningsToPrint.forEach((warning) => warning.printWithEmptyLine());
+  }
+
+  return {
+    warningsWithErrorMode,
+    warningsWithWarningMode,
+    printAllWarnings
+  };
 }
 
 export function reportDependencyWarnings(
@@ -70,17 +88,8 @@ export function reportDependencyWarnings(
       accumulatedNumberOfWarnings + dependencyWarning.warnings.length,
     0
   );
-
-  const { warningsWithErrorMode } = printDependencyWarnings(warnings);
-
-  if (numberOfDependencyWarnings === 0) {
-    consolePrinter.font
-      .success(`✓ 0 dependency warnings`)
-      .bold()
-      .printWithEmptyLine();
-
-    return;
-  }
+  const { warningsWithErrorMode, printAllWarnings } =
+    collectDependencyWarningsConsoleMessages(warnings);
 
   if (warningsMode === Nsci.warnings.OFF) {
     consolePrinter.font
@@ -91,18 +100,31 @@ export function reportDependencyWarnings(
     return;
   }
 
+  if (numberOfDependencyWarnings === 0) {
+    consolePrinter.font
+      .success(`✓ 0 dependency warnings`)
+      .bold()
+      .printWithEmptyLine();
+
+    return;
+  }
+
+  const dependencyWarningsOutcome = `${numberOfDependencyWarnings} dependency ${pluralize(
+    "warning",
+    numberOfDependencyWarnings
+  )}`;
+
   if (
     warningsMode === Nsci.warnings.ERROR ||
     warningsMode === Nsci.warnings.WARNING
   ) {
+    const outcomeEmoji = getOutcomeEmoji(warningsMode);
     printWarnOrError(warningsMode)(
-      `✖ ${numberOfDependencyWarnings} dependency ${pluralize(
-        "warning",
-        numberOfDependencyWarnings
-      )}`
+      `${outcomeEmoji} ${dependencyWarningsOutcome}`
     )
       .bold()
       .printWithEmptyLine();
+    printAllWarnings();
 
     return;
   }
@@ -113,18 +135,19 @@ export function reportDependencyWarnings(
    * encountered, the whole message will be printed in Error (red). Otherwise if
    * there is no "error" warning, the whole message will be printed in Warning (yellow).
    */
-  printWarnOrError(
+  const warningOrErrorMode =
     warningsWithErrorMode.length > 0
       ? Nsci.warnings.ERROR
-      : Nsci.warnings.WARNING
-  )(
-    `✖ ${numberOfDependencyWarnings} dependency ${pluralize(
-      "warning",
-      numberOfDependencyWarnings
-    )}`
+      : Nsci.warnings.WARNING;
+  const outcomeEmoji = getOutcomeEmoji(warningOrErrorMode);
+
+  printWarnOrError(warningOrErrorMode)(
+    `${outcomeEmoji} ${dependencyWarningsOutcome}`
   )
     .bold()
     .printWithEmptyLine();
+
+  printAllWarnings();
 }
 
 function collectNumberOfWarningsWithError(
@@ -178,7 +201,12 @@ export function buildDependenciesWarningsOutcomeMessage(
     .otherwise(() =>
       buildOutcomeStatsConsoleMessage(
         allWarnings,
-        warningsWithError > 0 ? Nsci.warnings.ERROR : Nsci.warnings.OFF
+        // eslint-disable-next-line no-nested-ternary
+        warningsWithError > 0
+          ? Nsci.warnings.ERROR
+          : allWarnings > 0
+          ? Nsci.warnings.WARNING
+          : Nsci.warnings.OFF
       )
     );
 }

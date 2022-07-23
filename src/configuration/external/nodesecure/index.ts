@@ -35,20 +35,15 @@ const logger = {
     const nodeEnv = process.env.NODE_ENV;
     if (nodeEnv !== "test") {
       log
-        .info(
-          `x Invalid ignore file: ${message}, empty one will be used instead`
-        )
-        .print();
+        .standard(message)
+        .prefix(log.info("info").message)
+        .printWithEmptyLine();
     }
   },
   error: (message: string): void => {
     const nodeEnv = process.env.NODE_ENV;
     if (nodeEnv !== "test") {
-      log
-        .error(
-          `x Invalid ignore file: ${message}, empty one will be used instead`
-        )
-        .print();
+      log.error(message).printWithEmptyLine();
     }
   }
 };
@@ -98,22 +93,30 @@ export async function getNodeSecureConfig(): Promise<
 }
 
 export async function getIgnoreFile(): Promise<IgnorePatterns> {
+  const highlightedFilename = log.highlight(".nodesecureignore").message;
   try {
     const ignoreFile = await readFile(kIgnoreFilePath, "utf8");
     const ignoreObject = JSON.parse(ignoreFile);
     const { isValid, error } = validateIgnoreFile(ignoreObject);
     if (!isValid) {
       logger.error(
-        `x Invalid ignore file: ${error}, empty one will be used instead`
+        `✖ Invalid ${highlightedFilename} file: ${error}. Nothing will be ignored.`
       );
 
       return IgnorePatterns.default();
     }
-    logger.info("✔ Ignore file loaded");
+    logger.info(`${highlightedFilename} file successfully loaded.`);
 
     return new IgnorePatterns(ignoreObject.warnings);
   } catch (error: any) {
-    logger.error(`x Cannot load ignore file: ${error.message}`);
+    if (error.code === "ENOENT") {
+      logger.info(
+        `${highlightedFilename} file not found. Nothing will be ignored.`
+      );
+
+      return IgnorePatterns.default();
+    }
+    logger.error(`✖ Cannot load ignore file: ${error.message}`);
 
     return IgnorePatterns.default();
   }

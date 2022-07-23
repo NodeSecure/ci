@@ -13,22 +13,20 @@ import { buildOutcomeStatsConsoleMessage } from "./util.js";
 
 export function reportGlobalWarnings(warnings: GlobalWarning): void {
   if (warnings.length > 0) {
-    warnings.forEach((warning) => {
-      consolePrinter.font
-        .standard(`${warning}`)
-        .prefix(
-          consolePrinter.font.error("global warning:").underline().message
-        )
-        .bold()
-        .printWithEmptyLine();
-    });
-
     consolePrinter.font
       .error(
         `✖ ${warnings.length} global ${pluralize("warning", warnings.length)}`
       )
       .bold()
       .printWithEmptyLine();
+
+    warnings.forEach((warning) => {
+      consolePrinter.font
+        .standard(warning)
+        .prefix(consolePrinter.font.error(">>").message)
+        .bold()
+        .printWithEmptyLine();
+    });
 
     return;
   }
