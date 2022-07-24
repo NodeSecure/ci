@@ -1,24 +1,34 @@
 {
-    "files": [
-        "README.md"
-    ],
-    "imageSize": 100,
-    "commit": false,
-    "contributors": [
-        {
-            "login": "antoine-coulon",
-            "name": "Antoine",
-            "avatar_url": "https://avatars.githubusercontent.com/u/43391199?v=4",
-            "profile": "https://github.com/antoine-coulon",
-            "contributions": [
-                "code"
-            ]
-        }
-    ],
-    "contributorsPerLine": 7,
-    "projectName": "ci",
-    "projectOwner": "NodeSecure",
-    "repoType": "github",
-    "repoHost": "https://github.com",
-    "skipCi": true
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "antoine-coulon",
+      "name": "Antoine",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43391199?v=4",
+      "profile": "https://github.com/antoine-coulon",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "tony-go",
+      "name": "Tony Gorez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/22824417?v=4",
+      "profile": "http://tonygo.dev",
+      "contributions": [
+        "code",
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ci",
+  "projectOwner": "NodeSecure",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
 }
