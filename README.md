@@ -34,10 +34,12 @@ Static Analysis is powered by [@nodesecure/js-x-ray](https://github.com/NodeSecu
 > In fact, you want to make sure that you are not introducing anything malicious
 > when you're compiling your code at some point (for production or when transpiling with TypeScript).
 
-| Vulnerabilities Strategy | package-lock.json | yarn.lock |
-| ------------------------ | ----------------- | --------- |
-| npm                      | ✅                | ❌        |
-| node                     | ✅                | ✅        |
+| Vulnerabilities Strategy | package-lock.json | yarn.lock | npm-shrinkwrap.json | none |
+| ------------------------ | ----------------- | --------- | ------------------- | ---- |
+| npm                      | ✅                | ❌       | ✅                 | ❌  |
+| snyk                     | ✅                | ✅       | ✅                 | ✅  |
+| sonatype                 | ✅                | ✅       | ✅                 | ✅  |
+| [**DEPRECATED**] node    | ✅                | ✅       | ✅                 | ✅  |
 
 Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/NodeSecure/vuln).
 
@@ -60,7 +62,7 @@ import { runPipeline } from "@nodesecure/ci";
 
 const optionsExample = {
   directory: process.cwd(),
-  strategy: "node",
+  strategy: "sonatype",
   vulnerabilities: "medium",
   warnings: {
     "unsafe-regex": "error",
@@ -250,7 +252,7 @@ import { runPipeline } from "@nodesecure/ci";
 
 const optionsExampleWithGlobalWarningsRule = {
   directory: process.cwd(),
-  strategy: "node",
+  strategy: "sonatype",
   vulnerabilities: "medium",
   // any warning met will be reported as an "error" hence will make the pipeline fail
   warnings: "error",
@@ -259,7 +261,7 @@ const optionsExampleWithGlobalWarningsRule = {
 
 const optionsExampleWithCustomWarningsRules = {
   directory: process.cwd(),
-  strategy: "node",
+  strategy: "sonatype",
   vulnerabilities: "medium",
   /**
    * Set custom rules for specific types of warnings.
