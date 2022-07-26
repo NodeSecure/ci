@@ -152,7 +152,7 @@ describe("Environment data collection", () => {
 
     describe("When providing a strategy not compatible with the environment", () => {
       describe("When the lockfile is missing or incompatible with the environment", () => {
-        it("should fallback to 'NODE' strategy", async () => {
+        it("should fallback to 'SONATYPE' strategy", async () => {
           expect(
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
@@ -164,7 +164,7 @@ describe("Environment data collection", () => {
               current: "yarn.lock",
               multiple: false
             },
-            compatibleStrategy: "SECURITY_WG"
+            compatibleStrategy: "SONATYPE"
           });
 
           expect(
@@ -180,7 +180,7 @@ describe("Environment data collection", () => {
               current: "none",
               multiple: false
             },
-            compatibleStrategy: "SECURITY_WG"
+            compatibleStrategy: "SONATYPE"
           });
         });
       });
