@@ -30,10 +30,10 @@ export const warnings = {
   OFF: "off",
   WARNING: "warning"
 } as const;
-export const warningKinds = Object.keys(jsxray.warnings) as Array<WarningKind>;
+export const warningNames = Object.keys(jsxray.warnings) as Array<WarningName>;
 
 export type WarningMode = ValueOf<typeof warnings>;
-export type WarningKind = keyof typeof jsxray.warnings;
+export type WarningName = keyof typeof jsxray.warnings;
 export type Warnings = WarningMode | Record<jsxray.WarningName, WarningMode>;
 
 export const reporterTarget = {
@@ -42,6 +42,7 @@ export const reporterTarget = {
 } as const;
 
 export type ReporterTarget = ValueOf<typeof reporterTarget>;
+
 export type Configuration = {
   rootDir: string;
   strategy: ValueOf<typeof vulnStrategy>;
