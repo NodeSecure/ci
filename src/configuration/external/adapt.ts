@@ -50,8 +50,8 @@ function isValidWarningMode(
 
 function isValidWarningKind(
   warningKind: string
-): warningKind is Nsci.WarningKind {
-  return Nsci.warningKinds.includes(warningKind as Nsci.WarningKind);
+): warningKind is Nsci.WarningName {
+  return Nsci.warningNames.includes(warningKind as Nsci.WarningName);
 }
 
 function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
