@@ -67,10 +67,10 @@ function retrieveAllWarningsWithSharedMode(
 }
 
 function groupWarningKindsByWarningMode(
-  warningsWithSpecificMode: Record<Nsci.WarningKind, Nsci.WarningMode>
+  warningsWithSpecificMode: Record<Nsci.WarningName, Nsci.WarningMode>
 ): {
-  allWarningsKindsWithErrorMode: Set<Nsci.WarningKind>;
-  allWarningsKindsWithWarningMode: Set<Nsci.WarningKind>;
+  allWarningsKindsWithErrorMode: Set<Nsci.WarningName>;
+  allWarningsKindsWithWarningMode: Set<Nsci.WarningName>;
 } {
   const warningKindsGroupedByWarningMode = Object.entries(
     warningsWithSpecificMode
@@ -78,7 +78,7 @@ function groupWarningKindsByWarningMode(
     (warningsGroupedByMode, [warningKind, warningValue]) => {
       warningsGroupedByMode[warningValue] = [
         ...warningsGroupedByMode[warningValue],
-        warningKind as Nsci.WarningKind
+        warningKind as Nsci.WarningName
       ];
 
       return warningsGroupedByMode;
@@ -87,7 +87,7 @@ function groupWarningKindsByWarningMode(
       off: [],
       warning: [],
       error: []
-    } as Record<Nsci.WarningMode, Nsci.WarningKind[]>
+    } as Record<Nsci.WarningMode, Nsci.WarningName[]>
   );
 
   // All warnings defined with the "error" mode
@@ -108,7 +108,7 @@ function groupWarningKindsByWarningMode(
 
 function retrieveAllWarningsWithSpecificMode(
   warnings: DependencyWarning[],
-  warningsWithSpecificMode: Record<Nsci.WarningKind, Nsci.WarningMode>
+  warningsWithSpecificMode: Record<Nsci.WarningName, Nsci.WarningMode>
 ): CheckableFunction<DependencyWarningWithMode> {
   const { allWarningsKindsWithErrorMode, allWarningsKindsWithWarningMode } =
     groupWarningKindsByWarningMode(warningsWithSpecificMode);
@@ -190,7 +190,7 @@ export function checkDependenciesWarnings(
       retrieveAllWarningsWithSpecificMode(
         warnings,
         runtimeConfiguration.warnings as Record<
-          Nsci.WarningKind,
+          Nsci.WarningName,
           Nsci.WarningMode
         >
       )

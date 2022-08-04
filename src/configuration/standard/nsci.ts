@@ -1,5 +1,5 @@
 // Import Third-party Dependencies
-import type JSXRay from "@nodesecure/js-x-ray";
+import * as jsxray from "@nodesecure/js-x-ray";
 
 // Import Internal Dependencies
 import { ValueOf } from "../../types";
@@ -30,27 +30,11 @@ export const warnings = {
   OFF: "off",
   WARNING: "warning"
 } as const;
+export const warningNames = Object.keys(jsxray.warnings) as Array<WarningName>;
 
 export type WarningMode = ValueOf<typeof warnings>;
-
-// These warnings types should probably come from JSXRay but are hosted here for now
-
-export const warningKinds: Readonly<(JSXRay.WarningName | "unsafe-import")[]> =
-  [
-    "parsing-error",
-    "encoded-literal",
-    "unsafe-regex",
-    "unsafe-stmt",
-    "unsafe-assign",
-    "short-identifiers",
-    "suspicious-literal",
-    "obfuscated-code",
-    "unsafe-import"
-  ] as const;
-
-export type WarningKind = JSXRay.WarningName | "unsafe-import";
-
-export type Warnings = WarningMode | Record<WarningKind, WarningMode>;
+export type WarningName = keyof typeof jsxray.warnings;
+export type Warnings = WarningMode | Record<jsxray.WarningName, WarningMode>;
 
 export const reporterTarget = {
   CONSOLE: "console",
