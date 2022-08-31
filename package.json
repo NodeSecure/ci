@@ -94,6 +94,7 @@
     "pretty-ms": "^7.0.1",
     "sade": "^1.7.4",
     "table": "^6.8.0",
-    "ts-pattern": "^3.3.5"
+    "ts-pattern": "^3.3.5",
+    "tslib": "^2.4.0"
   }
 }
