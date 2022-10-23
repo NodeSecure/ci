@@ -82,7 +82,7 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
-    "@nodesecure/js-x-ray": "^5.0.1",
+    "@nodesecure/js-x-ray": "^5.1.0",
     "@nodesecure/rc": "^1.2.0",
     "@nodesecure/scanner": "^3.6.0",
     "@nodesecure/vuln": "^1.7.0",
