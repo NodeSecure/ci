@@ -40,7 +40,7 @@ Static Analysis is powered by [@nodesecure/js-x-ray](https://github.com/NodeSecu
 | sonatype                 | ✅                | ✅       | ✅                 | ✅  |
 | [**DEPRECATED**] node    | ✅                | ✅       | ✅                 | ✅  |
 
-Vulnerabilities strategies are powered by [@nodesecure/vuln](https://github.com/NodeSecure/vuln).
+Vulnerabilities strategies are powered by [@nodesecure/vulnera](https://github.com/NodeSecure/vulnera).
 
 ## Usage example
 
