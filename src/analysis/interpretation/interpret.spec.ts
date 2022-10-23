@@ -1,7 +1,6 @@
 // Import Third-party Dependencies
 import { Scanner } from "@nodesecure/scanner";
-import { Dependency } from "@nodesecure/scanner/types/scanner";
-import { StandardVulnerability } from "@nodesecure/vuln/types/strategy";
+import { Strategy } from "@nodesecure/vuln";
 import { expect } from "chai";
 
 // Import Internal Dependencies
@@ -499,7 +498,7 @@ describe("Pipeline check workflow", () => {
           severity: undefined,
           vulnerableRanges: [],
           vulnerableVersions: []
-        } as unknown as StandardVulnerability;
+        } as unknown as Strategy.StandardVulnerability;
 
         const scannerPayload: Scanner.Payload = {
           ...kDefaultScannerPayload,
@@ -746,12 +745,15 @@ function createScannerPayloadWith(
     ...kDefaultScannerPayload,
     dependencies: {
       ...Object.entries(warnings).reduce(
-        (acc: Record<string, Dependency>, [pkg, warns]: [string, string[]]) => {
+        (
+          acc: Record<string, Scanner.Dependency>,
+          [pkg, warns]: [string, string[]]
+        ) => {
           acc[pkg] = {
             metadata: {} as any,
             versions: {
+              // @ts-expect-error
               "2.1.0": {
-                // @ts-expect-error
                 warnings: warns.map((warn: string) => {
                   return {
                     kind: warn,

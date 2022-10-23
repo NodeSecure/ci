@@ -1,17 +1,18 @@
 // Import Third-party Dependencies
-import type { GlobalWarning } from "@nodesecure/scanner/types/scanner";
+import { Warning } from "@nodesecure/js-x-ray";
+import type { Scanner } from "@nodesecure/scanner";
 import { match } from "ts-pattern";
 
 // Import Internal Dependencies
 import { Nsci } from "../../configuration/standard/index.js";
 import { WarningMode } from "../../configuration/standard/nsci.js";
-import type { DependencyWarning } from "../../types";
+import type { DependencyWarning } from "../types";
 
 import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
 
 export function checkGlobalWarnings(
-  warnings: GlobalWarning[]
-): CheckableFunction<GlobalWarning> {
+  warnings: Scanner.GlobalWarning[]
+): CheckableFunction<Scanner.GlobalWarning> {
   return {
     result: fromBooleanToCheckResult(warnings.length > 0),
     data: {
@@ -22,7 +23,7 @@ export function checkGlobalWarnings(
 }
 
 export type DependencyWarningWithMode = Omit<DependencyWarning, "warnings"> & {
-  warnings: (Omit<JSXRay.BaseWarning, "value"> & {
+  warnings: (Warning & {
     mode: Nsci.WarningMode;
   })[];
 };
