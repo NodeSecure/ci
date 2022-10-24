@@ -6,17 +6,4 @@ export type DeepPartialRecord<T> = {
     : Partial<T[P]>;
 };
 
-export type Warning = Omit<JSXRay.BaseWarning, "value">;
-
-export type Warnings = Warning[];
-
-/**
- * These types are used to enhance @nodesecure type definitions.
- * In the near feature, these types will be directly colocalized with packages.
- */
-export type DependencyWarning = {
-  package: string;
-  warnings: Warnings;
-};
-
 export type Maybe<T> = T | undefined;

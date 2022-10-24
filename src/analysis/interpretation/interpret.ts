@@ -1,6 +1,6 @@
 // Import Third-party Dependencies
-import { Scanner } from "@nodesecure/scanner";
-import { GlobalWarning } from "@nodesecure/scanner/types/scanner";
+import type { Warning } from "@nodesecure/js-x-ray";
+import type { Scanner } from "@nodesecure/scanner";
 import set from "lodash.set";
 
 // Import Internal Dependencies
@@ -10,11 +10,11 @@ import {
 } from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../../configuration/standard/index.js";
 import { pipeline } from "../../reporting/index.js";
-import { DependencyWarning, Warning } from "../../types/index.js";
 import {
   extractScannerPayload,
   WorkableVulnerability
 } from "../extraction/extract.js";
+import type { DependencyWarning } from "../types";
 
 import {
   CheckResult,
@@ -29,7 +29,7 @@ import {
 } from "./warnings.js";
 
 export interface InterpretedScannerPayload {
-  warnings: GlobalWarning;
+  warnings: Scanner.GlobalWarning;
   dependencies: {
     warnings: DependencyWarningWithMode[];
     vulnerabilities: WorkableVulnerability[];
