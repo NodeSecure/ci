@@ -1,4 +1,7 @@
+/* eslint-disable max-lines */
+
 // Import Third-party Dependencies
+import { WarningDefault } from "@nodesecure/js-x-ray";
 import { Scanner } from "@nodesecure/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import { expect } from "chai";
@@ -31,6 +34,10 @@ const kDefaultScannerPayload: Scanner.Payload = {
   scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
+
+function makePartialWarnings<T>(warnings: T): Omit<WarningDefault, "value">[] {
+  return warnings as Omit<WarningDefault, "value">[];
+}
 
 /* eslint-disable max-nested-callbacks */
 describe("Pipeline check workflow", () => {
@@ -85,7 +92,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: [
+                    warnings: makePartialWarnings([
                       {
                         kind: "obfuscated-code",
                         location: [
@@ -100,7 +107,7 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ],
+                    ]),
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -112,7 +119,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "1.0.5": {
-                    warnings: [
+                    warnings: makePartialWarnings([
                       {
                         kind: "encoded-literal",
                         location: [
@@ -120,7 +127,7 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ],
+                    ]),
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -191,7 +198,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: [
+                    warnings: makePartialWarnings([
                       {
                         kind: "obfuscated-code",
                         location: [
@@ -206,7 +213,7 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ],
+                    ]),
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -218,7 +225,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "1.0.5": {
-                    warnings: [
+                    warnings: makePartialWarnings([
                       {
                         kind: "encoded-literal",
                         location: [
@@ -226,7 +233,7 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ],
+                    ]),
                     // @ts-expect-error - we are not interested in providing composition
                     composition: {}
                   }
@@ -262,7 +269,7 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "2.1.0": {
-                        warnings: [
+                        warnings: makePartialWarnings([
                           {
                             kind: "unsafe-assign",
                             location: [
@@ -277,7 +284,7 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ],
+                        ]),
                         // @ts-expect-error - we are not interested in providing composition
                         composition: {}
                       }
@@ -289,7 +296,7 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "1.0.5": {
-                        warnings: [
+                        warnings: makePartialWarnings([
                           {
                             kind: "encoded-literal",
                             location: [
@@ -304,7 +311,7 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ],
+                        ]),
                         // @ts-expect-error - we are not interested in providing composition
                         composition: {}
                       }
@@ -382,7 +389,7 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "2.1.0": {
-                        warnings: [
+                        warnings: makePartialWarnings([
                           {
                             kind: "unsafe-assign",
                             location: [
@@ -397,7 +404,7 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ],
+                        ]),
                         // @ts-expect-error - we are not interested in providing composition
                         composition: {}
                       }
@@ -409,7 +416,7 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "1.0.5": {
-                        warnings: [
+                        warnings: makePartialWarnings([
                           {
                             kind: "encoded-literal",
                             location: [
@@ -424,7 +431,7 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ],
+                        ]),
                         // @ts-expect-error - we are not interested in providing composition
                         composition: {}
                       }
@@ -752,8 +759,8 @@ function createScannerPayloadWith(
           acc[pkg] = {
             metadata: {} as any,
             versions: {
-              // @ts-expect-error
               "2.1.0": {
+                // @ts-expect-error
                 warnings: warns.map((warn: string) => {
                   return {
                     kind: warn,
