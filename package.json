@@ -65,7 +65,7 @@
     "@types/lodash.set": "^4.3.6",
     "@types/mocha": "^9.0.0",
     "@types/mock-fs": "^4.13.1",
-    "@types/node": "^16.11.12",
+    "@types/node": "^18.11.18",
     "@types/pluralize": "^0.0.29",
     "@types/sade": "^1.7.4",
     "chai": "^4.3.4",
