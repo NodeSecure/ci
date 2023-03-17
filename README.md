@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/4438263/216045720-779bf16d-1d35-409f-a0e6-4019bda8edde.jpg" alt="@nodesecure/rc">
+</p>
+
 # Secure Continuous Integration
 
 ![version](https://img.shields.io/badge/dynamic/json.svg?style=for-the-badge&url=https://raw.githubusercontent.com/NodeSecure/ci/master/package.json&query=$.version&label=Version)
