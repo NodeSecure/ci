@@ -1,5 +1,6 @@
 # Secure Continuous Integration
 
+![ci-banner](https://user-images.githubusercontent.com/4438263/226020356-5790c025-bff1-40d5-b847-360863f53a9a.jpg)
 ![version](https://img.shields.io/badge/dynamic/json.svg?style=for-the-badge&url=https://raw.githubusercontent.com/NodeSecure/ci/master/package.json&query=$.version&label=Version)
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/NodeSecure/ci/commit-activity)
 [![OpenSSF
