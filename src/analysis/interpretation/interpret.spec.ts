@@ -1,5 +1,3 @@
-/* eslint-disable max-lines */
-
 // Import Third-party Dependencies
 import * as JSXRay from "@nodesecure/js-x-ray";
 import { Scanner } from "@nodesecure/scanner";
@@ -14,6 +12,7 @@ import {
 import { Nsci } from "../../configuration/standard/index.js";
 import { Warnings } from "../../configuration/standard/nsci";
 import * as pipeline from "../../reporting/status.js";
+import { DeepPartialRecord } from "../../types";
 
 import { runPayloadInterpreter } from "./interpret.js";
 
@@ -41,6 +40,12 @@ function makePartialJSXRayWarnings(
   warnings: Partial<JSXRay.Warning>[]
 ): JSXRay.Warning[] {
   return warnings as JSXRay.Warning[];
+}
+
+function makePartialScannerDependencies(
+  dependencies: Record<string, DeepPartialRecord<Scanner.Dependency>>
+): Record<string, Scanner.Dependency> {
+  return dependencies as Record<string, Scanner.Dependency>;
 }
 
 /* eslint-disable max-nested-callbacks */
@@ -78,22 +83,16 @@ describe("Pipeline check workflow", () => {
         it("should make the pipeline fail when atleast one warning is found", () => {
           const scannerPayload: Scanner.Payload = {
             ...kDefaultScannerPayload,
-            dependencies: {
+            dependencies: makePartialScannerDependencies({
               "ts-pattern": {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: [],
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    warnings: []
                   }
                 },
                 vulnerabilities: []
               },
               express: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "2.1.0": {
                     warnings: makePartialJSXRayWarnings([
@@ -111,16 +110,12 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               },
               marker: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "1.0.5": {
                     warnings: makePartialJSXRayWarnings([
@@ -131,14 +126,12 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               }
-            }
+            })
           };
 
           const { status, data } = runPayloadInterpreter(
@@ -196,10 +189,8 @@ describe("Pipeline check workflow", () => {
         it("should make the pipeline pass when warnings are ignored", () => {
           const scannerPayload: Scanner.Payload = {
             ...kDefaultScannerPayload,
-            dependencies: {
+            dependencies: makePartialScannerDependencies({
               express: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "2.1.0": {
                     warnings: makePartialJSXRayWarnings([
@@ -217,16 +208,12 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               },
               marker: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "1.0.5": {
                     warnings: makePartialJSXRayWarnings([
@@ -237,14 +224,12 @@ describe("Pipeline check workflow", () => {
                           [5, 0]
                         ]
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               }
-            }
+            })
           };
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -267,10 +252,8 @@ describe("Pipeline check workflow", () => {
             it("should make the pipeline fail with the 'error' warnings", () => {
               const scannerPayload: Scanner.Payload = {
                 ...kDefaultScannerPayload,
-                dependencies: {
+                dependencies: makePartialScannerDependencies({
                   express: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "2.1.0": {
                         warnings: makePartialJSXRayWarnings([
@@ -288,16 +271,12 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   },
                   marker: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "1.0.5": {
                         warnings: makePartialJSXRayWarnings([
@@ -315,14 +294,12 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   }
-                }
+                })
               };
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -386,10 +363,8 @@ describe("Pipeline check workflow", () => {
             it("should make the pipeline succeed with the 'warning' warnings", () => {
               const scannerPayload: Scanner.Payload = {
                 ...kDefaultScannerPayload,
-                dependencies: {
+                dependencies: makePartialScannerDependencies({
                   express: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "2.1.0": {
                         warnings: makePartialJSXRayWarnings([
@@ -407,16 +382,12 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   },
                   marker: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "1.0.5": {
                         warnings: makePartialJSXRayWarnings([
@@ -434,14 +405,12 @@ describe("Pipeline check workflow", () => {
                               [5, 0]
                             ]
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   }
-                }
+                })
               };
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -511,14 +480,12 @@ describe("Pipeline check workflow", () => {
 
         const scannerPayload: Scanner.Payload = {
           ...kDefaultScannerPayload,
-          dependencies: {
+          dependencies: makePartialScannerDependencies({
             express: {
-              // @ts-expect-error - we are not interested in metadata
-              metadata: {},
               versions: {},
               vulnerabilities: [unprocessableVulnerability]
             }
-          }
+          })
         };
 
         const { data } = runPayloadInterpreter(
@@ -534,10 +501,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline fail", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -550,7 +515,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status } = runPayloadInterpreter(
@@ -604,10 +569,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline succeed with no returned data", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -620,7 +583,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -643,10 +606,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline fail for any given vulnerability found", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -660,7 +621,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -683,10 +644,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline fail with severities higher than configured threshold", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -709,7 +668,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -759,7 +718,6 @@ function createScannerPayloadWith(
           [pkg, warns]: [string, string[]]
         ) => {
           acc[pkg] = {
-            metadata: {} as any,
             versions: {
               "2.1.0": {
                 // @ts-expect-error
@@ -771,8 +729,7 @@ function createScannerPayloadWith(
                       [5, 0]
                     ]
                   };
-                }),
-                composition: {} as any
+                })
               }
             },
             vulnerabilities: []
