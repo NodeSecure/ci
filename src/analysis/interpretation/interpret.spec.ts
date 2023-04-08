@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
 // Import Third-party Dependencies
-import { WarningDefault } from "@nodesecure/js-x-ray";
+import * as JSXRay from "@nodesecure/js-x-ray";
 import { Scanner } from "@nodesecure/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import { expect } from "chai";
@@ -12,6 +12,7 @@ import {
   WarningEntries
 } from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../../configuration/standard/index.js";
+import { Warnings } from "../../configuration/standard/nsci";
 import * as pipeline from "../../reporting/status.js";
 
 import { runPayloadInterpreter } from "./interpret.js";
@@ -31,12 +32,15 @@ const kDefaultScannerPayload: Scanner.Payload = {
   rootDependencyName: "pkg",
   warnings: [],
   dependencies: {},
+  flaggedAuthors: [],
   scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
 
-function makePartialWarnings<T>(warnings: T): Omit<WarningDefault, "value">[] {
-  return warnings as Omit<WarningDefault, "value">[];
+function makePartialJSXRayWarnings(
+  warnings: Partial<JSXRay.Warning>[]
+): JSXRay.Warning[] {
+  return warnings as JSXRay.Warning[];
 }
 
 /* eslint-disable max-nested-callbacks */
@@ -92,7 +96,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
                         kind: "obfuscated-code",
                         location: [
@@ -119,7 +123,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "1.0.5": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
                         kind: "encoded-literal",
                         location: [
@@ -198,7 +202,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
                         kind: "obfuscated-code",
                         location: [
@@ -225,7 +229,7 @@ describe("Pipeline check workflow", () => {
                 metadata: {},
                 versions: {
                   "1.0.5": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
                         kind: "encoded-literal",
                         location: [
@@ -269,9 +273,9 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "2.1.0": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "unsafe-assign",
+                            kind: "unsafe-import",
                             location: [
                               [0, 1],
                               [5, 0]
@@ -296,7 +300,7 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "1.0.5": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
                             kind: "encoded-literal",
                             location: [
@@ -323,12 +327,11 @@ describe("Pipeline check workflow", () => {
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
                 ...kDefaultRuntimeConfiguration,
-                // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.ERROR,
                   "obfuscated-code": Nsci.warnings.ERROR,
-                  "unsafe-assign": Nsci.warnings.WARNING
-                }
+                  "unsafe-import": Nsci.warnings.WARNING
+                } as Warnings
               });
 
               expect(status).equals(pipeline.status.FAILURE);
@@ -338,7 +341,7 @@ describe("Pipeline check workflow", () => {
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "unsafe-assign",
+                      kind: "unsafe-import",
                       location: [
                         [0, 1],
                         [5, 0]
@@ -389,9 +392,9 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "2.1.0": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "unsafe-assign",
+                            kind: "unsafe-stmt",
                             location: [
                               [0, 1],
                               [5, 0]
@@ -416,7 +419,7 @@ describe("Pipeline check workflow", () => {
                     metadata: {},
                     versions: {
                       "1.0.5": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
                             kind: "encoded-literal",
                             location: [
@@ -443,12 +446,11 @@ describe("Pipeline check workflow", () => {
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
                 ...kDefaultRuntimeConfiguration,
-                // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.OFF,
-                  "unsafe-assign": Nsci.warnings.WARNING,
+                  "unsafe-stmt": Nsci.warnings.WARNING,
                   "obfuscated-code": Nsci.warnings.WARNING
-                }
+                } as Warnings
               });
 
               expect(status).equals(pipeline.status.SUCCESS);
@@ -458,7 +460,7 @@ describe("Pipeline check workflow", () => {
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "unsafe-assign",
+                      kind: "unsafe-stmt",
                       location: [
                         [0, 1],
                         [5, 0]
@@ -564,10 +566,10 @@ describe("Pipeline check workflow", () => {
       describe("When providing an .nodesecureignore file", () => {
         it("should not return ignored warnings", () => {
           const ignorePatterns = createIgnorePatternsWith({
-            "unsafe-assign": ["express"]
+            "unsafe-stmt": ["express"]
           });
           const scannerPayload: Scanner.Payload = createScannerPayloadWith({
-            express: ["unsafe-assign"]
+            express: ["unsafe-stmt"]
           });
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -584,7 +586,7 @@ describe("Pipeline check workflow", () => {
             "weak-crypto": ["express"]
           });
           const scannerPayload: Scanner.Payload = createScannerPayloadWith({
-            express: ["unsafe-assign"]
+            express: ["unsafe-stmt"]
           });
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
