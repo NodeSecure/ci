@@ -10,11 +10,12 @@ import {
   WarningEntries
 } from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../../configuration/standard/index.js";
-import { Warnings } from "../../configuration/standard/nsci";
+import { WarningMode, Warnings } from "../../configuration/standard/nsci.js";
 import * as pipeline from "../../reporting/status.js";
 import { DeepPartialRecord } from "../../types";
 
 import { runPayloadInterpreter } from "./interpret.js";
+import { DependencyWarningWithMode } from "./warnings.js";
 
 // CONSTANTS
 const kDefaultRuntimeConfiguration: Nsci.Configuration = {
@@ -35,18 +36,6 @@ const kDefaultScannerPayload: Scanner.Payload = {
   scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
-
-function makePartialJSXRayWarnings(
-  warnings: Partial<JSXRay.Warning>[]
-): JSXRay.Warning[] {
-  return warnings as JSXRay.Warning[];
-}
-
-function makePartialScannerDependencies(
-  dependencies: Record<string, DeepPartialRecord<Scanner.Dependency>>
-): Record<string, Scanner.Dependency> {
-  return dependencies as Record<string, Scanner.Dependency>;
-}
 
 /* eslint-disable max-nested-callbacks */
 describe("Pipeline check workflow", () => {
@@ -106,8 +95,8 @@ describe("Pipeline check workflow", () => {
                       {
                         kind: "obfuscated-code",
                         location: [
-                          [0, 1],
-                          [5, 0]
+                          [2, 5],
+                          [5, 3]
                         ]
                       }
                     ])
@@ -122,8 +111,8 @@ describe("Pipeline check workflow", () => {
                       {
                         kind: "encoded-literal",
                         location: [
-                          [0, 1],
-                          [5, 0]
+                          [1, 1],
+                          [5, 9]
                         ]
                       }
                     ])
@@ -160,8 +149,8 @@ describe("Pipeline check workflow", () => {
                       mode: "error",
                       kind: "obfuscated-code",
                       location: [
-                        [0, 1],
-                        [5, 0]
+                        [2, 5],
+                        [5, 3]
                       ]
                     }
                   ]
@@ -173,8 +162,8 @@ describe("Pipeline check workflow", () => {
                       mode: "error",
                       kind: "encoded-literal",
                       location: [
-                        [0, 1],
-                        [5, 0]
+                        [1, 1],
+                        [5, 9]
                       ]
                     }
                   ]
@@ -195,18 +184,10 @@ describe("Pipeline check workflow", () => {
                   "2.1.0": {
                     warnings: makePartialJSXRayWarnings([
                       {
-                        kind: "obfuscated-code",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
+                        kind: "obfuscated-code"
                       },
                       {
-                        kind: "obfuscated-code",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
+                        kind: "obfuscated-code"
                       }
                     ])
                   }
@@ -218,11 +199,7 @@ describe("Pipeline check workflow", () => {
                   "1.0.5": {
                     warnings: makePartialJSXRayWarnings([
                       {
-                        kind: "encoded-literal",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
+                        kind: "encoded-literal"
                       }
                     ])
                   }
@@ -258,18 +235,10 @@ describe("Pipeline check workflow", () => {
                       "2.1.0": {
                         warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "unsafe-import",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "unsafe-import"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
                         ])
                       }
@@ -281,18 +250,10 @@ describe("Pipeline check workflow", () => {
                       "1.0.5": {
                         warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "encoded-literal",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "encoded-literal"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
                         ])
                       }
@@ -312,25 +273,18 @@ describe("Pipeline check workflow", () => {
               });
 
               expect(status).equals(pipeline.status.FAILURE);
-              expect(data.dependencies.warnings).to.deep.equal([
+
+              expectNsciPayloadToHaveWarnings(data.dependencies.warnings, [
                 {
                   package: "express",
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "unsafe-import",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "unsafe-import"
                     },
                     {
                       mode: "error",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 },
@@ -339,19 +293,11 @@ describe("Pipeline check workflow", () => {
                   warnings: [
                     {
                       mode: "error",
-                      kind: "encoded-literal",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "encoded-literal"
                     },
                     {
                       mode: "error",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 }
@@ -369,18 +315,10 @@ describe("Pipeline check workflow", () => {
                       "2.1.0": {
                         warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "unsafe-stmt",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "unsafe-stmt"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
                         ])
                       }
@@ -392,18 +330,10 @@ describe("Pipeline check workflow", () => {
                       "1.0.5": {
                         warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "encoded-literal",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "encoded-literal"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
                         ])
                       }
@@ -423,25 +353,17 @@ describe("Pipeline check workflow", () => {
               });
 
               expect(status).equals(pipeline.status.SUCCESS);
-              expect(data.dependencies.warnings).to.deep.equal([
+              expectNsciPayloadToHaveWarnings(data.dependencies.warnings, [
                 {
                   package: "express",
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "unsafe-stmt",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "unsafe-stmt"
                     },
                     {
                       mode: "warning",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 },
@@ -450,11 +372,7 @@ describe("Pipeline check workflow", () => {
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 }
@@ -493,7 +411,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        expect(data.dependencies.vulnerabilities.length).eq(0);
+        expect(data.dependencies.vulnerabilities.length).to.equal(0);
       });
 
       describe("When providing default runtime configuration", () => {
@@ -743,4 +661,53 @@ function createScannerPayloadWith(
   };
 
   return scannerPayload;
+}
+
+function makePartialJSXRayWarnings(
+  warnings: Partial<JSXRay.Warning>[]
+): JSXRay.Warning[] {
+  return warnings.map((warning) => {
+    return {
+      ...warning,
+      location: warning.location || [
+        [0, 0],
+        [0, 0]
+      ]
+    };
+  }) as JSXRay.Warning[];
+}
+
+function makePartialScannerDependencies(
+  dependencies: Record<string, DeepPartialRecord<Scanner.Dependency>>
+): Record<string, Scanner.Dependency> {
+  return dependencies as Record<string, Scanner.Dependency>;
+}
+
+function expectNsciPayloadToHaveWarnings(
+  payloadWarnings: DependencyWarningWithMode[],
+  simplifiedWarnings: {
+    package: string;
+    warnings: (Partial<JSXRay.Warning> & {
+      mode: WarningMode;
+      kind: JSXRay.WarningName;
+    })[];
+  }[]
+): void {
+  const warnings = simplifiedWarnings.map((simplifiedWarning) => {
+    return {
+      package: simplifiedWarning.package,
+      warnings: simplifiedWarning.warnings.map((warning) => {
+        return {
+          mode: warning.mode,
+          kind: warning.kind,
+          location: warning.location ?? [
+            [0, 0],
+            [0, 0]
+          ]
+        };
+      })
+    };
+  });
+
+  expect(payloadWarnings).to.deep.equal(warnings);
 }
