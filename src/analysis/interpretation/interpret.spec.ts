@@ -47,7 +47,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        expect(status).equals(pipeline.status.SUCCESS);
+        expectNsciPipelineToBeSuccessful(status);
       });
     });
 
@@ -214,7 +214,7 @@ describe("Pipeline check workflow", () => {
             warnings: Nsci.warnings.OFF
           });
 
-          expect(status).equals(pipeline.status.SUCCESS);
+          expectNsciPipelineToBeSuccessful(status);
           expect(data).to.deep.equal({
             warnings: [],
             dependencies: {
@@ -352,7 +352,7 @@ describe("Pipeline check workflow", () => {
                 } as Warnings
               });
 
-              expect(status).equals(pipeline.status.SUCCESS);
+              expectNsciPipelineToBeSuccessful(status);
               expectNsciPayloadToHaveWarnings(data.dependencies.warnings, [
                 {
                   package: "express",
@@ -461,7 +461,7 @@ describe("Pipeline check workflow", () => {
           });
 
           expect(data.dependencies.warnings).to.deep.equal([]);
-          expect(status).equals(pipeline.status.SUCCESS);
+          expectNsciPipelineToBeSuccessful(status);
         });
 
         it("should return not ignored warnings", () => {
@@ -478,7 +478,7 @@ describe("Pipeline check workflow", () => {
           });
 
           expect(data.dependencies.warnings.length).to.above(0);
-          expect(status).equals(pipeline.status.FAILURE);
+          expectNsciPipelineToFail(status);
         });
       });
 
@@ -509,7 +509,7 @@ describe("Pipeline check workflow", () => {
               vulnerabilitySeverity: "high"
             });
 
-            expect(status).equals(pipeline.status.SUCCESS);
+            expectNsciPipelineToBeSuccessful(status);
             expect(data).to.deep.equal({
               warnings: [],
               dependencies: {
@@ -547,7 +547,7 @@ describe("Pipeline check workflow", () => {
               vulnerabilitySeverity: "all"
             });
 
-            expect(status).equals(pipeline.status.FAILURE);
+            expectNsciPipelineToFail(status);
             expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
               origin: "npm",
               package: "express",
@@ -594,7 +594,7 @@ describe("Pipeline check workflow", () => {
               vulnerabilitySeverity: "high"
             });
 
-            expect(status).equals(pipeline.status.FAILURE);
+            expectNsciPipelineToFail(status);
             expect(data.dependencies.vulnerabilities.length).to.equal(1);
             expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
               origin: "npm",
@@ -681,6 +681,14 @@ function makePartialScannerDependencies(
   dependencies: Record<string, DeepPartialRecord<Scanner.Dependency>>
 ): Record<string, Scanner.Dependency> {
   return dependencies as Record<string, Scanner.Dependency>;
+}
+
+function expectNsciPipelineToBeSuccessful(status: pipeline.Status): void {
+  expect(status).equals(pipeline.status.SUCCESS);
+}
+
+function expectNsciPipelineToFail(status: pipeline.Status): void {
+  expect(status).equals(pipeline.status.FAILURE);
 }
 
 function expectNsciPayloadToHaveWarnings(
