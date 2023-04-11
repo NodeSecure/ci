@@ -1,7 +1,5 @@
-/* eslint-disable max-lines */
-
 // Import Third-party Dependencies
-import { WarningDefault } from "@nodesecure/js-x-ray";
+import * as JSXRay from "@nodesecure/js-x-ray";
 import { Scanner } from "@nodesecure/scanner";
 import { Strategy } from "@nodesecure/vuln";
 import { expect } from "chai";
@@ -12,9 +10,12 @@ import {
   WarningEntries
 } from "../../configuration/external/nodesecure/ignore-file";
 import { Nsci } from "../../configuration/standard/index.js";
+import { WarningMode, Warnings } from "../../configuration/standard/nsci.js";
 import * as pipeline from "../../reporting/status.js";
+import { DeepPartialRecord } from "../../types";
 
 import { runPayloadInterpreter } from "./interpret.js";
+import { DependencyWarningWithMode } from "./warnings.js";
 
 // CONSTANTS
 const kDefaultRuntimeConfiguration: Nsci.Configuration = {
@@ -31,13 +32,10 @@ const kDefaultScannerPayload: Scanner.Payload = {
   rootDependencyName: "pkg",
   warnings: [],
   dependencies: {},
+  flaggedAuthors: [],
   scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
-
-function makePartialWarnings<T>(warnings: T): Omit<WarningDefault, "value">[] {
-  return warnings as Omit<WarningDefault, "value">[];
-}
 
 /* eslint-disable max-nested-callbacks */
 describe("Pipeline check workflow", () => {
@@ -49,7 +47,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        expect(status).equals(pipeline.status.SUCCESS);
+        expectNsciPipelineToBeSuccessful(status);
       });
     });
 
@@ -74,25 +72,19 @@ describe("Pipeline check workflow", () => {
         it("should make the pipeline fail when atleast one warning is found", () => {
           const scannerPayload: Scanner.Payload = {
             ...kDefaultScannerPayload,
-            dependencies: {
+            dependencies: makePartialScannerDependencies({
               "ts-pattern": {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: [],
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    warnings: []
                   }
                 },
                 vulnerabilities: []
               },
               express: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
                         kind: "obfuscated-code",
                         location: [
@@ -103,38 +95,32 @@ describe("Pipeline check workflow", () => {
                       {
                         kind: "obfuscated-code",
                         location: [
-                          [0, 1],
-                          [5, 0]
+                          [2, 5],
+                          [5, 3]
                         ]
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               },
               marker: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "1.0.5": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
                         kind: "encoded-literal",
                         location: [
-                          [0, 1],
-                          [5, 0]
+                          [1, 1],
+                          [5, 9]
                         ]
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               }
-            }
+            })
           };
 
           const { status, data } = runPayloadInterpreter(
@@ -163,8 +149,8 @@ describe("Pipeline check workflow", () => {
                       mode: "error",
                       kind: "obfuscated-code",
                       location: [
-                        [0, 1],
-                        [5, 0]
+                        [2, 5],
+                        [5, 3]
                       ]
                     }
                   ]
@@ -176,8 +162,8 @@ describe("Pipeline check workflow", () => {
                       mode: "error",
                       kind: "encoded-literal",
                       location: [
-                        [0, 1],
-                        [5, 0]
+                        [1, 1],
+                        [5, 9]
                       ]
                     }
                   ]
@@ -192,55 +178,35 @@ describe("Pipeline check workflow", () => {
         it("should make the pipeline pass when warnings are ignored", () => {
           const scannerPayload: Scanner.Payload = {
             ...kDefaultScannerPayload,
-            dependencies: {
+            dependencies: makePartialScannerDependencies({
               express: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "2.1.0": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
-                        kind: "obfuscated-code",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
+                        kind: "obfuscated-code"
                       },
                       {
-                        kind: "obfuscated-code",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
+                        kind: "obfuscated-code"
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               },
               marker: {
-                // @ts-expect-error - we are not interested in providing metadata here
-                metadata: {},
                 versions: {
                   "1.0.5": {
-                    warnings: makePartialWarnings([
+                    warnings: makePartialJSXRayWarnings([
                       {
-                        kind: "encoded-literal",
-                        location: [
-                          [0, 1],
-                          [5, 0]
-                        ]
+                        kind: "encoded-literal"
                       }
-                    ]),
-                    // @ts-expect-error - we are not interested in providing composition
-                    composition: {}
+                    ])
                   }
                 },
                 vulnerabilities: []
               }
-            }
+            })
           };
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -248,7 +214,7 @@ describe("Pipeline check workflow", () => {
             warnings: Nsci.warnings.OFF
           });
 
-          expect(status).equals(pipeline.status.SUCCESS);
+          expectNsciPipelineToBeSuccessful(status);
           expect(data).to.deep.equal({
             warnings: [],
             dependencies: {
@@ -263,94 +229,62 @@ describe("Pipeline check workflow", () => {
             it("should make the pipeline fail with the 'error' warnings", () => {
               const scannerPayload: Scanner.Payload = {
                 ...kDefaultScannerPayload,
-                dependencies: {
+                dependencies: makePartialScannerDependencies({
                   express: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "2.1.0": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "unsafe-assign",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "unsafe-import"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   },
                   marker: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "1.0.5": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "encoded-literal",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "encoded-literal"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   }
-                }
+                })
               };
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
                 ...kDefaultRuntimeConfiguration,
-                // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.ERROR,
                   "obfuscated-code": Nsci.warnings.ERROR,
-                  "unsafe-assign": Nsci.warnings.WARNING
-                }
+                  "unsafe-import": Nsci.warnings.WARNING
+                } as Warnings
               });
 
               expect(status).equals(pipeline.status.FAILURE);
-              expect(data.dependencies.warnings).to.deep.equal([
+
+              expectNsciPayloadToHaveWarnings(data.dependencies.warnings, [
                 {
                   package: "express",
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "unsafe-assign",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "unsafe-import"
                     },
                     {
                       mode: "error",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 },
@@ -359,19 +293,11 @@ describe("Pipeline check workflow", () => {
                   warnings: [
                     {
                       mode: "error",
-                      kind: "encoded-literal",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "encoded-literal"
                     },
                     {
                       mode: "error",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 }
@@ -383,94 +309,61 @@ describe("Pipeline check workflow", () => {
             it("should make the pipeline succeed with the 'warning' warnings", () => {
               const scannerPayload: Scanner.Payload = {
                 ...kDefaultScannerPayload,
-                dependencies: {
+                dependencies: makePartialScannerDependencies({
                   express: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "2.1.0": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "unsafe-assign",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "unsafe-stmt"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   },
                   marker: {
-                    // @ts-expect-error - we are not interested in providing metadata here
-                    metadata: {},
                     versions: {
                       "1.0.5": {
-                        warnings: makePartialWarnings([
+                        warnings: makePartialJSXRayWarnings([
                           {
-                            kind: "encoded-literal",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "encoded-literal"
                           },
                           {
-                            kind: "obfuscated-code",
-                            location: [
-                              [0, 1],
-                              [5, 0]
-                            ]
+                            kind: "obfuscated-code"
                           }
-                        ]),
-                        // @ts-expect-error - we are not interested in providing composition
-                        composition: {}
+                        ])
                       }
                     },
                     vulnerabilities: []
                   }
-                }
+                })
               };
 
               const { status, data } = runPayloadInterpreter(scannerPayload, {
                 ...kDefaultRuntimeConfiguration,
-                // @ts-expect-error - voluntary partial warnings
                 warnings: {
                   "encoded-literal": Nsci.warnings.OFF,
-                  "unsafe-assign": Nsci.warnings.WARNING,
+                  "unsafe-stmt": Nsci.warnings.WARNING,
                   "obfuscated-code": Nsci.warnings.WARNING
-                }
+                } as Warnings
               });
 
-              expect(status).equals(pipeline.status.SUCCESS);
-              expect(data.dependencies.warnings).to.deep.equal([
+              expectNsciPipelineToBeSuccessful(status);
+              expectNsciPayloadToHaveWarnings(data.dependencies.warnings, [
                 {
                   package: "express",
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "unsafe-assign",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "unsafe-stmt"
                     },
                     {
                       mode: "warning",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 },
@@ -479,11 +372,7 @@ describe("Pipeline check workflow", () => {
                   warnings: [
                     {
                       mode: "warning",
-                      kind: "obfuscated-code",
-                      location: [
-                        [0, 1],
-                        [5, 0]
-                      ]
+                      kind: "obfuscated-code"
                     }
                   ]
                 }
@@ -509,14 +398,12 @@ describe("Pipeline check workflow", () => {
 
         const scannerPayload: Scanner.Payload = {
           ...kDefaultScannerPayload,
-          dependencies: {
+          dependencies: makePartialScannerDependencies({
             express: {
-              // @ts-expect-error - we are not interested in metadata
-              metadata: {},
               versions: {},
               vulnerabilities: [unprocessableVulnerability]
             }
-          }
+          })
         };
 
         const { data } = runPayloadInterpreter(
@@ -524,7 +411,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        expect(data.dependencies.vulnerabilities.length).eq(0);
+        expect(data.dependencies.vulnerabilities.length).to.equal(0);
       });
 
       describe("When providing default runtime configuration", () => {
@@ -532,10 +419,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline fail", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -548,7 +433,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status } = runPayloadInterpreter(
@@ -564,10 +449,10 @@ describe("Pipeline check workflow", () => {
       describe("When providing an .nodesecureignore file", () => {
         it("should not return ignored warnings", () => {
           const ignorePatterns = createIgnorePatternsWith({
-            "unsafe-assign": ["express"]
+            "unsafe-stmt": ["express"]
           });
           const scannerPayload: Scanner.Payload = createScannerPayloadWith({
-            express: ["unsafe-assign"]
+            express: ["unsafe-stmt"]
           });
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -576,7 +461,7 @@ describe("Pipeline check workflow", () => {
           });
 
           expect(data.dependencies.warnings).to.deep.equal([]);
-          expect(status).equals(pipeline.status.SUCCESS);
+          expectNsciPipelineToBeSuccessful(status);
         });
 
         it("should return not ignored warnings", () => {
@@ -584,7 +469,7 @@ describe("Pipeline check workflow", () => {
             "weak-crypto": ["express"]
           });
           const scannerPayload: Scanner.Payload = createScannerPayloadWith({
-            express: ["unsafe-assign"]
+            express: ["unsafe-stmt"]
           });
 
           const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -593,7 +478,7 @@ describe("Pipeline check workflow", () => {
           });
 
           expect(data.dependencies.warnings.length).to.above(0);
-          expect(status).equals(pipeline.status.FAILURE);
+          expectNsciPipelineToFail(status);
         });
       });
 
@@ -602,10 +487,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline succeed with no returned data", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -618,7 +501,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -626,7 +509,7 @@ describe("Pipeline check workflow", () => {
               vulnerabilitySeverity: "high"
             });
 
-            expect(status).equals(pipeline.status.SUCCESS);
+            expectNsciPipelineToBeSuccessful(status);
             expect(data).to.deep.equal({
               warnings: [],
               dependencies: {
@@ -641,10 +524,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline fail for any given vulnerability found", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -658,7 +539,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -666,7 +547,7 @@ describe("Pipeline check workflow", () => {
               vulnerabilitySeverity: "all"
             });
 
-            expect(status).equals(pipeline.status.FAILURE);
+            expectNsciPipelineToFail(status);
             expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
               origin: "npm",
               package: "express",
@@ -681,10 +562,8 @@ describe("Pipeline check workflow", () => {
           it("should make the pipeline fail with severities higher than configured threshold", () => {
             const scannerPayload: Scanner.Payload = {
               ...kDefaultScannerPayload,
-              dependencies: {
+              dependencies: makePartialScannerDependencies({
                 express: {
-                  // @ts-expect-error - we are not interested in metadata
-                  metadata: {},
                   versions: {},
                   vulnerabilities: [
                     {
@@ -707,7 +586,7 @@ describe("Pipeline check workflow", () => {
                     }
                   ]
                 }
-              }
+              })
             };
 
             const { status, data } = runPayloadInterpreter(scannerPayload, {
@@ -715,7 +594,7 @@ describe("Pipeline check workflow", () => {
               vulnerabilitySeverity: "high"
             });
 
-            expect(status).equals(pipeline.status.FAILURE);
+            expectNsciPipelineToFail(status);
             expect(data.dependencies.vulnerabilities.length).to.equal(1);
             expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
               origin: "npm",
@@ -757,7 +636,6 @@ function createScannerPayloadWith(
           [pkg, warns]: [string, string[]]
         ) => {
           acc[pkg] = {
-            metadata: {} as any,
             versions: {
               "2.1.0": {
                 // @ts-expect-error
@@ -769,8 +647,7 @@ function createScannerPayloadWith(
                       [5, 0]
                     ]
                   };
-                }),
-                composition: {} as any
+                })
               }
             },
             vulnerabilities: []
@@ -784,4 +661,61 @@ function createScannerPayloadWith(
   };
 
   return scannerPayload;
+}
+
+function makePartialJSXRayWarnings(
+  warnings: Partial<JSXRay.Warning>[]
+): JSXRay.Warning[] {
+  return warnings.map((warning) => {
+    return {
+      ...warning,
+      location: warning.location || [
+        [0, 0],
+        [0, 0]
+      ]
+    };
+  }) as JSXRay.Warning[];
+}
+
+function makePartialScannerDependencies(
+  dependencies: Record<string, DeepPartialRecord<Scanner.Dependency>>
+): Record<string, Scanner.Dependency> {
+  return dependencies as Record<string, Scanner.Dependency>;
+}
+
+function expectNsciPipelineToBeSuccessful(status: pipeline.Status): void {
+  expect(status).equals(pipeline.status.SUCCESS);
+}
+
+function expectNsciPipelineToFail(status: pipeline.Status): void {
+  expect(status).equals(pipeline.status.FAILURE);
+}
+
+function expectNsciPayloadToHaveWarnings(
+  payloadWarnings: DependencyWarningWithMode[],
+  simplifiedWarnings: {
+    package: string;
+    warnings: (Partial<JSXRay.Warning> & {
+      mode: WarningMode;
+      kind: JSXRay.WarningName;
+    })[];
+  }[]
+): void {
+  const warnings = simplifiedWarnings.map((simplifiedWarning) => {
+    return {
+      package: simplifiedWarning.package,
+      warnings: simplifiedWarning.warnings.map((warning) => {
+        return {
+          mode: warning.mode,
+          kind: warning.kind,
+          location: warning.location ?? [
+            [0, 0],
+            [0, 0]
+          ]
+        };
+      })
+    };
+  });
+
+  expect(payloadWarnings).to.deep.equal(warnings);
 }
