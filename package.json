@@ -82,6 +82,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@nodesecure/i18n": "^3.2.0",
     "@nodesecure/js-x-ray": "^6.0.1",
     "@nodesecure/rc": "^1.2.1",
     "@nodesecure/scanner": "^4.0.0",

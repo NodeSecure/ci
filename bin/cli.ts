@@ -6,6 +6,7 @@ import sade from "sade";
 // Import Internal Dependencies
 import { generateDefaultNodeSecureConfig } from "../src/configuration/index.js";
 import { Nsci } from "../src/configuration/standard/index.js";
+import { printWarningsDescription } from "../src/reporting/reporters/post-pipeline/console/warnings-description.js";
 import { runPipeline } from "../src/reporting/run.js";
 
 function joinExclusiveList<T extends Record<string, string>>(items: T): string {
@@ -23,6 +24,11 @@ program
   .command("init")
   .example("cli.js init")
   .action(generateDefaultNodeSecureConfig);
+
+program
+  .command("documentation")
+  .example("cli.js documentation")
+  .action(printWarningsDescription);
 
 program
   .command("run")
