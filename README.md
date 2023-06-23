@@ -5,7 +5,7 @@
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge)](https://github.com/NodeSecure/ci/graphs/commit-activity)
 [![OpenSSF
 Scorecard](https://api.securityscorecards.dev/projects/github.com/NodeSecure/ci/badge?style=for-the-badge)](https://api.securityscorecards.dev/projects/github.com/NodeSecure/ci)
-[![mit](https://img.shields.io/github/license/Naereen/StrapDown.js.svg?style=for-the-badge)](https://github.com/NodeSecure/ci/blob/master/LICENSE)
+[![mit](https://img.shields.io/github/license/NodeSecure/ci.svg?style=for-the-badge)](https://github.com/NodeSecure/ci/blob/master/LICENSE)
 ![build](https://img.shields.io/github/actions/workflow/status/NodeSecure/ci/node.js.yml?style=for-the-badge)
 
 ## Installation
