@@ -2,11 +2,10 @@
 /* eslint-disable max-nested-callbacks */
 
 // Import Node.js Dependencies
-import fs from "fs";
-import path from "path";
-
-// Import Third-party Dependencies
-import { expect } from "chai";
+import fs from "node:fs";
+import path from "node:path";
+import assert from "node:assert";
+import { after, before, describe, it } from "node:test";
 
 // Import Internal Dependencies
 import { Nsci } from "../standard/index.js";
@@ -58,7 +57,7 @@ function createFixturesFolder(): void {
 }
 
 function deleteFixturesFolder(): void {
-  fs.rmdirSync(kFixturesFolder, { recursive: true });
+  fs.rmSync(kFixturesFolder, { recursive: true });
 }
 
 before(() => createFixturesFolder());
@@ -68,28 +67,28 @@ describe("Environment data collection", () => {
   describe("When traversing the environment", () => {
     describe("When dealing with one single lockfile", () => {
       it("should find the yarn lockfile at the given location", async () => {
-        expect(
+        assert.deepEqual(
           (
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
               rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
             })
           ).lockFile
-        ).to.deep.equal({
+        ,{
           current: "yarn.lock",
           multiple: false
         });
       });
 
       it("should find the shrinkwrap at the given location", async () => {
-        expect(
+        assert.deepEqual(
           await analyzeEnvironmentContext({
             ...Nsci.defaultNsciRuntimeConfiguration,
             rootDir: getFixtureFolderPath(
               kFixtureEnvironment.shrinkwrap.folderName
             )
           })
-        ).to.deep.equal({
+        ,{
           lockFile: {
             current: "npm-shrinkwrap.json",
             multiple: false
@@ -99,7 +98,7 @@ describe("Environment data collection", () => {
       });
 
       it("should find the package-lock lockfile at the given location", async () => {
-        expect(
+        assert.deepEqual(
           (
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
@@ -108,14 +107,14 @@ describe("Environment data collection", () => {
               )
             })
           ).lockFile
-        ).to.deep.equal({
+        ,{
           current: "package-lock.json",
           multiple: false
         });
       });
 
       it("should fallback to 'none' when no lockfile is found at the given location", async () => {
-        expect(
+        assert.deepEqual(
           (
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
@@ -124,7 +123,7 @@ describe("Environment data collection", () => {
               )
             })
           ).lockFile
-        ).to.deep.equal({
+        ,{
           current: "none",
           multiple: false
         });
@@ -133,14 +132,14 @@ describe("Environment data collection", () => {
 
     describe("When dealing with multiple lockfiles", () => {
       it("should keep the package-lock file", async () => {
-        expect(
+        assert.deepEqual(
           await analyzeEnvironmentContext({
             ...Nsci.defaultNsciRuntimeConfiguration,
             rootDir: getFixtureFolderPath(
               kFixtureEnvironment.multipleLockFiles.folderName
             )
           })
-        ).to.deep.equal({
+        ,{
           lockFile: {
             current: "package-lock.json",
             multiple: true
@@ -153,13 +152,13 @@ describe("Environment data collection", () => {
     describe("When providing a strategy not compatible with the environment", () => {
       describe("When the lockfile is missing or incompatible with the environment", () => {
         it("should fallback to 'SONATYPE' strategy", async () => {
-          expect(
+          assert.deepEqual(
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
               strategy: "NPM_AUDIT",
               rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
             })
-          ).to.deep.equal({
+          ,{
             lockFile: {
               current: "yarn.lock",
               multiple: false
@@ -167,7 +166,7 @@ describe("Environment data collection", () => {
             compatibleStrategy: "SONATYPE"
           });
 
-          expect(
+          assert.deepEqual(
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
               strategy: "NPM_AUDIT",
@@ -175,7 +174,7 @@ describe("Environment data collection", () => {
                 kFixtureEnvironment.noLockFile.folderName
               )
             })
-          ).to.deep.equal({
+          ,{
             lockFile: {
               current: "none",
               multiple: false
@@ -189,7 +188,7 @@ describe("Environment data collection", () => {
     describe("When providing a strategy compatible with every environment", () => {
       it("should not fallback to any strategy", async () => {
         const SAME_NODE_STRATEGY = "SECURITY_WG";
-        expect(
+        assert.deepEqual(
           await analyzeEnvironmentContext({
             ...Nsci.defaultNsciRuntimeConfiguration,
             strategy: SAME_NODE_STRATEGY,
@@ -197,7 +196,7 @@ describe("Environment data collection", () => {
               kFixtureEnvironment.shrinkwrap.folderName
             )
           })
-        ).to.deep.equal({
+        ,{
           lockFile: {
             current: "npm-shrinkwrap.json",
             multiple: false
@@ -207,13 +206,13 @@ describe("Environment data collection", () => {
 
         const SAME_NONE_STRATEGY = "NONE";
 
-        expect(
+        assert.deepEqual(
           await analyzeEnvironmentContext({
             ...Nsci.defaultNsciRuntimeConfiguration,
             strategy: SAME_NONE_STRATEGY,
             rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
           })
-        ).to.deep.equal({
+        ,{
           lockFile: {
             current: "yarn.lock",
             multiple: false

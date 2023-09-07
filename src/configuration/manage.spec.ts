@@ -1,10 +1,11 @@
 // Import Node.js Dependencies
-import { unlinkSync } from "fs";
-import path from "path";
+import { unlinkSync } from "node:fs";
+import path from "node:path";
+import assert from "node:assert";
+import { describe, it } from "node:test";
 
 // Import Third-party Dependencies
 import { write } from "@nodesecure/rc";
-import { expect } from "chai";
 
 // Import Internal Dependencies
 import {
@@ -27,8 +28,8 @@ describe("When managing the runtime configuration", () => {
           optionsFromCliOrApi
         );
 
-        expect(configMode).to.deep.equal("raw");
-        expect(runtimeConfig).to.deep.equal(
+        assert.deepEqual(configMode,"raw");
+        assert.deepEqual(runtimeConfig,
           Nsci.defaultNsciRuntimeConfiguration
         );
       });
@@ -47,8 +48,8 @@ describe("When managing the runtime configuration", () => {
           optionsFromCliOrApi
         );
 
-        expect(configMode).to.deep.equal("raw");
-        expect(runtimeConfig).to.deep.equal({
+        assert.deepEqual(configMode,"raw");
+        assert.deepEqual(runtimeConfig,{
           /**
            * Spreading default Nsci config just for being explicit with the
            * expected behavior which is starting from the default Nsci config
@@ -101,8 +102,8 @@ describe("When managing the runtime configuration", () => {
         optionsFromCliOrApi
       );
 
-      expect(configMode).to.deep.equal("file");
-      expect(runtimeConfig).to.deep.equal({
+      assert.deepEqual(configMode,"file");
+      assert.deepEqual(runtimeConfig,{
         // Starting from the default config
         ...Nsci.defaultNsciRuntimeConfiguration,
         /**

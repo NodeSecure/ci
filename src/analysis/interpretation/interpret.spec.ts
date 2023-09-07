@@ -1,8 +1,11 @@
+// Import Node.js Dependencies
+import assert from "node:assert";
+import { describe, it } from "node:test";
+
 // Import Third-party Dependencies
 import * as JSXRay from "@nodesecure/js-x-ray";
 import { Scanner } from "@nodesecure/scanner";
 import { Strategy } from "@nodesecure/vuln";
-import { expect } from "chai";
 
 // Import Internal Dependencies
 import {
@@ -63,7 +66,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        expect(status).equals(pipeline.status.FAILURE);
+        assert.equal(status,pipeline.status.FAILURE);
       });
     });
 
@@ -128,8 +131,8 @@ describe("Pipeline check workflow", () => {
             kDefaultRuntimeConfiguration
           );
 
-          expect(status).equals(pipeline.status.FAILURE);
-          expect(data).to.deep.equal({
+          assert.equal(status,pipeline.status.FAILURE);
+          assert.deepEqual(data,{
             warnings: [],
             dependencies: {
               vulnerabilities: [],
@@ -215,7 +218,7 @@ describe("Pipeline check workflow", () => {
           });
 
           expectNsciPipelineToBeSuccessful(status);
-          expect(data).to.deep.equal({
+          assert.deepEqual(data,{
             warnings: [],
             dependencies: {
               vulnerabilities: [],
@@ -272,7 +275,7 @@ describe("Pipeline check workflow", () => {
                 } as Warnings
               });
 
-              expect(status).equals(pipeline.status.FAILURE);
+              assert.equal(status,pipeline.status.FAILURE);
 
               expectNsciPayloadToHaveWarnings(data.dependencies.warnings, [
                 {
@@ -411,7 +414,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        expect(data.dependencies.vulnerabilities.length).to.equal(0);
+        assert.equal(data.dependencies.vulnerabilities.length,0);
       });
 
       describe("When providing default runtime configuration", () => {
@@ -441,7 +444,7 @@ describe("Pipeline check workflow", () => {
               kDefaultRuntimeConfiguration
             );
 
-            expect(status).equals(pipeline.status.FAILURE);
+            assert.equal(status,pipeline.status.FAILURE);
           });
         });
       });
@@ -460,7 +463,7 @@ describe("Pipeline check workflow", () => {
             ignorePatterns
           });
 
-          expect(data.dependencies.warnings).to.deep.equal([]);
+          assert.deepEqual(data.dependencies.warnings,[]);
           expectNsciPipelineToBeSuccessful(status);
         });
 
@@ -477,7 +480,7 @@ describe("Pipeline check workflow", () => {
             ignorePatterns
           });
 
-          expect(data.dependencies.warnings.length).to.above(0);
+          assert.ok(data.dependencies.warnings.length>0);
           expectNsciPipelineToFail(status);
         });
       });
@@ -510,7 +513,7 @@ describe("Pipeline check workflow", () => {
             });
 
             expectNsciPipelineToBeSuccessful(status);
-            expect(data).to.deep.equal({
+            assert.deepEqual(data,{
               warnings: [],
               dependencies: {
                 vulnerabilities: [],
@@ -548,7 +551,7 @@ describe("Pipeline check workflow", () => {
             });
 
             expectNsciPipelineToFail(status);
-            expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
+            assert.deepEqual(data.dependencies.vulnerabilities[0],{
               origin: "npm",
               package: "express",
               title: "Vuln...",
@@ -595,8 +598,8 @@ describe("Pipeline check workflow", () => {
             });
 
             expectNsciPipelineToFail(status);
-            expect(data.dependencies.vulnerabilities.length).to.equal(1);
-            expect(data.dependencies.vulnerabilities[0]).to.deep.equal({
+            assert.equal(data.dependencies.vulnerabilities.length,1);
+            assert.deepEqual(data.dependencies.vulnerabilities[0],{
               origin: "npm",
               package: "express",
               title: "Express vuln that should not be ignored",
@@ -684,11 +687,11 @@ function makePartialScannerDependencies(
 }
 
 function expectNsciPipelineToBeSuccessful(status: pipeline.Status): void {
-  expect(status).equals(pipeline.status.SUCCESS);
+  assert.equal(status,pipeline.status.SUCCESS);
 }
 
 function expectNsciPipelineToFail(status: pipeline.Status): void {
-  expect(status).equals(pipeline.status.FAILURE);
+  assert.equal(status,pipeline.status.FAILURE);
 }
 
 function expectNsciPayloadToHaveWarnings(
@@ -717,5 +720,5 @@ function expectNsciPayloadToHaveWarnings(
     };
   });
 
-  expect(payloadWarnings).to.deep.equal(warnings);
+  assert.deepEqual(payloadWarnings, warnings);
 }
