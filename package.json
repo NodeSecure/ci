@@ -66,7 +66,7 @@
     "@types/mocha": "^10.0.1",
     "@types/mock-fs": "^4.13.1",
     "@types/node": "^20.2.5",
-    "@types/pluralize": "^0.0.30",
+    "@types/pluralize": "^0.0.33",
     "@types/sade": "^1.7.4",
     "chai": "^4.3.4",
     "cross-env": "^7.0.3",
