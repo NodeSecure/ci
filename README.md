@@ -308,7 +308,7 @@ only the "Console" reporter is available.
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/en/) v16 or higher
+- [Node.js](https://nodejs.org/en/) v18 or higher
 
 ## Contributors ✨
 

@@ -16,7 +16,7 @@ describe("getIgnoreFile", () => {
   it("should return empty object if file doen't exist", async () => {
     const result = await getIgnoreFile();
 
-    assert.deepEqual(result,kDefaultIgnoreFileContent);
+    assert.deepEqual(result, kDefaultIgnoreFileContent);
   });
 
   it("should return empty object if file format is invalid", async () => {
@@ -25,7 +25,7 @@ describe("getIgnoreFile", () => {
 
     const result = await getIgnoreFile();
 
-    assert.deepEqual(result,kDefaultIgnoreFileContent);
+    assert.deepEqual(result, kDefaultIgnoreFileContent);
     mock.restore();
   });
 
@@ -40,7 +40,7 @@ describe("getIgnoreFile", () => {
     const result = await getIgnoreFile();
 
     assert.ok(result instanceof IgnorePatterns);
-    assert.notDeepEqual(result,{});
+    assert.notDeepEqual(result, {});
     mock.restore();
   });
 
@@ -68,7 +68,7 @@ describe("getIgnoreFile", () => {
 
     const result = await getIgnoreFile();
 
-    assert.equal(result.warnings.has("unsafe-regex", "negotiator"),true);
+    assert.equal(result.warnings.has("unsafe-regex", "negotiator"), true);
     assert.equal(result.warnings.has("unsafe-regex", "express"), false);
     mock.restore();
   });

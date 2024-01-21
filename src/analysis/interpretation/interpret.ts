@@ -93,15 +93,18 @@ function excludeIgnoredDependenciesWarnings(
     return dependenciesWarnings;
   }
 
-  return dependenciesWarnings.filter(function excludeIgnorableWarnings(
-    dependencyWarnings
-  ) {
-    function hasWarnings(warn: Warning): boolean {
-      return ignorePatterns.warnings.has(warn.kind, dependencyWarnings.package);
-    }
+  return dependenciesWarnings.filter(
+    function excludeIgnorableWarnings(dependencyWarnings) {
+      function hasWarnings(warn: Warning): boolean {
+        return ignorePatterns.warnings.has(
+          warn.kind,
+          dependencyWarnings.package
+        );
+      }
 
-    return !dependencyWarnings.warnings.find(hasWarnings);
-  });
+      return !dependencyWarnings.warnings.find(hasWarnings);
+    }
+  );
 }
 
 /**

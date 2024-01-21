@@ -66,7 +66,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        assert.equal(status,pipeline.status.FAILURE);
+        assert.equal(status, pipeline.status.FAILURE);
       });
     });
 
@@ -131,8 +131,8 @@ describe("Pipeline check workflow", () => {
             kDefaultRuntimeConfiguration
           );
 
-          assert.equal(status,pipeline.status.FAILURE);
-          assert.deepEqual(data,{
+          assert.equal(status, pipeline.status.FAILURE);
+          assert.deepEqual(data, {
             warnings: [],
             dependencies: {
               vulnerabilities: [],
@@ -218,7 +218,7 @@ describe("Pipeline check workflow", () => {
           });
 
           expectNsciPipelineToBeSuccessful(status);
-          assert.deepEqual(data,{
+          assert.deepEqual(data, {
             warnings: [],
             dependencies: {
               vulnerabilities: [],
@@ -275,7 +275,7 @@ describe("Pipeline check workflow", () => {
                 } as Warnings
               });
 
-              assert.equal(status,pipeline.status.FAILURE);
+              assert.equal(status, pipeline.status.FAILURE);
 
               expectNsciPayloadToHaveWarnings(data.dependencies.warnings, [
                 {
@@ -414,7 +414,7 @@ describe("Pipeline check workflow", () => {
           kDefaultRuntimeConfiguration
         );
 
-        assert.equal(data.dependencies.vulnerabilities.length,0);
+        assert.equal(data.dependencies.vulnerabilities.length, 0);
       });
 
       describe("When providing default runtime configuration", () => {
@@ -444,7 +444,7 @@ describe("Pipeline check workflow", () => {
               kDefaultRuntimeConfiguration
             );
 
-            assert.equal(status,pipeline.status.FAILURE);
+            assert.equal(status, pipeline.status.FAILURE);
           });
         });
       });
@@ -463,7 +463,7 @@ describe("Pipeline check workflow", () => {
             ignorePatterns
           });
 
-          assert.deepEqual(data.dependencies.warnings,[]);
+          assert.deepEqual(data.dependencies.warnings, []);
           expectNsciPipelineToBeSuccessful(status);
         });
 
@@ -480,7 +480,7 @@ describe("Pipeline check workflow", () => {
             ignorePatterns
           });
 
-          assert.ok(data.dependencies.warnings.length>0);
+          assert.ok(data.dependencies.warnings.length > 0);
           expectNsciPipelineToFail(status);
         });
       });
@@ -513,7 +513,7 @@ describe("Pipeline check workflow", () => {
             });
 
             expectNsciPipelineToBeSuccessful(status);
-            assert.deepEqual(data,{
+            assert.deepEqual(data, {
               warnings: [],
               dependencies: {
                 vulnerabilities: [],
@@ -551,7 +551,7 @@ describe("Pipeline check workflow", () => {
             });
 
             expectNsciPipelineToFail(status);
-            assert.deepEqual(data.dependencies.vulnerabilities[0],{
+            assert.deepEqual(data.dependencies.vulnerabilities[0], {
               origin: "npm",
               package: "express",
               title: "Vuln...",
@@ -598,8 +598,8 @@ describe("Pipeline check workflow", () => {
             });
 
             expectNsciPipelineToFail(status);
-            assert.equal(data.dependencies.vulnerabilities.length,1);
-            assert.deepEqual(data.dependencies.vulnerabilities[0],{
+            assert.equal(data.dependencies.vulnerabilities.length, 1);
+            assert.deepEqual(data.dependencies.vulnerabilities[0], {
               origin: "npm",
               package: "express",
               title: "Express vuln that should not be ignored",
@@ -687,11 +687,11 @@ function makePartialScannerDependencies(
 }
 
 function expectNsciPipelineToBeSuccessful(status: pipeline.Status): void {
-  assert.equal(status,pipeline.status.SUCCESS);
+  assert.equal(status, pipeline.status.SUCCESS);
 }
 
 function expectNsciPipelineToFail(status: pipeline.Status): void {
-  assert.equal(status,pipeline.status.FAILURE);
+  assert.equal(status, pipeline.status.FAILURE);
 }
 
 function expectNsciPayloadToHaveWarnings(

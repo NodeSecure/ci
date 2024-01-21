@@ -2,9 +2,9 @@
 /* eslint-disable max-nested-callbacks */
 
 // Import Node.js Dependencies
+import assert from "node:assert";
 import fs from "node:fs";
 import path from "node:path";
-import assert from "node:assert";
 import { after, before, describe, it } from "node:test";
 
 // Import Internal Dependencies
@@ -60,10 +60,10 @@ function deleteFixturesFolder(): void {
   fs.rmSync(kFixturesFolder, { recursive: true });
 }
 
-before(() => createFixturesFolder());
-after(() => deleteFixturesFolder());
-
 describe("Environment data collection", () => {
+  before(async () => createFixturesFolder());
+  after(async () => deleteFixturesFolder());
+
   describe("When traversing the environment", () => {
     describe("When dealing with one single lockfile", () => {
       it("should find the yarn lockfile at the given location", async () => {
@@ -73,11 +73,12 @@ describe("Environment data collection", () => {
               ...Nsci.defaultNsciRuntimeConfiguration,
               rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
             })
-          ).lockFile
-        ,{
-          current: "yarn.lock",
-          multiple: false
-        });
+          ).lockFile,
+          {
+            current: "yarn.lock",
+            multiple: false
+          }
+        );
       });
 
       it("should find the shrinkwrap at the given location", async () => {
@@ -87,14 +88,15 @@ describe("Environment data collection", () => {
             rootDir: getFixtureFolderPath(
               kFixtureEnvironment.shrinkwrap.folderName
             )
-          })
-        ,{
-          lockFile: {
-            current: "npm-shrinkwrap.json",
-            multiple: false
-          },
-          compatibleStrategy: "NPM_AUDIT"
-        });
+          }),
+          {
+            lockFile: {
+              current: "npm-shrinkwrap.json",
+              multiple: false
+            },
+            compatibleStrategy: "NPM_AUDIT"
+          }
+        );
       });
 
       it("should find the package-lock lockfile at the given location", async () => {
@@ -106,11 +108,12 @@ describe("Environment data collection", () => {
                 kFixtureEnvironment.packageLock.folderName
               )
             })
-          ).lockFile
-        ,{
-          current: "package-lock.json",
-          multiple: false
-        });
+          ).lockFile,
+          {
+            current: "package-lock.json",
+            multiple: false
+          }
+        );
       });
 
       it("should fallback to 'none' when no lockfile is found at the given location", async () => {
@@ -122,11 +125,12 @@ describe("Environment data collection", () => {
                 kFixtureEnvironment.noLockFile.folderName
               )
             })
-          ).lockFile
-        ,{
-          current: "none",
-          multiple: false
-        });
+          ).lockFile,
+          {
+            current: "none",
+            multiple: false
+          }
+        );
       });
     });
 
@@ -138,14 +142,15 @@ describe("Environment data collection", () => {
             rootDir: getFixtureFolderPath(
               kFixtureEnvironment.multipleLockFiles.folderName
             )
-          })
-        ,{
-          lockFile: {
-            current: "package-lock.json",
-            multiple: true
-          },
-          compatibleStrategy: "NPM_AUDIT"
-        });
+          }),
+          {
+            lockFile: {
+              current: "package-lock.json",
+              multiple: true
+            },
+            compatibleStrategy: "NPM_AUDIT"
+          }
+        );
       });
     });
 
@@ -157,14 +162,15 @@ describe("Environment data collection", () => {
               ...Nsci.defaultNsciRuntimeConfiguration,
               strategy: "NPM_AUDIT",
               rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
-            })
-          ,{
-            lockFile: {
-              current: "yarn.lock",
-              multiple: false
-            },
-            compatibleStrategy: "SONATYPE"
-          });
+            }),
+            {
+              lockFile: {
+                current: "yarn.lock",
+                multiple: false
+              },
+              compatibleStrategy: "SONATYPE"
+            }
+          );
 
           assert.deepEqual(
             await analyzeEnvironmentContext({
@@ -173,14 +179,15 @@ describe("Environment data collection", () => {
               rootDir: getFixtureFolderPath(
                 kFixtureEnvironment.noLockFile.folderName
               )
-            })
-          ,{
-            lockFile: {
-              current: "none",
-              multiple: false
-            },
-            compatibleStrategy: "SONATYPE"
-          });
+            }),
+            {
+              lockFile: {
+                current: "none",
+                multiple: false
+              },
+              compatibleStrategy: "SONATYPE"
+            }
+          );
         });
       });
     });
@@ -195,14 +202,15 @@ describe("Environment data collection", () => {
             rootDir: getFixtureFolderPath(
               kFixtureEnvironment.shrinkwrap.folderName
             )
-          })
-        ,{
-          lockFile: {
-            current: "npm-shrinkwrap.json",
-            multiple: false
-          },
-          compatibleStrategy: SAME_NODE_STRATEGY
-        });
+          }),
+          {
+            lockFile: {
+              current: "npm-shrinkwrap.json",
+              multiple: false
+            },
+            compatibleStrategy: SAME_NODE_STRATEGY
+          }
+        );
 
         const SAME_NONE_STRATEGY = "NONE";
 
@@ -211,14 +219,15 @@ describe("Environment data collection", () => {
             ...Nsci.defaultNsciRuntimeConfiguration,
             strategy: SAME_NONE_STRATEGY,
             rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
-          })
-        ,{
-          lockFile: {
-            current: "yarn.lock",
-            multiple: false
-          },
-          compatibleStrategy: SAME_NONE_STRATEGY
-        });
+          }),
+          {
+            lockFile: {
+              current: "yarn.lock",
+              multiple: false
+            },
+            compatibleStrategy: SAME_NONE_STRATEGY
+          }
+        );
       });
     });
   });

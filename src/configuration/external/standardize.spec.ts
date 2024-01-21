@@ -1,6 +1,6 @@
 // Import Node.js Dependencies
-import path from "node:path";
 import assert from "node:assert";
+import path from "node:path";
 import { describe, it } from "node:test";
 
 // Import Third-party Dependencies
@@ -37,12 +37,13 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
         warnings: "error",
         ignorePatterns: IgnorePatterns.default()
       };
-      
+
       assert.deepEqual(
         standardizeExternalConfiguration(
           externalOptions as ExternalRuntimeConfiguration
-        )
-      ,finalConfig);
+        ),
+        finalConfig
+      );
     });
   });
 
@@ -99,8 +100,9 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
           assert.deepEqual(
             standardizeExternalConfiguration(
               partialConfig as ExternalRuntimeConfiguration
-            )
-          ,Nsci.defaultNsciRuntimeConfiguration);
+            ),
+            Nsci.defaultNsciRuntimeConfiguration
+          );
         }
       );
     });
@@ -128,7 +130,7 @@ it("should standardize NodeSecure runtime configuration to Nsci runtime configur
     standardizeAllApisOptions(partialCfg)
   );
 
-  assert.deepEqual(standardizedCfg,{
+  assert.deepEqual(standardizedCfg, {
     reporters: ["console"],
     rootDir: process.cwd(),
     strategy: "SNYK",
