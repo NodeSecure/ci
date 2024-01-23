@@ -4,8 +4,8 @@ import { join } from "path";
 
 // Import Third-party Dependencies
 import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
+import type { Result } from "@openally/result";
 import { match } from "ts-pattern";
-import type { Result } from "ts-results";
 
 // Import Internal Dependencies
 import { consolePrinter } from "../../../../lib/console-printer/index.js";

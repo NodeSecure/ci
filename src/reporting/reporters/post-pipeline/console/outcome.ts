@@ -66,7 +66,9 @@ export function printPipelineOutcome(
       .bold()
       .print();
   } else {
-    consolePrinter.font.highlightedError("✖ [FAILURE] Pipeline failed").print();
+    consolePrinter.font
+      .highlightedError("✖ [FAILURE] Pipeline failed")
+      .print();
   }
 
   consolePrinter.util.emptyLine();
