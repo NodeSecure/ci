@@ -1,6 +1,10 @@
+// Import Node.js Dependencies
+import assert from "node:assert";
+import path from "node:path";
+import { describe, it } from "node:test";
+
 // Import Third-party Dependencies
 import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
-import { expect } from "chai";
 
 // Import Internal Dependencies
 import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file";
@@ -26,7 +30,7 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
       };
 
       const finalConfig = {
-        rootDir: `${cwd}/src`,
+        rootDir: path.join(cwd, "src"),
         strategy: "NPM_AUDIT",
         reporters: ["console", "html"],
         vulnerabilitySeverity: "all",
@@ -34,11 +38,12 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
         ignorePatterns: IgnorePatterns.default()
       };
 
-      expect(
+      assert.deepEqual(
         standardizeExternalConfiguration(
           externalOptions as ExternalRuntimeConfiguration
-        )
-      ).to.deep.equal(finalConfig);
+        ),
+        finalConfig
+      );
     });
   });
 
@@ -92,11 +97,12 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
       partialOrInvalidConfigThatShouldFallbackToDefaultRC.forEach(
         // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
-          expect(
+          assert.deepEqual(
             standardizeExternalConfiguration(
               partialConfig as ExternalRuntimeConfiguration
-            )
-          ).to.deep.equal(Nsci.defaultNsciRuntimeConfiguration);
+            ),
+            Nsci.defaultNsciRuntimeConfiguration
+          );
         }
       );
     });
@@ -124,7 +130,7 @@ it("should standardize NodeSecure runtime configuration to Nsci runtime configur
     standardizeAllApisOptions(partialCfg)
   );
 
-  expect(standardizedCfg).to.deep.equal({
+  assert.deepEqual(standardizedCfg, {
     reporters: ["console"],
     rootDir: process.cwd(),
     strategy: "SNYK",

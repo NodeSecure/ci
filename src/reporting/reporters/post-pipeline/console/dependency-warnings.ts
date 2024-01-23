@@ -50,7 +50,7 @@ function collectDependencyWarningsConsoleMessages(
         ).message;
 
         warningLocation = consolePrinter.font.info(
-          `${warning.location.flatMap((location) => location.join(":"))}`
+          `${warning.location!.flatMap((location) => location.join(":"))}`
         ).message;
       }
 
@@ -201,7 +201,8 @@ export function buildDependenciesWarningsOutcomeMessage(
     .otherwise(() =>
       buildOutcomeStatsConsoleMessage(
         allWarnings,
-        // eslint-disable-next-line no-nested-ternary
+        /* eslint-disable no-nested-ternary */
+        /* eslint-disable prettier/prettier */
         warningsWithError > 0
           ? Nsci.warnings.ERROR
           : allWarnings > 0
