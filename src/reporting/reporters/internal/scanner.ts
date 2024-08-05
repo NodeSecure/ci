@@ -1,5 +1,5 @@
 // Import Third-party Dependencies
-import { Logger, Scanner, ScannerLoggerEvents } from "@nodesecure/scanner";
+import { Logger, Payload, ScannerLoggerEvents } from "@nodesecure/scanner";
 import Spinner from "@slimio/async-cli-spinner";
 import pluralize from "pluralize";
 import ms from "pretty-ms";
@@ -72,7 +72,7 @@ export function reportScannerLoggerEvents(logger: Logger): void {
   });
 }
 
-function reportScannerDependencies(payload: Scanner.Payload): void {
+function reportScannerDependencies(payload: Payload): void {
   const { dependencies } = payload;
   const numberOfDeps = Object.keys(dependencies).length;
   consolePrinter.util
@@ -89,10 +89,10 @@ function reportScannerDependencies(payload: Scanner.Payload): void {
 function reportScannerAnalysis(_payload: unknown): (log: Logger) => Generator {
   return function* report(
     logger: Logger
-  ): Generator<undefined, never, Scanner.Payload> {
+  ): Generator<undefined, never, Payload> {
     while (true) {
       reportScannerLoggerEvents(logger);
-      reportScannerDependencies((yield) as Scanner.Payload);
+      reportScannerDependencies((yield) as Payload);
     }
   };
 }

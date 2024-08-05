@@ -1,6 +1,5 @@
 // Import Third-party Dependencies
 import { Warning } from "@nodesecure/js-x-ray";
-import type { Scanner } from "@nodesecure/scanner";
 import { match } from "ts-pattern";
 
 // Import Internal Dependencies
@@ -11,8 +10,8 @@ import type { DependencyWarning } from "../types";
 import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
 
 export function checkGlobalWarnings(
-  warnings: Scanner.GlobalWarning[]
-): CheckableFunction<Scanner.GlobalWarning> {
+  warnings: string[]
+): CheckableFunction<string> {
   return {
     result: fromBooleanToCheckResult(warnings.length > 0),
     data: {

@@ -1,6 +1,6 @@
 // Import Third-party Dependencies
 import type { Warning } from "@nodesecure/js-x-ray";
-import type { Scanner } from "@nodesecure/scanner";
+import * as Scanner from "@nodesecure/scanner";
 import set from "lodash.set";
 
 // Import Internal Dependencies
@@ -29,7 +29,7 @@ import {
 } from "./warnings.js";
 
 export interface InterpretedScannerPayload {
-  warnings: Scanner.GlobalWarning;
+  warnings: string[];
   dependencies: {
     warnings: DependencyWarningWithMode[];
     vulnerabilities: WorkableVulnerability[];

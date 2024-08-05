@@ -1,12 +1,12 @@
 // Import Third-party Dependencies
-import { Scanner } from "@nodesecure/scanner";
+import * as Scanner from "@nodesecure/scanner";
 import { Strategy } from "@nodesecure/vuln";
 
 // Import Internal Dependencies
 import type { DependencyWarning } from "../types";
 
 export interface CompactedScannerPayload {
-  warnings: Scanner.GlobalWarning[];
+  warnings: string[];
   dependencies: {
     warnings: DependencyWarning[];
     vulnerabilities: WorkableVulnerability[];

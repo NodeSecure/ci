@@ -1,6 +1,5 @@
 // Import Third-party Dependencies
-import * as scanner from "@nodesecure/scanner";
-import type { Scanner } from "@nodesecure/scanner";
+import * as Scanner from "@nodesecure/scanner";
 import * as vuln from "@nodesecure/vuln";
 
 // Import Internal Dependencies
@@ -35,13 +34,13 @@ async function runScannerAnalysis(
    * data for reporting to the Generator.
    */
   const initScannerReporter = scannerReporter.report(void 0);
-  const logger = new scanner.Logger();
+  const logger = new Scanner.Logger();
   const sequentialReporterWithLogger = initScannerReporter(logger);
 
   // First step of the reporting
   sequentialReporterWithLogger.next();
 
-  const payload = await scanner.cwd(
+  const payload = await Scanner.cwd(
     runtimeConfig.rootDir,
     {
       vulnerabilityStrategy: strategy

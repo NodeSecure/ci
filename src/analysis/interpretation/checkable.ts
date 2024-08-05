@@ -1,5 +1,4 @@
 // Import Third-party Dependencies
-import { Scanner } from "@nodesecure/scanner";
 import { Strategy } from "@nodesecure/vuln";
 
 // Import Internal Dependencies
@@ -17,7 +16,7 @@ export type CheckableFunction<T> = {
 
 export type PipelineCheckFunctions = Array<
   () => CheckableFunction<
-    Scanner.GlobalWarning | DependencyWarning | Strategy.StandardVulnerability
+    string | DependencyWarning | Strategy.StandardVulnerability
   >
 >;
 
