@@ -1,5 +1,4 @@
 // Import Third-party Dependencies
-import { Scanner } from "@nodesecure/scanner";
 import pluralize from "pluralize";
 
 // Import Internal Dependencies
@@ -11,7 +10,7 @@ import { Nsci } from "../../../../configuration/index.js";
 
 import { buildOutcomeStatsConsoleMessage } from "./util.js";
 
-export function reportGlobalWarnings(warnings: Scanner.GlobalWarning): void {
+export function reportGlobalWarnings(warnings: string[]): void {
   if (warnings.length > 0) {
     consolePrinter.font
       .error(

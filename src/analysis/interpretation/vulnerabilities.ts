@@ -14,12 +14,12 @@ const kSeverities = {
   low: 1,
   info: 0,
   all: 0
-};
+} as const;
 
 const kDefaultSeverity = 0;
 
 function fromSeverityToNumber(
-  severity: Maybe<Strategy.Severity | "all">
+  severity: Maybe<"info" | "low" | "medium" | "high" | "critical" | "all">
 ): number {
   if (severity !== undefined) {
     return kSeverities[severity];

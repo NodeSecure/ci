@@ -4,7 +4,7 @@ import { describe, it } from "node:test";
 
 // Import Third-party Dependencies
 import * as JSXRay from "@nodesecure/js-x-ray";
-import { Scanner } from "@nodesecure/scanner";
+import * as Scanner from "@nodesecure/scanner";
 import { Strategy } from "@nodesecure/vuln";
 
 // Import Internal Dependencies
@@ -35,7 +35,9 @@ const kDefaultScannerPayload: Scanner.Payload = {
   rootDependencyName: "pkg",
   warnings: [],
   dependencies: {},
-  flaggedAuthors: [],
+  highlighted: {
+    contacts: []
+  },
   scannerVersion: "1.0.0",
   vulnerabilityStrategy: "npm"
 };
@@ -58,7 +60,7 @@ describe("Pipeline check workflow", () => {
       it("should make the pipeline fail", () => {
         const scannerPayload: Scanner.Payload = {
           ...kDefaultScannerPayload,
-          warnings: [["warning1"], ["warning2"]]
+          warnings: ["warning1", "warning2"]
         };
 
         const { status } = runPayloadInterpreter(
