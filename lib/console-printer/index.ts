@@ -77,15 +77,12 @@ function createConsoleMessage(message: string): ConsoleMessage {
 export const consolePrinter: ConsolePrinter = {
   font: {
     standard: (message: string) => createConsoleMessage(kleur.white(message)),
-    highlight: (message: string) =>
-      createConsoleMessage(kleur.magenta(message)),
+    highlight: (message: string) => createConsoleMessage(kleur.magenta(message)),
     info: (message: string) => createConsoleMessage(kleur.yellow(message)),
     error: (message: string) => createConsoleMessage(kleur.red(message)),
     success: (message: string) => createConsoleMessage(kleur.green(message)),
-    highlightedSuccess: (message: string) =>
-      createConsoleMessage(kleur.bgGreen().bold().white(message)),
-    highlightedError: (message: string) =>
-      createConsoleMessage(kleur.bgRed().bold().white(message))
+    highlightedSuccess: (message: string) => createConsoleMessage(kleur.bgGreen().bold().white(message)),
+    highlightedError: (message: string) => createConsoleMessage(kleur.bgRed().bold().white(message))
   },
   decoration: {
     underline: (message: string) => kleur.underline(message),
@@ -93,8 +90,7 @@ export const consolePrinter: ConsolePrinter = {
     bold: (message: string) => kleur.bold(message)
   },
   util: {
-    concatOutputs: (messages: string[], delimiter = " ") =>
-      createConsoleMessage(messages.join(delimiter)),
+    concatOutputs: (messages: string[], delimiter = " ") => createConsoleMessage(messages.join(delimiter)),
     emptyLine: () => console.log()
   }
 };

@@ -1,11 +1,14 @@
 // Import Third-party Dependencies
-import { Strategy } from "@nodesecure/vuln";
+import type {
+  StandardVulnerability,
+  Severity
+} from "@nodesecure/vulnera";
 
 // Import Internal Dependencies
 import { Nsci } from "../../configuration/standard/index.js";
-import { Maybe } from "../../types/index.js";
+import type { Maybe } from "../../types/index.js";
 
-import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
+import { fromBooleanToCheckResult, type CheckableFunction } from "./checkable.js";
 
 const kSeverities = {
   critical: 4,
@@ -33,10 +36,9 @@ function fromSeverityToNumber(
 }
 
 function compareVulnSeverityWithThreshold(
-  severityThreshold: Strategy.Severity | "all"
+  severityThreshold: Severity | "all"
 ) {
-  return (vulnerability: Strategy.StandardVulnerability): boolean =>
-    fromSeverityToNumber(vulnerability.severity) >=
+  return (vulnerability: StandardVulnerability): boolean => fromSeverityToNumber(vulnerability.severity) >=
     fromSeverityToNumber(severityThreshold);
 }
 
@@ -45,9 +47,9 @@ function compareVulnSeverityWithThreshold(
  * the one defined in the runtime configuration is caught.
  */
 function findAllVulnsExceedingSeverityThreshold(
-  vulnerabilities: Strategy.StandardVulnerability[],
-  severityThreshold: Strategy.Severity | "all"
-): Strategy.StandardVulnerability[] {
+  vulnerabilities: StandardVulnerability[],
+  severityThreshold: Severity | "all"
+): StandardVulnerability[] {
   const isVulnExceedingSeverityThreshold =
     compareVulnSeverityWithThreshold(severityThreshold);
 
@@ -55,9 +57,9 @@ function findAllVulnsExceedingSeverityThreshold(
 }
 
 export function checkDependenciesVulns(
-  vulnerabilities: Strategy.StandardVulnerability[],
+  vulnerabilities: StandardVulnerability[],
   runtimeConfiguration: Nsci.Configuration
-): CheckableFunction<Strategy.StandardVulnerability> {
+): CheckableFunction<StandardVulnerability> {
   const { vulnerabilitySeverity } = runtimeConfiguration;
 
   const vulnsClassifiedBySeverity = findAllVulnsExceedingSeverityThreshold(

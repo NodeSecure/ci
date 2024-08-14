@@ -3,9 +3,9 @@ import {
   consolePrinter,
   removeWhiteSpaces
 } from "../../../../lib/console-printer/index.js";
-import { EnvironmentContext } from "../../../configuration/environment";
+import type { EnvironmentContext } from "../../../configuration/environment/index.js";
 import { Nsci } from "../../../configuration/standard/index.js";
-import { Reporter } from "../reporter.js";
+import type { Reporter } from "../reporter.js";
 
 import { invertRecord } from "./util.js";
 
@@ -20,7 +20,8 @@ function reportLockFileContext(
       .standard(`No lockfile could be found in ${rc.rootDir}`)
       .prefix(consolePrinter.font.info("info").message)
       .printWithEmptyLine();
-  } else {
+  }
+  else {
     consolePrinter.util
       .concatOutputs([
         consolePrinter.font.highlight(env.lockFile.current).message,
@@ -34,9 +35,9 @@ function reportLockFileContext(
     consolePrinter.font
       .standard(
         removeWhiteSpaces(
-          `Your project contains more than one lock file. 
-            It is advised not to mix package managers in order to 
-            avoid resolution inconsistencies caused by unsynchronized 
+          `Your project contains more than one lock file.
+            It is advised not to mix package managers in order to
+            avoid resolution inconsistencies caused by unsynchronized
             lock files`
         )
       )

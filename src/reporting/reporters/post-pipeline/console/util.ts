@@ -2,12 +2,12 @@
 import { match } from "ts-pattern";
 
 import {
-  ConsoleMessage,
-  ConsoleOutput,
+  type ConsoleMessage,
+  type ConsoleOutput,
   consolePrinter
 } from "../../../../../lib/console-printer/index.js";
 import { Nsci } from "../../../../configuration/index.js";
-import { Warnings } from "../../../../configuration/standard/nsci";
+import type { Warnings } from "../../../../configuration/standard/nsci.js";
 
 export function getOutcomeEmoji(warningsMode: Warnings): string {
   return match(warningsMode)

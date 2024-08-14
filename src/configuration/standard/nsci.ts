@@ -2,12 +2,11 @@
 import * as jsxray from "@nodesecure/js-x-ray";
 
 // Import Internal Dependencies
-import { ValueOf } from "../../types";
+import type { ValueOf } from "../../types/index.js";
 import { IgnorePatterns } from "../external/nodesecure/ignore-file.js";
 
 export const vulnStrategy = {
-  npm: "NPM_AUDIT",
-  node: "SECURITY_WG",
+  "github-advisory": "GITHUB-ADVISORY",
   snyk: "SNYK",
   sonatype: "SONATYPE",
   none: "NONE"
@@ -55,7 +54,7 @@ export type Configuration = {
 function generateDefaultRC(): Configuration {
   return {
     rootDir: process.cwd(),
-    strategy: vulnStrategy.npm,
+    strategy: vulnStrategy["github-advisory"],
     reporters: [reporterTarget.CONSOLE],
     vulnerabilitySeverity: vulnSeverity.MEDIUM,
     warnings: warnings.ERROR,

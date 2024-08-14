@@ -27,7 +27,7 @@ export type ExternalConfigAdapter<T> = {
 export const defaultExternalConfigOptions: ExternalRuntimeConfiguration = {
   vulnerabilities: Nsci.vulnSeverity.MEDIUM,
   directory: process.cwd(),
-  strategy: "npm",
+  strategy: "github-advisory",
   warnings: Nsci.warnings.ERROR,
   reporters: [Nsci.reporterTarget.CONSOLE]
 };

@@ -1,6 +1,6 @@
 // Import Third-party dependencies
-import JSXray from "@nodesecure/js-x-ray";
-import Validator from "ajv";
+import * as JSXray from "@nodesecure/js-x-ray";
+import { Ajv } from "ajv";
 
 export class IgnorePatterns {
   public warnings: IgnoreWarningsPatterns;
@@ -52,7 +52,7 @@ export function validateIgnoreFile(ignoreFile: string): {
   isValid: boolean;
   error?: string;
 } {
-  const validator = new Validator();
+  const validator = new Ajv();
   const validate = validator.compile(kIgnoreFileSchema);
   const isValid = validate(ignoreFile);
 

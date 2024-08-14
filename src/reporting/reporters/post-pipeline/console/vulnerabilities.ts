@@ -1,17 +1,19 @@
 // Import Third-party Dependencies
-import { Strategy } from "@nodesecure/vuln";
+import type {
+  Severity
+} from "@nodesecure/vulnera";
 import pluralize from "pluralize";
 
 // Import Internal Dependencies
 import {
-  ConsoleMessage,
+  type ConsoleMessage,
   consolePrinter
 } from "../../../../../lib/console-printer/index.js";
-import type { WorkableVulnerability } from "../../../../analysis";
+import type { WorkableVulnerability } from "../../../../analysis/index.js";
 
 import { buildOutcomeStatsConsoleMessage } from "./util.js";
 
-function getColorBySeverity(severity: Strategy.Severity): ConsoleMessage {
+function getColorBySeverity(severity: Severity): ConsoleMessage {
   switch (severity) {
     case "critical":
       return consolePrinter.font.highlight(severity);
@@ -54,7 +56,8 @@ export function reportDependencyVulns(
         ])
         .printWithEmptyLine();
     }
-  } else {
+  }
+  else {
     consolePrinter.font
       .success("✓ 0 vulnerabilities detected in the dependency tree")
       .bold()

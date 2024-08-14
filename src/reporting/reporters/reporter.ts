@@ -1,6 +1,6 @@
 // Import Internal Dependencies
-import { OutcomePayloadFromPipelineChecks } from "../../analysis/index.js";
-import { ReporterTarget } from "../../configuration/standard/nsci.js";
+import type { OutcomePayloadFromPipelineChecks } from "../../analysis/index.js";
+import type { ReporterTarget } from "../../configuration/standard/nsci.js";
 
 export type Reporter<T = OutcomePayloadFromPipelineChecks, R = void> = {
   type: ReporterTarget;

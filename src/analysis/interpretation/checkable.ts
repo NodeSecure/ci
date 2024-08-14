@@ -1,8 +1,8 @@
 // Import Third-party Dependencies
-import { Strategy } from "@nodesecure/vuln";
+import type { StandardVulnerability } from "@nodesecure/vulnera";
 
 // Import Internal Dependencies
-import type { DependencyWarning } from "../types";
+import type { DependencyWarning } from "../types/index.js";
 
 export type CheckResult = "failed" | "passed";
 
@@ -16,7 +16,7 @@ export type CheckableFunction<T> = {
 
 export type PipelineCheckFunctions = Array<
   () => CheckableFunction<
-    string | DependencyWarning | Strategy.StandardVulnerability
+    string | DependencyWarning | StandardVulnerability
   >
 >;
 

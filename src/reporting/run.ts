@@ -1,21 +1,21 @@
 // Import Third-party Dependencies
 import * as Scanner from "@nodesecure/scanner";
-import * as vuln from "@nodesecure/vuln";
+import * as Vulnera from "@nodesecure/vulnera";
 
 // Import Internal Dependencies
 import { consolePrinter } from "../../lib/console-printer/index.js";
 import {
-  OutcomePayloadFromPipelineChecks,
+  type OutcomePayloadFromPipelineChecks,
   runPayloadInterpreter
 } from "../analysis/index.js";
 import {
-  ApiConfig,
-  CliConfig,
+  type ApiConfig,
+  type CliConfig,
   defaultExternalConfigOptions,
   useRuntimeConfig,
   Nsci
 } from "../configuration/index.js";
-import { Maybe } from "../types/index.js";
+import type { Maybe } from "../types/index.js";
 
 import { scannerReporter, runReporting } from "./reporters/index.js";
 import { status } from "./status.js";
@@ -23,8 +23,8 @@ import { status } from "./status.js";
 async function runScannerAnalysis(
   runtimeConfig: Nsci.Configuration
 ): Promise<Scanner.Payload> {
-  const { strategy } = await vuln.setStrategy(
-    vuln.strategies[runtimeConfig.strategy]
+  const { strategy } = await Vulnera.setStrategy(
+    Vulnera.strategies[runtimeConfig.strategy]
   );
 
   /**
@@ -109,7 +109,8 @@ export async function runPipeline(
       runtimeConfig,
       defaultAutoExitAfterFailure
     );
-  } catch (uncaughtError: any) {
+  }
+  catch (uncaughtError: any) {
     consolePrinter.font
       .standard(uncaughtError.message)
       .prefix(consolePrinter.font.highlightedError("error").message)

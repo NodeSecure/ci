@@ -7,8 +7,8 @@ import {
   getNodeSecureConfig,
   standardizeRuntimeConfig,
   getIgnoreFile,
-  ApiConfig,
-  CliConfig
+  type ApiConfig,
+  type CliConfig
 } from "./external/index.js";
 import { Nsci } from "./standard/index.js";
 
