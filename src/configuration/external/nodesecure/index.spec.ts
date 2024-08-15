@@ -6,20 +6,20 @@ import { describe, it } from "node:test";
 import mock from "mock-fs";
 
 // Internal Dependencies
-import { IgnorePatterns, IgnoreWarningsPatterns } from "./ignore-file";
+import { IgnorePatterns, IgnoreWarningsPatterns } from "./ignore-file.js";
 
-import { getIgnoreFile, kIgnoreFilePath } from "./index";
+import { getIgnoreFile, kIgnoreFilePath } from "./index.js";
 
 describe("getIgnoreFile", () => {
   const kDefaultIgnoreFileContent = IgnorePatterns.default();
 
-  it("should return empty object if file doen't exist", async () => {
+  it("should return empty object if file doen't exist", async() => {
     const result = await getIgnoreFile();
 
     assert.deepEqual(result, kDefaultIgnoreFileContent);
   });
 
-  it("should return empty object if file format is invalid", async () => {
+  it("should return empty object if file format is invalid", async() => {
     const invalidIgnoreFile = { foo: "bar" };
     createFakeIgnoreFile(JSON.stringify(invalidIgnoreFile));
 
@@ -29,7 +29,7 @@ describe("getIgnoreFile", () => {
     mock.restore();
   });
 
-  it("should return the ignore file if it's valid", async () => {
+  it("should return the ignore file if it's valid", async() => {
     const validIgnoreFile = {
       warnings: {
         "unsafe-regex": ["negotiator"]
@@ -44,7 +44,7 @@ describe("getIgnoreFile", () => {
     mock.restore();
   });
 
-  it("should return an IgnorePatterns warnings property", async () => {
+  it("should return an IgnorePatterns warnings property", async() => {
     const validIgnoreFile = {
       warnings: {
         "unsafe-regex": ["negotiator"]
@@ -58,7 +58,7 @@ describe("getIgnoreFile", () => {
     mock.restore();
   });
 
-  it("should return an helper to check if a warning exist for a given pkg", async () => {
+  it("should return an helper to check if a warning exist for a given pkg", async() => {
     const validIgnoreFile = {
       warnings: {
         "unsafe-regex": ["negotiator"]

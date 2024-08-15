@@ -1,15 +1,15 @@
 {
+  "extends": "@openally/config.typescript",
   "compilerOptions": {
-    "target": "es2020",
-    "lib": ["es2020"],
-    "module": "es2020",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "allowSyntheticDefaultImports": true
+    "outDir": "dist"
   },
-  "include": ["src", "bin", "lib"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src",
+    "bin",
+    "lib"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

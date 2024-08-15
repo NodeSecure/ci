@@ -1,9 +1,12 @@
 // Import Third-party Dependencies
 import * as Scanner from "@nodesecure/scanner";
-import { Strategy } from "@nodesecure/vuln";
+import type {
+  StandardVulnerability,
+  Severity
+} from "@nodesecure/vulnera";
 
 // Import Internal Dependencies
-import type { DependencyWarning } from "../types";
+import type { DependencyWarning } from "../types/index.js";
 
 export interface CompactedScannerPayload {
   warnings: string[];
@@ -13,13 +16,13 @@ export interface CompactedScannerPayload {
   };
 }
 
-export type WorkableVulnerability = Strategy.StandardVulnerability & {
-  severity: Strategy.Severity;
+export type WorkableVulnerability = StandardVulnerability & {
+  severity: Severity;
   package: string;
 };
 
 function keepOnlyWorkableVulns(
-  vuln: Strategy.StandardVulnerability
+  vuln: StandardVulnerability
 ): vuln is WorkableVulnerability {
   return vuln.severity !== undefined || vuln.package !== undefined;
 }
@@ -48,9 +51,9 @@ function extractDependenciesWarnings(
 function extractDependenciesVulnsAndWarnings(
   dependencies: Scanner.Dependencies
 ): {
-  warnings: DependencyWarning[];
-  vulnerabilities: WorkableVulnerability[];
-} {
+    warnings: DependencyWarning[];
+    vulnerabilities: WorkableVulnerability[];
+  } {
   const warnings = extractDependenciesWarnings(dependencies);
   const vulnerabilities = extractDependenciesVulns(dependencies);
 

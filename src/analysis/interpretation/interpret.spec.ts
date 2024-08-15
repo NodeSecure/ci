@@ -5,25 +5,25 @@ import { describe, it } from "node:test";
 // Import Third-party Dependencies
 import * as JSXRay from "@nodesecure/js-x-ray";
 import * as Scanner from "@nodesecure/scanner";
-import { Strategy } from "@nodesecure/vuln";
+import type { StandardVulnerability } from "@nodesecure/vulnera";
 
 // Import Internal Dependencies
 import {
   IgnorePatterns,
-  WarningEntries
-} from "../../configuration/external/nodesecure/ignore-file";
+  type WarningEntries
+} from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../../configuration/standard/index.js";
-import { WarningMode, Warnings } from "../../configuration/standard/nsci.js";
+import type { WarningMode, Warnings } from "../../configuration/standard/nsci.js";
 import * as pipeline from "../../reporting/status.js";
-import { DeepPartialRecord } from "../../types";
+import type { DeepPartialRecord } from "../../types/index.js";
 
 import { runPayloadInterpreter } from "./interpret.js";
-import { DependencyWarningWithMode } from "./warnings.js";
+import type { DependencyWarningWithMode } from "./warnings.js";
 
 // CONSTANTS
 const kDefaultRuntimeConfiguration: Nsci.Configuration = {
   rootDir: process.cwd(),
-  strategy: Nsci.vulnStrategy.npm,
+  strategy: Nsci.vulnStrategy["github-advisory"],
   reporters: [Nsci.reporterTarget.CONSOLE],
   vulnerabilitySeverity: Nsci.vulnSeverity.ALL,
   warnings: Nsci.warnings.ERROR,
@@ -39,7 +39,7 @@ const kDefaultScannerPayload: Scanner.Payload = {
     contacts: []
   },
   scannerVersion: "1.0.0",
-  vulnerabilityStrategy: "npm"
+  vulnerabilityStrategy: "github-advisory"
 };
 
 /* eslint-disable max-nested-callbacks */
@@ -392,14 +392,14 @@ describe("Pipeline check workflow", () => {
       it("should filter unprocessable vulnerabilities", () => {
         const unprocessableVulnerability = {
           id: undefined,
-          origin: "npm",
+          origin: "github-advisory",
           package: undefined,
           title: undefined,
           url: undefined,
           severity: undefined,
           vulnerableRanges: [],
           vulnerableVersions: []
-        } as unknown as Strategy.StandardVulnerability;
+        } as unknown as StandardVulnerability;
 
         const scannerPayload: Scanner.Payload = {
           ...kDefaultScannerPayload,
@@ -429,7 +429,7 @@ describe("Pipeline check workflow", () => {
                   versions: {},
                   vulnerabilities: [
                     {
-                      origin: "npm",
+                      origin: "github-advisory",
                       package: "express",
                       title: "Vuln...",
                       cves: [],
@@ -497,7 +497,7 @@ describe("Pipeline check workflow", () => {
                   versions: {},
                   vulnerabilities: [
                     {
-                      origin: "npm",
+                      origin: "github-advisory",
                       package: "express",
                       title: "Vuln...",
                       cves: [],
@@ -534,7 +534,7 @@ describe("Pipeline check workflow", () => {
                   versions: {},
                   vulnerabilities: [
                     {
-                      origin: "npm",
+                      origin: "github-advisory",
                       package: "express",
                       title: "Vuln...",
                       cves: [],
@@ -554,7 +554,7 @@ describe("Pipeline check workflow", () => {
 
             expectNsciPipelineToFail(status);
             assert.deepEqual(data.dependencies.vulnerabilities[0], {
-              origin: "npm",
+              origin: "github-advisory",
               package: "express",
               title: "Vuln...",
               cves: [],
@@ -572,7 +572,7 @@ describe("Pipeline check workflow", () => {
                   versions: {},
                   vulnerabilities: [
                     {
-                      origin: "npm",
+                      origin: "github-advisory",
                       package: "express",
                       title: "Express vuln that should not be ignored",
                       cves: [],
@@ -581,7 +581,7 @@ describe("Pipeline check workflow", () => {
                       vulnerableVersions: []
                     },
                     {
-                      origin: "npm",
+                      origin: "github-advisory",
                       package: "marker",
                       title: "Marker vuln that should be ignored",
                       cves: [],
@@ -602,7 +602,7 @@ describe("Pipeline check workflow", () => {
             expectNsciPipelineToFail(status);
             assert.equal(data.dependencies.vulnerabilities.length, 1);
             assert.deepEqual(data.dependencies.vulnerabilities[0], {
-              origin: "npm",
+              origin: "github-advisory",
               package: "express",
               title: "Express vuln that should not be ignored",
               cves: [],

@@ -42,7 +42,7 @@ program
   .option(
     "-s, --strategy",
     `@nodesecure/vuln vulnerability strategy. Can be '${availableStrategies}'`,
-    Nsci.vulnStrategy.npm
+    Nsci.vulnStrategy["github-advisory"]
   )
   .example("cli.js run --strategy=npm")
 

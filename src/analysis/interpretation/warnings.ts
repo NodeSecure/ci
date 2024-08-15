@@ -1,13 +1,13 @@
 // Import Third-party Dependencies
-import { Warning } from "@nodesecure/js-x-ray";
+import type { Warning } from "@nodesecure/js-x-ray";
 import { match } from "ts-pattern";
 
 // Import Internal Dependencies
 import { Nsci } from "../../configuration/standard/index.js";
-import { WarningMode } from "../../configuration/standard/nsci.js";
-import type { DependencyWarning } from "../types";
+import type { WarningMode } from "../../configuration/standard/nsci.js";
+import type { DependencyWarning } from "../types/index.js";
 
-import { fromBooleanToCheckResult, CheckableFunction } from "./checkable.js";
+import { fromBooleanToCheckResult, type CheckableFunction } from "./checkable.js";
 
 export function checkGlobalWarnings(
   warnings: string[]
@@ -69,9 +69,9 @@ function retrieveAllWarningsWithSharedMode(
 function groupWarningKindsByWarningMode(
   warningsWithSpecificMode: Record<Nsci.WarningName, Nsci.WarningMode>
 ): {
-  allWarningsKindsWithErrorMode: Set<Nsci.WarningName>;
-  allWarningsKindsWithWarningMode: Set<Nsci.WarningName>;
-} {
+    allWarningsKindsWithErrorMode: Set<Nsci.WarningName>;
+    allWarningsKindsWithWarningMode: Set<Nsci.WarningName>;
+  } {
   const warningKindsGroupedByWarningMode = Object.entries(
     warningsWithSpecificMode
   ).reduce(
@@ -174,25 +174,22 @@ export function checkDependenciesWarnings(
         }
       };
     })
-    .with(Nsci.warnings.ERROR, () =>
-      retrieveAllWarningsWithSharedMode(
-        warnings,
-        runtimeConfiguration.warnings as Nsci.WarningMode
-      )
+    .with(Nsci.warnings.ERROR, () => retrieveAllWarningsWithSharedMode(
+      warnings,
+      runtimeConfiguration.warnings as Nsci.WarningMode
     )
-    .with(Nsci.warnings.WARNING, () =>
-      retrieveAllWarningsWithSharedMode(
-        warnings,
-        runtimeConfiguration.warnings as Nsci.WarningMode
-      )
     )
-    .otherwise(() =>
-      retrieveAllWarningsWithSpecificMode(
-        warnings,
-        runtimeConfiguration.warnings as Record<
-          Nsci.WarningName,
-          Nsci.WarningMode
-        >
-      )
+    .with(Nsci.warnings.WARNING, () => retrieveAllWarningsWithSharedMode(
+      warnings,
+      runtimeConfiguration.warnings as Nsci.WarningMode
+    )
+    )
+    .otherwise(() => retrieveAllWarningsWithSpecificMode(
+      warnings,
+      runtimeConfiguration.warnings as Record<
+        Nsci.WarningName,
+        Nsci.WarningMode
+      >
+    )
     );
 }

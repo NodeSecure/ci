@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import path from "path";
 
 // Import Internal Dependencies
-import { ValueOf } from "../../types";
+import type { ValueOf } from "../../types/index.js";
 import { Nsci } from "../standard/index.js";
 
 type LockFile = ValueOf<typeof kLockFiles>;
@@ -66,7 +66,7 @@ export async function analyzeEnvironmentContext({
 }: Nsci.Configuration): Promise<EnvironmentContext> {
   try {
     const collectedLockFiles = await collectLockFiles(rootDir);
-    const multipleLockFiles = collectedLockFiles.size > 1 ?? false;
+    const multipleLockFiles = collectedLockFiles.size > 1;
     const [lockFile] = collectedLockFiles;
     // package-lock.json is the lockfile with the best compatibility
     const hasPackageLock = collectedLockFiles.has(kLockFiles.packageLock);
@@ -93,7 +93,8 @@ export async function analyzeEnvironmentContext({
       },
       compatibleStrategy: getFallbackStrategy(strategy)
     };
-  } catch {
+  }
+  catch {
     return kFallbackEnvironmentContext;
   }
 }

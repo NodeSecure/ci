@@ -1,14 +1,15 @@
 // Import Third-party Dependencies
-import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
+// Import Third-party Dependencies
+import type { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 
 // Import Internal Dependencies
 import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../standard/index.js";
 
 import { adaptExternalToStandardConfiguration } from "./adapt.js";
-import { ApiConfig } from "./api/index.js";
-import { CliConfig, CliConfigAdapter } from "./cli/index.js";
-import { ExternalRuntimeConfiguration } from "./common.js";
+import type { ApiConfig } from "./api/index.js";
+import { type CliConfig, CliConfigAdapter } from "./cli/index.js";
+import type { ExternalRuntimeConfiguration } from "./common.js";
 import { NodeSecureConfigAdapter } from "./nodesecure/index.js";
 
 function isInvalidConfigOption<T>(value: T): boolean {

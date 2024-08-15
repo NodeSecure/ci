@@ -4,10 +4,10 @@ import { match } from "ts-pattern";
 
 // Import Internal Dependencies
 import {
-  ConsoleMessage,
+  type ConsoleMessage,
   consolePrinter
 } from "../../../../../lib/console-printer/index.js";
-import { DependencyWarningWithMode } from "../../../../analysis/interpretation/warnings.js";
+import type { DependencyWarningWithMode } from "../../../../analysis/interpretation/warnings.js";
 import { Nsci } from "../../../../configuration/index.js";
 
 import {
@@ -37,7 +37,8 @@ function collectDependencyWarningsConsoleMessages(
        */
       if (warning.mode === Nsci.warnings.ERROR) {
         warningsWithErrorMode.push(dependencyWarning);
-      } else {
+      }
+      else {
         warningsWithWarningMode.push(dependencyWarning);
       }
 
@@ -84,8 +85,7 @@ export function reportDependencyWarnings(
   warningsMode: Nsci.Warnings
 ): void {
   const numberOfDependencyWarnings = warnings.reduce(
-    (accumulatedNumberOfWarnings, dependencyWarning) =>
-      accumulatedNumberOfWarnings + dependencyWarning.warnings.length,
+    (accumulatedNumberOfWarnings, dependencyWarning) => accumulatedNumberOfWarnings + dependencyWarning.warnings.length,
     0
   );
   const { warningsWithErrorMode, printAllWarnings } =
@@ -161,9 +161,9 @@ function collectNumberOfWarningsWithError(
 function collectDependencyWarningsStats(
   warnings: DependencyWarningWithMode[]
 ): {
-  allWarnings: number;
-  warningsWithError: number;
-} {
+    allWarnings: number;
+    warningsWithError: number;
+  } {
   const dependencyWarningsStats = warnings.reduce(
     (accumulatedWarningsStats, dependencyWarning) => {
       return {
@@ -189,25 +189,20 @@ export function buildDependenciesWarningsOutcomeMessage(
     collectDependencyWarningsStats(warnings);
 
   return match(warningsMode)
-    .with(Nsci.warnings.OFF, () =>
-      consolePrinter.font.info("⚠ dependency warnings skipped")
+    .with(Nsci.warnings.OFF, () => consolePrinter.font.info("⚠ dependency warnings skipped")
     )
-    .with(Nsci.warnings.ERROR, () =>
-      buildOutcomeStatsConsoleMessage(allWarnings, Nsci.warnings.ERROR)
+    .with(Nsci.warnings.ERROR, () => buildOutcomeStatsConsoleMessage(allWarnings, Nsci.warnings.ERROR)
     )
-    .with(Nsci.warnings.WARNING, () =>
-      buildOutcomeStatsConsoleMessage(allWarnings, Nsci.warnings.WARNING)
+    .with(Nsci.warnings.WARNING, () => buildOutcomeStatsConsoleMessage(allWarnings, Nsci.warnings.WARNING)
     )
-    .otherwise(() =>
-      buildOutcomeStatsConsoleMessage(
-        allWarnings,
-        /* eslint-disable no-nested-ternary */
-        /* eslint-disable prettier/prettier */
-        warningsWithError > 0
-          ? Nsci.warnings.ERROR
-          : allWarnings > 0
+    .otherwise(() => buildOutcomeStatsConsoleMessage(
+      allWarnings,
+      /* eslint-disable no-nested-ternary */
+      warningsWithError > 0
+        ? Nsci.warnings.ERROR
+        : allWarnings > 0
           ? Nsci.warnings.WARNING
           : Nsci.warnings.OFF
-      )
+    )
     );
 }

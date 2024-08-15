@@ -1,5 +1,5 @@
 // Import Internal Dependencies
-import type { ValueOf } from "../types";
+import type { ValueOf } from "../types/index.js";
 
 export const status = {
   SUCCESS: "success",

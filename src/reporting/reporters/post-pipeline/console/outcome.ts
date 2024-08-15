@@ -1,10 +1,10 @@
 // Import Third-party Dependencies
-import { table, TableUserConfig } from "table";
+import { table, type TableUserConfig } from "table";
 
 // Import Internal Dependencies
 import { consolePrinter } from "../../../../../lib/console-printer/index.js";
-import type { InterpretedScannerPayload } from "../../../../analysis";
-import { Warnings } from "../../../../configuration/standard/nsci.js";
+import type { InterpretedScannerPayload } from "../../../../analysis/index.js";
+import type { Warnings } from "../../../../configuration/standard/nsci.js";
 import { pipeline } from "../../../index.js";
 
 import { buildDependenciesWarningsOutcomeMessage } from "./dependency-warnings.js";
@@ -65,7 +65,8 @@ export function printPipelineOutcome(
       .highlightedSuccess("✓ [SUCCESS] Pipeline successful ")
       .bold()
       .print();
-  } else {
+  }
+  else {
     consolePrinter.font
       .highlightedError("✖ [FAILURE] Pipeline failed")
       .print();

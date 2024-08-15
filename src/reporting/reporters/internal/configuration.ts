@@ -1,8 +1,8 @@
 // Import Internal Dependencies
 import { consolePrinter } from "../../../../lib/console-printer/index.js";
-import { SelectedRuntimeConfig } from "../../../configuration/manage.js";
+import type { SelectedRuntimeConfig } from "../../../configuration/manage.js";
 import { Nsci } from "../../../configuration/standard/index.js";
-import { Reporter } from "../reporter.js";
+import type { Reporter } from "../reporter.js";
 
 import { invertRecord } from "./util.js";
 
@@ -43,7 +43,8 @@ function printSelectedRuntimeConfiguration({
       .printWithEmptyLine();
 
     dumpInputCommand(runtimeConfig);
-  } else {
+  }
+  else {
     consolePrinter.font
       .standard("was found")
       .prefix(consolePrinter.font.highlight(".nodesecurerc").message)

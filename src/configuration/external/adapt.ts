@@ -7,7 +7,7 @@ import { Nsci } from "../standard/index.js";
 
 import {
   defaultExternalConfigOptions,
-  ExternalRuntimeConfiguration
+  type ExternalRuntimeConfiguration
 } from "./common.js";
 
 function adaptDirectory(directory: string): string {
@@ -15,7 +15,8 @@ function adaptDirectory(directory: string): string {
     accessSync(directory, constants.F_OK);
 
     return resolve(directory);
-  } catch {
+  }
+  catch {
     return Nsci.defaultNsciRuntimeConfiguration.rootDir;
   }
 }
@@ -61,8 +62,7 @@ function adaptWarnings(warnings: Nsci.Warnings): Nsci.Warnings {
 
   const warningsWithValidKindAndMode = Object.fromEntries(
     Object.entries(warnings).filter(
-      ([warningType, warningMode]) =>
-        isValidWarningKind(warningType) && isValidWarningMode(warningMode)
+      ([warningType, warningMode]) => isValidWarningKind(warningType) && isValidWarningMode(warningMode as string)
     )
   ) as Nsci.Warnings;
 
@@ -85,7 +85,7 @@ function adaptStrategy(strategy: Nsci.InputStrategy): Nsci.OutputStrategy {
     return Nsci.vulnStrategy[strategy];
   }
 
-  return Nsci.vulnStrategy.npm;
+  return Nsci.vulnStrategy["github-advisory"];
 }
 
 function isValidSeverity(threshold: Nsci.Severity): boolean {

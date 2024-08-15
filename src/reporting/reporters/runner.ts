@@ -2,11 +2,11 @@
 import { match } from "ts-pattern";
 
 // Import Internal Dependencies
-import type { OutcomePayloadFromPipelineChecks } from "../../analysis";
+import type { OutcomePayloadFromPipelineChecks } from "../../analysis/index.js";
 import { Nsci } from "../../configuration/standard/index.js";
 
 import * as postPipelineReporting from "./post-pipeline/index.js";
-import { Reporter } from "./reporter";
+import type { Reporter } from "./reporter.js";
 
 function initializeReporter(
   reporter: Nsci.ReporterTarget

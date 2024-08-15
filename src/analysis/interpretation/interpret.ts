@@ -12,20 +12,20 @@ import { Nsci } from "../../configuration/standard/index.js";
 import { pipeline } from "../../reporting/index.js";
 import {
   extractScannerPayload,
-  WorkableVulnerability
+  type WorkableVulnerability
 } from "../extraction/extract.js";
-import type { DependencyWarning } from "../types";
+import type { DependencyWarning } from "../types/index.js";
 
 import {
-  CheckResult,
-  PipelineCheckFunctions,
+  type CheckResult,
+  type PipelineCheckFunctions,
   FAILING_CHECK
 } from "./checkable.js";
 import { checkDependenciesVulns } from "./vulnerabilities.js";
 import {
   checkDependenciesWarnings,
   checkGlobalWarnings,
-  DependencyWarningWithMode
+  type DependencyWarningWithMode
 } from "./warnings.js";
 
 export interface InterpretedScannerPayload {
@@ -125,7 +125,6 @@ export function runPayloadInterpreter(
     rc.ignorePatterns
   );
 
-  /* eslint-disable @typescript-eslint/explicit-function-return-type */
   return interpretPayloadChecks([
     () => checkGlobalWarnings(warnings),
     () => checkDependenciesWarnings(filteredDependencies, rc),

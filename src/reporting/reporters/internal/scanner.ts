@@ -1,5 +1,5 @@
 // Import Third-party Dependencies
-import { Logger, Payload, ScannerLoggerEvents } from "@nodesecure/scanner";
+import { Logger, type Payload, ScannerLoggerEvents } from "@nodesecure/scanner";
 import Spinner from "@slimio/async-cli-spinner";
 import pluralize from "pluralize";
 import ms from "pretty-ms";
@@ -7,7 +7,7 @@ import ms from "pretty-ms";
 // Import Internal Dependencies
 import { consolePrinter } from "../../../../lib/console-printer/index.js";
 import { Nsci } from "../../../configuration/standard/index.js";
-import { Reporter } from "../reporter.js";
+import type { Reporter } from "../reporter.js";
 
 /**
  * This report has nothing to do with console or html reporters. This function

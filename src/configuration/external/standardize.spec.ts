@@ -4,13 +4,13 @@ import path from "node:path";
 import { describe, it } from "node:test";
 
 // Import Third-party Dependencies
-import { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
+import type { RC as NodeSecureRuntimeConfig } from "@nodesecure/rc";
 
 // Import Internal Dependencies
-import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file";
+import { IgnorePatterns } from "../../configuration/external/nodesecure/ignore-file.js";
 import { Nsci } from "../standard/index.js";
 
-import { ExternalRuntimeConfiguration } from "./common.js";
+import type { ExternalRuntimeConfiguration } from "./common.js";
 import {
   standardizeAllApisOptions,
   standardizeExternalConfiguration
@@ -23,7 +23,7 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
 
       const externalOptions = {
         directory: "src",
-        strategy: "npm",
+        strategy: "github-advisory",
         vulnerabilities: "all",
         warnings: "",
         reporters: "console, html"
@@ -31,7 +31,7 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
 
       const finalConfig = {
         rootDir: path.join(cwd, "src"),
-        strategy: "NPM_AUDIT",
+        strategy: "GITHUB-ADVISORY",
         reporters: ["console", "html"],
         vulnerabilitySeverity: "all",
         warnings: "error",
@@ -95,7 +95,6 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
 
     it("should only keep valid options from partial config to allow correct merging with default RC", () => {
       partialOrInvalidConfigThatShouldFallbackToDefaultRC.forEach(
-        // eslint-disable-next-line max-nested-callbacks
         (partialConfig) => {
           assert.deepEqual(
             standardizeExternalConfiguration(
@@ -109,7 +108,7 @@ describe("Standardize CLI/API configuration to Nsci runtime configuration", () =
   });
 });
 
-it("should standardize NodeSecure runtime configuration to Nsci runtime configuration", async () => {
+it("should standardize NodeSecure runtime configuration to Nsci runtime configuration", async() => {
   const partialCfg: NodeSecureRuntimeConfig = {
     version: "1.0",
     strategy: "snyk",

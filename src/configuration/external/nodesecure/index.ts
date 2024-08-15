@@ -3,17 +3,17 @@ import { readFile } from "fs/promises";
 import { join } from "path";
 
 // Import Third-party Dependencies
-import { RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
+import { type RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";
 import type { Result } from "@openally/result";
 import { match } from "ts-pattern";
 
 // Import Internal Dependencies
 import { consolePrinter } from "../../../../lib/console-printer/index.js";
-import { Maybe } from "../../../types/index.js";
+import type { Maybe } from "../../../types/index.js";
 import {
   defaultExternalConfigOptions,
-  ExternalConfigAdapter,
-  ExternalRuntimeConfiguration
+  type ExternalConfigAdapter,
+  type ExternalRuntimeConfiguration
 } from "../common.js";
 
 import {
@@ -60,15 +60,13 @@ function interpretNodeSecureConfigResult(
     .with({ ok: true }, (result) => result.val)
     .with(
       { ok: false },
-      // eslint-disable-next-line handle-callback-err
-      (_err) =>
-        /**
-         * For now, no difference is made between an ENOENT or an invalid file.
-         * We could process a pattern matching on the callback err provided
-         * to differentiate ENOENT or and exceptions thrown (e.g: AJV when invalid
-         * properties) which would then be reported.
-         */
-        undefined
+      /**
+       * For now, no difference is made between an ENOENT or an invalid file.
+       * We could process a pattern matching on the callback err provided
+       * to differentiate ENOENT or and exceptions thrown (e.g: AJV when invalid
+       * properties) which would then be reported.
+       */
+      (_err) => undefined
     )
     .exhaustive();
 }
@@ -108,7 +106,8 @@ export async function getIgnoreFile(): Promise<IgnorePatterns> {
     logger.info(`${highlightedFilename} file successfully loaded.`);
 
     return new IgnorePatterns(ignoreObject.warnings);
-  } catch (error: any) {
+  }
+  catch (error: any) {
     if (error.code === "ENOENT") {
       logger.info(
         `${highlightedFilename} file not found. Nothing will be ignored.`

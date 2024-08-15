@@ -6,9 +6,9 @@ import ms from "pretty-ms";
 
 // Import Internal Dependencies
 import { consolePrinter } from "../../../../../lib/console-printer/index.js";
-import { OutcomePayloadFromPipelineChecks } from "../../../../analysis/interpretation/interpret.js";
+import type { OutcomePayloadFromPipelineChecks } from "../../../../analysis/interpretation/interpret.js";
 import { Nsci } from "../../../../configuration/standard/index.js";
-import { Reporter } from "../../reporter.js";
+import type { Reporter } from "../../reporter.js";
 
 import { reportDependencyWarnings } from "./dependency-warnings.js";
 import { reportGlobalWarnings } from "./global-warnings.js";

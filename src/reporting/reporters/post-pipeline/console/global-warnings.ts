@@ -3,7 +3,7 @@ import pluralize from "pluralize";
 
 // Import Internal Dependencies
 import {
-  ConsoleMessage,
+  type ConsoleMessage,
   consolePrinter
 } from "../../../../../lib/console-printer/index.js";
 import { Nsci } from "../../../../configuration/index.js";

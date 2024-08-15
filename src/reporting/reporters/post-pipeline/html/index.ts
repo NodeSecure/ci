@@ -1,6 +1,6 @@
 // Import Internal Dependencies
 import { reporterTarget } from "../../../../configuration/standard/nsci.js";
-import { Reporter } from "../../reporter.js";
+import type { Reporter } from "../../reporter.js";
 
 export const htmlReporter: Reporter = {
   type: reporterTarget.HTML,

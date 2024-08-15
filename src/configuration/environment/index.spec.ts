@@ -1,6 +1,3 @@
-/* eslint-disable no-sync */
-/* eslint-disable max-nested-callbacks */
-
 // Import Node.js Dependencies
 import assert from "node:assert";
 import fs from "node:fs";
@@ -50,8 +47,7 @@ function createFixturesFolder(): void {
       fixtureEnvironment.folderName
     );
     fs.mkdirSync(folderName);
-    fixtureEnvironment.files.forEach((file) =>
-      fs.writeFileSync(path.join(folderName, file), JSON.stringify({}))
+    fixtureEnvironment.files.forEach((file) => fs.writeFileSync(path.join(folderName, file), JSON.stringify({}))
     );
   });
 }
@@ -61,12 +57,12 @@ function deleteFixturesFolder(): void {
 }
 
 describe("Environment data collection", () => {
-  before(async () => createFixturesFolder());
-  after(async () => deleteFixturesFolder());
+  before(async() => createFixturesFolder());
+  after(async() => deleteFixturesFolder());
 
   describe("When traversing the environment", () => {
     describe("When dealing with one single lockfile", () => {
-      it("should find the yarn lockfile at the given location", async () => {
+      it("should find the yarn lockfile at the given location", async() => {
         assert.deepEqual(
           (
             await analyzeEnvironmentContext({
@@ -81,7 +77,7 @@ describe("Environment data collection", () => {
         );
       });
 
-      it("should find the shrinkwrap at the given location", async () => {
+      it("should find the shrinkwrap at the given location", async() => {
         assert.deepEqual(
           await analyzeEnvironmentContext({
             ...Nsci.defaultNsciRuntimeConfiguration,
@@ -94,12 +90,12 @@ describe("Environment data collection", () => {
               current: "npm-shrinkwrap.json",
               multiple: false
             },
-            compatibleStrategy: "NPM_AUDIT"
+            compatibleStrategy: "GITHUB-ADVISORY"
           }
         );
       });
 
-      it("should find the package-lock lockfile at the given location", async () => {
+      it("should find the package-lock lockfile at the given location", async() => {
         assert.deepEqual(
           (
             await analyzeEnvironmentContext({
@@ -116,7 +112,7 @@ describe("Environment data collection", () => {
         );
       });
 
-      it("should fallback to 'none' when no lockfile is found at the given location", async () => {
+      it("should fallback to 'none' when no lockfile is found at the given location", async() => {
         assert.deepEqual(
           (
             await analyzeEnvironmentContext({
@@ -135,7 +131,7 @@ describe("Environment data collection", () => {
     });
 
     describe("When dealing with multiple lockfiles", () => {
-      it("should keep the package-lock file", async () => {
+      it("should keep the package-lock file", async() => {
         assert.deepEqual(
           await analyzeEnvironmentContext({
             ...Nsci.defaultNsciRuntimeConfiguration,
@@ -148,7 +144,7 @@ describe("Environment data collection", () => {
               current: "package-lock.json",
               multiple: true
             },
-            compatibleStrategy: "NPM_AUDIT"
+            compatibleStrategy: "GITHUB-ADVISORY"
           }
         );
       });
@@ -156,11 +152,11 @@ describe("Environment data collection", () => {
 
     describe("When providing a strategy not compatible with the environment", () => {
       describe("When the lockfile is missing or incompatible with the environment", () => {
-        it("should fallback to 'SONATYPE' strategy", async () => {
+        it("should fallback to 'SONATYPE' strategy", async() => {
           assert.deepEqual(
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
-              strategy: "NPM_AUDIT",
+              strategy: "GITHUB-ADVISORY",
               rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
             }),
             {
@@ -175,7 +171,7 @@ describe("Environment data collection", () => {
           assert.deepEqual(
             await analyzeEnvironmentContext({
               ...Nsci.defaultNsciRuntimeConfiguration,
-              strategy: "NPM_AUDIT",
+              strategy: "GITHUB-ADVISORY",
               rootDir: getFixtureFolderPath(
                 kFixtureEnvironment.noLockFile.folderName
               )
@@ -189,45 +185,6 @@ describe("Environment data collection", () => {
             }
           );
         });
-      });
-    });
-
-    describe("When providing a strategy compatible with every environment", () => {
-      it("should not fallback to any strategy", async () => {
-        const SAME_NODE_STRATEGY = "SECURITY_WG";
-        assert.deepEqual(
-          await analyzeEnvironmentContext({
-            ...Nsci.defaultNsciRuntimeConfiguration,
-            strategy: SAME_NODE_STRATEGY,
-            rootDir: getFixtureFolderPath(
-              kFixtureEnvironment.shrinkwrap.folderName
-            )
-          }),
-          {
-            lockFile: {
-              current: "npm-shrinkwrap.json",
-              multiple: false
-            },
-            compatibleStrategy: SAME_NODE_STRATEGY
-          }
-        );
-
-        const SAME_NONE_STRATEGY = "NONE";
-
-        assert.deepEqual(
-          await analyzeEnvironmentContext({
-            ...Nsci.defaultNsciRuntimeConfiguration,
-            strategy: SAME_NONE_STRATEGY,
-            rootDir: getFixtureFolderPath(kFixtureEnvironment.yarn.folderName)
-          }),
-          {
-            lockFile: {
-              current: "yarn.lock",
-              multiple: false
-            },
-            compatibleStrategy: SAME_NONE_STRATEGY
-          }
-        );
       });
     });
   });
