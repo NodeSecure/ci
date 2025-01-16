@@ -1,6 +1,6 @@
 // Import Third-party Dependencies
 import { Logger, type Payload, ScannerLoggerEvents } from "@nodesecure/scanner";
-import Spinner from "@slimio/async-cli-spinner";
+import { Spinner } from "@topcli/spinner";
 import pluralize from "pluralize";
 import ms from "pretty-ms";
 
@@ -31,9 +31,7 @@ export function reportScannerLoggerEvents(logger: Logger): void {
    */
   let spinner: Spinner;
   if (process.stdout.isTTY) {
-    spinner = new Spinner({
-      text: startMessage.message
-    });
+    spinner = new Spinner().start(startMessage.message);
   }
 
   logger.once("start", () => {
