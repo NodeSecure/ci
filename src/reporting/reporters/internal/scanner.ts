@@ -31,7 +31,7 @@ export function reportScannerLoggerEvents(logger: Logger): void {
    */
   let spinner: Spinner;
   if (process.stdout.isTTY) {
-    spinner = new Spinner().start(startMessage.message);
+    spinner = new Spinner();
   }
 
   logger.once("start", () => {
@@ -41,7 +41,7 @@ export function reportScannerLoggerEvents(logger: Logger): void {
 
       return;
     }
-    spinner.start();
+    spinner.start(startMessage.message);
   });
 
   logger.once(ScannerLoggerEvents.done, () => {
