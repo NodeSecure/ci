@@ -80,7 +80,7 @@
     "@nodesecure/scanner": "^6.1.0",
     "@nodesecure/vulnera": "^2.0.1",
     "@openally/result": "^1.3.0",
-    "@topcli/spinner": "^2.1.2",
+    "@topcli/spinner": "^3.0.0",
     "ajv": "^8.12.0",
     "kleur": "^4.1.5",
     "lodash.set": "^4.3.2",
