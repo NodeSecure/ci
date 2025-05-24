@@ -313,7 +313,7 @@ only the "Console" reporter is available.
 ## Contributors ✨
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -334,6 +334,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Yaziidev"><img src="https://avatars.githubusercontent.com/u/156483754?v=4?s=100" width="100px;" alt="Yaziidev"/><br /><sub><b>Yaziidev</b></sub></a><br /><a href="https://github.com/NodeSecure/ci/commits?author=Yaziidev" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Dafyh"><img src="https://avatars.githubusercontent.com/u/47780300?v=4?s=100" width="100px;" alt="Dafyh"/><br /><sub><b>Dafyh</b></sub></a><br /><a href="https://github.com/NodeSecure/ci/commits?author=Dafyh" title="Tests">⚠️</a></td>
     </tr>
   </tbody>
 </table>
