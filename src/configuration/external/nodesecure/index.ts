@@ -1,6 +1,6 @@
-// Node.Js Dependencies
-import fs from "fs/promises";
-import { join } from "path";
+// Import Node.js Dependencies
+import fs from "node:fs/promises";
+import { join } from "node:path";
 
 // Import Third-party Dependencies
 import { type RC as NodeSecureRuntimeConfig, read } from "@nodesecure/rc";

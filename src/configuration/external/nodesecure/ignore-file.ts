@@ -1,4 +1,4 @@
-// Import Third-party dependencies
+// Import Third-party Dependencies
 import * as JSXray from "@nodesecure/js-x-ray";
 import { Ajv } from "ajv";
 

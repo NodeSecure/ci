@@ -1,4 +1,4 @@
-// Import Third-party dependencies
+// Import Third-party Dependencies
 import kleur from "kleur";
 
 export type ConsoleMessage = {
