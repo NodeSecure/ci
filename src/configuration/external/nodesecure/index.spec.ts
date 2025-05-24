@@ -1,14 +1,11 @@
 // Import Node.js Dependencies
 import assert from "node:assert";
 import { describe, it } from "node:test";
-
-// Third-party Dependencies
-import mock from "mock-fs";
+import fs from "node:fs/promises";
 
 // Internal Dependencies
 import { IgnorePatterns, IgnoreWarningsPatterns } from "./ignore-file.js";
-
-import { getIgnoreFile, kIgnoreFilePath } from "./index.js";
+import { getIgnoreFile } from "./index.js";
 
 describe("getIgnoreFile", () => {
   const kDefaultIgnoreFileContent = IgnorePatterns.default();
@@ -19,70 +16,53 @@ describe("getIgnoreFile", () => {
     assert.deepEqual(result, kDefaultIgnoreFileContent);
   });
 
-  it("should return empty object if file format is invalid", async() => {
+  it("should return empty object if file format is invalid", async(ctx) => {
     const invalidIgnoreFile = { foo: "bar" };
-    createFakeIgnoreFile(JSON.stringify(invalidIgnoreFile));
+    ctx.mock.method(fs, "readFile", () => Promise.resolve(JSON.stringify(invalidIgnoreFile)));
 
     const result = await getIgnoreFile();
 
     assert.deepEqual(result, kDefaultIgnoreFileContent);
-    mock.restore();
   });
 
-  it("should return the ignore file if it's valid", async() => {
+  it("should return the ignore file if it's valid", async(ctx) => {
     const validIgnoreFile = {
       warnings: {
         "unsafe-regex": ["negotiator"]
       }
     };
-    createFakeIgnoreFile(JSON.stringify(validIgnoreFile));
+    ctx.mock.method(fs, "readFile", () => Promise.resolve(JSON.stringify(validIgnoreFile)));
 
     const result = await getIgnoreFile();
 
     assert.ok(result instanceof IgnorePatterns);
     assert.notDeepEqual(result, {});
-    mock.restore();
   });
 
-  it("should return an IgnorePatterns warnings property", async() => {
+  it("should return an IgnorePatterns warnings property", async(ctx) => {
     const validIgnoreFile = {
       warnings: {
         "unsafe-regex": ["negotiator"]
       }
     };
-    createFakeIgnoreFile(JSON.stringify(validIgnoreFile));
+    ctx.mock.method(fs, "readFile", () => Promise.resolve(JSON.stringify(validIgnoreFile)));
 
     const { warnings } = await getIgnoreFile();
 
     assert.ok(warnings instanceof IgnoreWarningsPatterns);
-    mock.restore();
   });
 
-  it("should return an helper to check if a warning exist for a given pkg", async() => {
+  it("should return an helper to check if a warning exist for a given pkg", async(ctx) => {
     const validIgnoreFile = {
       warnings: {
         "unsafe-regex": ["negotiator"]
       }
     };
-    createFakeIgnoreFile(JSON.stringify(validIgnoreFile));
+    ctx.mock.method(fs, "readFile", () => Promise.resolve(JSON.stringify(validIgnoreFile)));
 
     const result = await getIgnoreFile();
 
     assert.equal(result.warnings.has("unsafe-regex", "negotiator"), true);
     assert.equal(result.warnings.has("unsafe-regex", "express"), false);
-    mock.restore();
   });
 });
-
-/**
- *  HELPERS
- */
-
-function createFakeIgnoreFile(fileContent: string): void {
-  mock(
-    {
-      [kIgnoreFilePath]: Buffer.from(fileContent)
-    },
-    {} as any
-  );
-}

@@ -1,5 +1,5 @@
 // Node.Js Dependencies
-import { readFile } from "fs/promises";
+import fs from "fs/promises";
 import { join } from "path";
 
 // Import Third-party Dependencies
@@ -93,7 +93,7 @@ export async function getNodeSecureConfig(): Promise<
 export async function getIgnoreFile(): Promise<IgnorePatterns> {
   const highlightedFilename = log.highlight(".nodesecureignore").message;
   try {
-    const ignoreFile = await readFile(kIgnoreFilePath, "utf8");
+    const ignoreFile = await fs.readFile(kIgnoreFilePath, "utf8");
     const ignoreObject = JSON.parse(ignoreFile);
     const { isValid, error } = validateIgnoreFile(ignoreObject);
     if (!isValid) {
