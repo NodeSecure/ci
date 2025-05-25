@@ -60,7 +60,7 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@openally/config.eslint": "^1.0.0",
+    "@openally/config.eslint": "^2.1.0",
     "@openally/config.typescript": "^1.0.3",
     "@types/lodash.set": "^4.3.9",
     "@types/node": "^22.3.0",

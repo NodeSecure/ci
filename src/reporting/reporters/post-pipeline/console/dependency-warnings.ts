@@ -93,7 +93,7 @@ export function reportDependencyWarnings(
 
   if (warningsMode === Nsci.warnings.OFF) {
     consolePrinter.font
-      .info(`⚠ dependency warnings were skipped`)
+      .info("⚠ dependency warnings were skipped")
       .bold()
       .printWithEmptyLine();
 
@@ -102,7 +102,7 @@ export function reportDependencyWarnings(
 
   if (numberOfDependencyWarnings === 0) {
     consolePrinter.font
-      .success(`✓ 0 dependency warnings`)
+      .success("✓ 0 dependency warnings")
       .bold()
       .printWithEmptyLine();
 

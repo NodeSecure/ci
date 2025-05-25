@@ -1,5 +1,5 @@
 // Import Node.js Dependencies
-import { performance } from "perf_hooks";
+import { performance } from "node:perf_hooks";
 
 // Import Third-party Dependencies
 import ms from "pretty-ms";

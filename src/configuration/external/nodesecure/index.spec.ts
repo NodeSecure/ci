@@ -3,7 +3,7 @@ import assert from "node:assert";
 import { describe, it } from "node:test";
 import fs from "node:fs/promises";
 
-// Internal Dependencies
+// Import Internal Dependencies
 import { IgnorePatterns, IgnoreWarningsPatterns } from "./ignore-file.js";
 import { getIgnoreFile } from "./index.js";
 

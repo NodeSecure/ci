@@ -1,6 +1,7 @@
 // Import Third-party Dependencies
 import { match } from "ts-pattern";
 
+// Import Internal Dependencies
 import {
   type ConsoleMessage,
   type ConsoleOutput,

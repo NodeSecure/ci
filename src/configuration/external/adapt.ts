@@ -1,6 +1,6 @@
 // Import Node.js Dependencies
-import { constants, accessSync } from "fs";
-import { resolve } from "path";
+import { constants, accessSync } from "node:fs";
+import { resolve } from "node:path";
 
 // Import Internal Dependencies
 import { Nsci } from "../standard/index.js";
