@@ -27,39 +27,6 @@ function keepOnlyWorkableVulns(
   return vuln.severity !== undefined || vuln.package !== undefined;
 }
 
-function extractDependenciesVulns(
-  dependencies: Scanner.Dependencies
-): WorkableVulnerability[] {
-  return Object.entries(dependencies)
-    .flatMap(([_packageName, packageData]) => packageData.vulnerabilities)
-    .filter(keepOnlyWorkableVulns);
-}
-
-function extractDependenciesWarnings(
-  dependencies: Scanner.Dependencies
-): DependencyWarning[] {
-  return Object.entries(dependencies).map(([packageName, packageData]) => {
-    return {
-      package: packageName,
-      warnings: Object.values(packageData.versions).flatMap(
-        (packageVersionData) => packageVersionData.warnings
-      )
-    };
-  });
-}
-
-function extractDependenciesVulnsAndWarnings(
-  dependencies: Scanner.Dependencies
-): {
-    warnings: DependencyWarning[];
-    vulnerabilities: WorkableVulnerability[];
-  } {
-  const warnings = extractDependenciesWarnings(dependencies);
-  const vulnerabilities = extractDependenciesVulns(dependencies);
-
-  return { warnings, vulnerabilities };
-}
-
 /**
  * In order to simplify the next step of scanner payload interpretation, we
  * extract reduce the payload data to only match interpreter requirements.
@@ -67,15 +34,25 @@ function extractDependenciesVulnsAndWarnings(
 export function extractScannerPayload(
   payload: Scanner.Payload
 ): CompactedScannerPayload {
-  const { warnings, vulnerabilities } = extractDependenciesVulnsAndWarnings(
-    payload.dependencies
-  );
+  const extractor = new Scanner.Extractors.Payload(payload, [
+    new Scanner.Extractors.Probes.Vulnerabilities(),
+    new Scanner.Extractors.Probes.Warnings({
+      useSpecAsKey: false
+    })
+  ]);
+
+  const { vulnerabilities, warnings } = extractor.extractAndMerge();
 
   return {
     warnings: payload.warnings,
     dependencies: {
-      warnings,
-      vulnerabilities
+      warnings: Object.entries(warnings.groups).map(([name, warnings]) => {
+        return {
+          package: name,
+          warnings
+        };
+      }),
+      vulnerabilities: vulnerabilities.filter(keepOnlyWorkableVulns)
     }
   };
 }
